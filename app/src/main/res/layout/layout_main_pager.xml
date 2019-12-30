@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/functions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <Button
+                android:id="@+id/start_preview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:backgroundTint="#F44336"
+                android:gravity="center_horizontal"
+                android:padding="20dp"
+                android:text="@string/start_preview"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/start_record"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:backgroundTint="#E91E63"
+                android:gravity="center_horizontal"
+                android:padding="20dp"
+                android:text="@string/start_record"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/start_web_api_activity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:backgroundTint="#9C27B0"
+                android:gravity="center_horizontal"
+                android:padding="20dp"
+                android:text="@string/start_web_api_activity"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/start_net_config_activity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:backgroundTint="#009688"
+                android:gravity="center_horizontal"
+                android:padding="20dp"
+                android:text="@string/net_config"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/start_player_activity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:backgroundTint="#2196F3"
+                android:gravity="center_horizontal"
+                android:padding="20dp"
+                android:text="@string/player"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/start_qrcode_activity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:backgroundTint="#3F51B5"
+                android:gravity="center_horizontal"
+                android:padding="20dp"
+                android:text="@string/qrcode"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/start_device_manager_activity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:backgroundTint="#FF9800"
+                android:gravity="center_horizontal"
+                android:padding="20dp"
+                android:text="@string/device_manager"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <ProgressBar
+        android:id="@+id/progress_logout"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+</FrameLayout>

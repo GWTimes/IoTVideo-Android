@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="slide_enter" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/dialog_slide_up_anim</item>
+        <item name="android:windowExitAnimation">@anim/dialog_slide_down_anim</item>
+    </style>
+
+    <style name="bottom_enter" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/dialog_enter_bottom_anim</item>
+        <item name="android:windowExitAnimation">@anim/dialog_exit_bottom_anim</item>
+    </style>
+
+    <!-- 全屏对话框的样式-->
+    <style name="DialogFragmentTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+</resources>
