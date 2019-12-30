@@ -57,7 +57,7 @@ android {
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
             def outputFile = output.outputFile
-            def productName = "IotVideo"
+            def productName = "IoTVideo"
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
                 // 版本名称
                 def versionName = defaultConfig.versionName

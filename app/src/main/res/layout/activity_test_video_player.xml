@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".videoplayer.VideoPlayerActivity">
 
-    <com.gwell.iotvideo.iotvideoplayer.IotVideoView
+    <com.gwell.iotvideo.iotvideoplayer.IoTVideoView
         android:id="@+id/gwell_gl_surface_view"
         android:layout_width="0dp"
         android:layout_height="0dp"

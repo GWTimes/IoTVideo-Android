@@ -15,7 +15,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.gwell.http.SubscriberListener;
-import com.gwell.iotvideo.IotVideoSdk;
+import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideo.utils.qrcode.QRCode;
@@ -239,7 +239,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             Boolean readStorage = permissionResult.get(Manifest.permission.READ_EXTERNAL_STORAGE);
             Boolean writeStorage = permissionResult.get(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             if (readStorage != null && writeStorage != null && readStorage && writeStorage) {
-                IotVideoSdk.setDebugMode(true, 1);
+                IoTVideoSdk.setDebugMode(true, 1);
             }
         }
     }

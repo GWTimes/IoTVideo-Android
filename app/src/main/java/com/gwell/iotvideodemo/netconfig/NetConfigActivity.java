@@ -62,17 +62,17 @@ public class NetConfigActivity extends BaseActivity {
         titles.add(getString(R.string.qrcode_net_config));
         titles.add(getString(R.string.ap_net_config));
         titles.add(getString(R.string.wired_net_config));
-        titles.add(getString(R.string.bluetooth_net_config));
+//        titles.add(getString(R.string.bluetooth_net_config));
         mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(0)));
         mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(1)));
         mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(2)));
-        mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(3)));
+//        mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(3)));
 
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new QRCodeNetConfigFragment());
         fragments.add(new APNetConfigFragment());
         fragments.add(new WiredNetConfigFragment());
-        fragments.add(new BTNetConfigFragment());
+//        fragments.add(new BTNetConfigFragment());
 
         mViewPager.setOffscreenPageLimit(2);
 

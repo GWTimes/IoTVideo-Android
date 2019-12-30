@@ -14,7 +14,7 @@ import com.gwell.iotvideo.iotvideoplayer.IResultListener;
 import com.gwell.iotvideo.iotvideoplayer.IStatusListener;
 import com.gwell.iotvideo.iotvideoplayer.ITimeListener;
 import com.gwell.iotvideo.iotvideoplayer.IUserDataListener;
-import com.gwell.iotvideo.iotvideoplayer.IotVideoView;
+import com.gwell.iotvideo.iotvideoplayer.IoTVideoView;
 import com.gwell.iotvideo.iotvideoplayer.player.MonitorPlayer;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideodemo.R;
@@ -27,7 +27,7 @@ import java.util.Map;
 public class VideoPlayerActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "VideoPlayerActivity";
 
-    private IotVideoView mVideoView;
+    private IoTVideoView mVideoView;
     private MonitorPlayer mMonitorPlayer;
 
     private Button mPlayBtn;
