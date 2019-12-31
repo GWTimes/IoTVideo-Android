@@ -89,6 +89,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
     }
 
     private void loginClicked() {
+        mLoginViewModel.getOperator().setValue(LoginViewModel.OPERATE_LOGIN);
         String userName = mUserNameView.getText().toString();
         String password = mPasswordView.getText().toString();
         mLoginViewModel.login(userName, password);

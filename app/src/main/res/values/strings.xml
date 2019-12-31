@@ -67,4 +67,6 @@
     <string name="find_user">find user</string>
     <string name="account_share">account share</string>
     <string name="qrcode_share">QR Code share</string>
+    <string name="success">success</string>
+    <string name="failure">failure</string>
 </resources>

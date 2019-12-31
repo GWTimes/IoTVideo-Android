@@ -67,4 +67,6 @@
     <string name="find_user">查找用户</string>
     <string name="account_share">帐号分享</string>
     <string name="qrcode_share">二维码分享</string>
+    <string name="success">成功</string>
+    <string name="failure">失败</string>
 </resources>

@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
@@ -52,6 +53,25 @@ public class NetConfigActivity extends BaseActivity {
         mNetConfigInfoViewModel = ViewModelProviders.of(this, new NetConfigViewModelFactory())
                 .get(NetConfigViewModel.class);
         mNetConfigInfoViewModel.updateNetConfigInfo(mNetConfigInfo);
+        mNetConfigInfoViewModel.getNetConfigStateData().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                int state = integer == null ? -1 : integer;
+                switch (state) {
+                    case NetConfigViewModel.START_BIND:
+                        showProgressDialog();
+                        break;
+                    case NetConfigViewModel.BIND_SUCCESS:
+                        dismissProgressDialog();
+                        Snackbar.make(mViewPager, R.string.success, Snackbar.LENGTH_LONG).show();
+                        break;
+                    case NetConfigViewModel.BIND_ERROR:
+                        dismissProgressDialog();
+                        Snackbar.make(mViewPager, R.string.failure, Snackbar.LENGTH_LONG).show();
+                        break;
+                }
+            }
+        });
     }
 
     private void initViewPager() {
@@ -101,26 +121,5 @@ public class NetConfigActivity extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void bindDevice(String did) {
-        AccountMgr.getInstance().deviceBind(did, new SubscriberListener() {
-            @Override
-            public void onStart() {
-                showProgressDialog();
-            }
-
-            @Override
-            public void onSuccess(JsonObject response) {
-                dismissProgressDialog();
-                Snackbar.make(mViewPager, response.toString(), Snackbar.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFail(Throwable e) {
-                dismissProgressDialog();
-                Snackbar.make(mViewPager, e.getMessage(), Snackbar.LENGTH_LONG).show();
-            }
-        });
     }
 }

@@ -24,6 +24,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -89,18 +90,19 @@ public class WiredNetConfigFragment extends BaseFragment {
                 .get(NetConfigViewModel.class);
         NetConfigInfo netConfigInfo = mNetConfigInfoViewModel.getNetConfigInfo();
         mTvNetConfigInfo.setText(netConfigInfo.toString());
-    }
-
-    private void findDevices() {
-        DeviceInfo[] deviceInfos = NetConfig.newWiredNetConfig().getDeviceList();
-        if (deviceInfos != null && deviceInfos.length > 0) {
-            mDeviceInfoList.clear();
-            mDeviceInfoList.addAll(Arrays.asList(deviceInfos));
-            mAdapter.notifyDataSetChanged();
-            Snackbar.make(mRootView, "device count = " + mDeviceInfoList.size(), Snackbar.LENGTH_LONG).show();
-        } else {
-            Snackbar.make(mRootView, "no device", Snackbar.LENGTH_LONG).show();
-        }
+        mNetConfigInfoViewModel.getLanDeviceData().observe(getActivity(), new Observer<DeviceInfo[]>() {
+            @Override
+            public void onChanged(DeviceInfo[] deviceInfos) {
+                if (deviceInfos != null && deviceInfos.length > 0) {
+                    mDeviceInfoList.clear();
+                    mDeviceInfoList.addAll(Arrays.asList(deviceInfos));
+                    mAdapter.notifyDataSetChanged();
+                    Snackbar.make(mRootView, "device count = " + mDeviceInfoList.size(), Snackbar.LENGTH_LONG).show();
+                } else {
+                    Snackbar.make(mRootView, "no device", Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     class DeviceItemHolder extends RecyclerView.ViewHolder {
@@ -114,9 +116,11 @@ public class WiredNetConfigFragment extends BaseFragment {
         }
     }
 
+    private void findDevices() {
+        mNetConfigInfoViewModel.findDevice();
+    }
+
     private void bindDevice(String did) {
-        if (getActivity() instanceof NetConfigActivity) {
-            ((NetConfigActivity) getActivity()).bindDevice(did);
-        }
+        mNetConfigInfoViewModel.bindDevice(did);
     }
 }

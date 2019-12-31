@@ -1,27 +1,67 @@
 package com.gwell.iotvideodemo.netconfig;
 
+import com.gwell.iotvideo.netconfig.DeviceInfo;
 import com.gwell.iotvideo.netconfig.NetConfigInfo;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class NetConfigViewModel extends ViewModel {
-    private MutableLiveData<NetConfigInfo> mNetConfigInfoViewModel;
+    static final int START_BIND = 1;
+    static final int BIND_SUCCESS = 2;
+    static final int BIND_ERROR = 3;
 
-    public NetConfigViewModel(MutableLiveData<NetConfigInfo> netConfigInfoViewModel) {
-        mNetConfigInfoViewModel = netConfigInfoViewModel;
+    private MutableLiveData<NetConfigInfo> mNetConfigInfoData;
+    private MutableLiveData<Integer> mNetConfigStateData;
+    private MutableLiveData<DeviceInfo[]> mLanDeviceData;
+
+    private NetConfigHelper mNetConfigHelper;
+
+    NetConfigViewModel(MutableLiveData<NetConfigInfo> netConfigInfoViewModel) {
+        mNetConfigInfoData = netConfigInfoViewModel;
+        mNetConfigStateData = new MutableLiveData<>();
+        mLanDeviceData = new MutableLiveData<>();
+        mNetConfigHelper = new NetConfigHelper(this);
     }
 
-    public NetConfigViewModel(NetConfigInfo netConfigInfo) {
-        mNetConfigInfoViewModel = new MutableLiveData<>();
+    NetConfigViewModel(NetConfigInfo netConfigInfo) {
+        mNetConfigInfoData = new MutableLiveData<>();
+        mNetConfigStateData = new MutableLiveData<>();
+        mLanDeviceData = new MutableLiveData<>();
+        mNetConfigHelper = new NetConfigHelper(this);
         updateNetConfigInfo(netConfigInfo);
     }
 
-    public void updateNetConfigInfo(NetConfigInfo netConfigInfo) {
-        mNetConfigInfoViewModel.setValue(netConfigInfo);
+    void updateNetConfigInfo(NetConfigInfo netConfigInfo) {
+        mNetConfigInfoData.setValue(netConfigInfo);
     }
 
     public NetConfigInfo getNetConfigInfo() {
-        return mNetConfigInfoViewModel.getValue();
+        return mNetConfigInfoData.getValue();
+    }
+
+    void updateNetConfigState(Integer value) {
+        mNetConfigStateData.setValue(value);
+    }
+
+    int getNetConfigState() {
+        Integer value = mNetConfigStateData.getValue();
+        return value == null ? 0 : value;
+    }
+
+    public MutableLiveData<Integer> getNetConfigStateData() {
+        return mNetConfigStateData;
+    }
+
+    public MutableLiveData<DeviceInfo[]> getLanDeviceData() {
+        return mLanDeviceData;
+    }
+
+    public void findDevice() {
+        mNetConfigHelper.findDevices();
+    }
+
+    public void bindDevice(String did) {
+        mNetConfigHelper.bindDevice(did);
     }
 }
