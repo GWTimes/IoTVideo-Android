@@ -194,7 +194,14 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 }
                 break;
             case R.id.start_talk_btn:
-                mMonitorPlayer.startTalk();
+                requestPermissions(new OnPermissionsListener(){
+                    @Override
+                    public void OnPermissions(boolean granted) {
+                        if (granted) {
+                            mMonitorPlayer.startTalk();
+                        }
+                    }
+                }, Manifest.permission.RECORD_AUDIO);
                 break;
             case R.id.stop_talk_btn:
                 if (mMonitorPlayer.isTalking()) {

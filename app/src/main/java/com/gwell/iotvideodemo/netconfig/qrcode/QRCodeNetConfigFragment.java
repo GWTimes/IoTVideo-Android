@@ -8,9 +8,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.gwell.http.utils.HttpUtils;
 import com.gwell.iotvideo.IoTVideoSdk;
-import com.gwell.iotvideo.netconfig.NetConfig;
+import com.gwell.iotvideo.messagemgr.DataMessage;
+import com.gwell.iotvideo.messagemgr.IResultListener;
+import com.gwell.iotvideo.messagemgr.Message;
 import com.gwell.iotvideo.netconfig.NetConfigInfo;
+import com.gwell.iotvideo.netconfig.data.NetMatchTokenResult;
+import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseFragment;
 import com.gwell.iotvideodemo.netconfig.NetConfigViewModel;
@@ -22,6 +28,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 
 public class QRCodeNetConfigFragment extends BaseFragment {
+    private static final String TAG = "QRCodeNetConfigFragment";
 
     private TextView mTvNetConfigInfo;
     private ImageView mQRCodeImage;
@@ -42,7 +49,31 @@ public class QRCodeNetConfigFragment extends BaseFragment {
         view.findViewById(R.id.create_qrcode).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createQRCodeAndDisplay();
+                mNetConfigInfoViewModel.getNetConfigToken(new IResultListener() {
+                    @Override
+                    public void onStart() {
+                        LogUtils.i(TAG, "getNetConfigToken start");
+                    }
+
+                    @Override
+                    public void onSuccess(Message msg) {
+                        LogUtils.i(TAG, "getNetConfigToken onSuccess : " + msg);
+                        if (msg instanceof DataMessage) {
+                            byte[] token = ((DataMessage) msg).data;
+                            if (token != null) {
+                                String tokenStr = new String(token);
+                                NetMatchTokenResult result = HttpUtils.JsonToEntity(tokenStr, NetMatchTokenResult.class);
+                                createQRCodeAndDisplay(result.getToken());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(int errorCode, String errorMsg) {
+                        LogUtils.i(TAG, "getNetConfigToken errorCode : " + errorCode + " " + errorMsg);
+                        Snackbar.make(mQRCodeImage, errorCode + " " + errorMsg, Snackbar.LENGTH_LONG).show();
+                    }
+                });
             }
         });
         mNetConfigInfoViewModel = ViewModelProviders.of(getActivity(), new NetConfigViewModelFactory())
@@ -51,9 +82,9 @@ public class QRCodeNetConfigFragment extends BaseFragment {
         mTvNetConfigInfo.setText(netConfigInfo.toString());
     }
 
-    private void createQRCodeAndDisplay() {
+    private void createQRCodeAndDisplay(String netConfigToken) {
         NetConfigInfo netConfigInfo = mNetConfigInfoViewModel.getNetConfigInfo();
-        final Bitmap bitmap = IoTVideoSdk.getNetConfig().newQRCodeNetConfig().createQRCode(netConfigInfo.getWifiName(), netConfigInfo.getWifiPassword(),
+        final Bitmap bitmap = IoTVideoSdk.getNetConfig().newQRCodeNetConfig().createQRCode(netConfigToken, netConfigInfo.getWifiName(), netConfigInfo.getWifiPassword(),
                 netConfigInfo.getEncType(), 500);
         if (bitmap != null) {
             mQRCodeImage.setImageBitmap(bitmap);
