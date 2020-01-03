@@ -50,7 +50,7 @@ public class QRCodeShareFragment extends BaseFragment implements View.OnClickLis
     private void genShareQrcode() {
         DeviceViewModel deviceViewModel = ViewModelProviders.of(getActivity()).get(DeviceViewModel.class);
         DeviceList.Device device = deviceViewModel.getDevice();
-        AccountMgr.getInstance().genShareQrcode(device.getDid(), device.getDeviceName(), device.getDeviceName(), new SubscriberListener() {
+        AccountMgr.getInstance().genShareQrcode(device.getDevId(), device.getDeviceName(), device.getDeviceName(), new SubscriberListener() {
             @Override
             public void onStart() {
 

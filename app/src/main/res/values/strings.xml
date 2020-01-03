@@ -69,4 +69,5 @@
     <string name="qrcode_share">QR Code share</string>
     <string name="success">success</string>
     <string name="failure">failure</string>
+    <string name="device_model">device_model</string>
 </resources>

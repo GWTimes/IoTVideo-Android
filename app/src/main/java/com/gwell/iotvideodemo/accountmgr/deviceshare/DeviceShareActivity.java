@@ -130,7 +130,7 @@ public class DeviceShareActivity extends BaseActivity {
     }
 
     private void listSharedUsers() {
-        AccountMgr.getInstance().listSharedUsers(mDevice.getDid(), new SubscriberListener() {
+        AccountMgr.getInstance().listSharedUsers(mDevice.getDevId(), new SubscriberListener() {
             @Override
             public void onStart() {
 

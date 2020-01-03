@@ -2,6 +2,7 @@ package com.gwell.iotvideodemo.netconfig;
 
 import com.google.gson.JsonObject;
 import com.gwell.http.SubscriberListener;
+import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
 import com.gwell.iotvideo.netconfig.DeviceInfo;
 import com.gwell.iotvideo.netconfig.NetConfig;
@@ -38,7 +39,7 @@ public class NetConfigHelper {
     }
 
     public void findDevices() {
-        DeviceInfo[] deviceInfos = NetConfig.newWiredNetConfig().getDeviceList();
+        DeviceInfo[] deviceInfos = IoTVideoSdk.getNetConfig().newWiredNetConfig().getDeviceList();
         mNetConfigViewModel.getLanDeviceData().setValue(deviceInfos);
     }
 }

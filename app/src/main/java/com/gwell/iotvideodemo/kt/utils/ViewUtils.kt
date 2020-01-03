@@ -19,7 +19,7 @@ object ViewUtils {
     private val MIN_HD_HEIGHT = 1180
     private val HD_HEIGHT = 1280
 
-    private lateinit var application: Application
+    lateinit var application: Application
 
     val resources: Resources
         get() = application.resources

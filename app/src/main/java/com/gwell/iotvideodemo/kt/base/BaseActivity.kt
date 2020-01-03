@@ -32,6 +32,8 @@ abstract class BaseActivity<P : IBasePresenter> : AppCompatActivity(), IBaseView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        ViewUtils.application = application
+
         initActivityConfig(activityConfig)
 
         if (activityConfig.isHideNavigation) {

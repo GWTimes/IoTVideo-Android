@@ -25,6 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".messagemgr.DeviceMessageActivity"></activity>
         <activity
             android:name=".WelcomeActivity"
             android:theme="@style/LauncherActivity">
@@ -58,8 +59,7 @@
         <activity
             android:name=".videoplayer.CustomCaptureActivity2"
             android:theme="@style/AppNoActionBarTheme" />
-        <activity
-            android:name=".accountmgr.login.LoginActivity" />
+        <activity android:name=".accountmgr.login.LoginActivity" />
         <activity
             android:name=".netconfig.NetConfigActivity"
             android:label="@string/net_config"
@@ -73,7 +73,7 @@
         <activity
             android:name=".accountmgr.deviceshare.DeviceShareActivity"
             android:label="@string/device_share"
-            android:theme="@style/AppNoActionBarTheme"/>
+            android:theme="@style/AppNoActionBarTheme" />
     </application>
 
 </manifest>

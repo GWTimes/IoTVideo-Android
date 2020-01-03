@@ -19,6 +19,7 @@ import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.accountmgr.deviceshare.DeviceShareActivity;
 import com.gwell.iotvideodemo.base.BaseActivity;
+import com.gwell.iotvideodemo.messagemgr.DeviceMessageActivity;
 import com.gwell.iotvideodemo.videoplayer.VideoPlayerActivity;
 import com.gwell.iotvideodemo.widget.RecycleViewDivider;
 
@@ -58,7 +59,7 @@ public class DeviceManagerActivity extends BaseActivity {
             @Override
             public void onBindViewHolder(@NonNull final DeviceItemHolder holder, int position) {
                 final DeviceList.Device deviceInfo = mDeviceInfoList.get(position);
-                holder.tvDeviceName.setText(deviceInfo.getDid());
+                holder.tvDeviceName.setText(deviceInfo.getDeviceName());
                 holder.llDeviceInfo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -90,8 +91,13 @@ public class DeviceManagerActivity extends BaseActivity {
                 switch (item.getItemId()) {
                     case R.id.action_menu_player:
                         Intent playIntent = new Intent(DeviceManagerActivity.this, VideoPlayerActivity.class);
-                        playIntent.putExtra("did", device.getDid());
+                        playIntent.putExtra("deviceID", device.getDeviceName());
                         startActivity(playIntent);
+                        break;
+                    case R.id.action_menu_model:
+                        Intent messageIntent = new Intent(DeviceManagerActivity.this, DeviceMessageActivity.class);
+                        messageIntent.putExtra("deviceID", device.getDeviceName());
+                        startActivity(messageIntent);
                         break;
                     case R.id.action_menu_share:
                         if ("owner".equals(device.getShareType())) {
@@ -143,7 +149,7 @@ public class DeviceManagerActivity extends BaseActivity {
     }
 
     private void unbindDevice(final DeviceList.Device device) {
-        AccountMgr.getInstance().deviceUnbind(device.getDid(), new SubscriberListener() {
+        AccountMgr.getInstance().deviceUnbind(device.getDevId(), new SubscriberListener() {
             @Override
             public void onStart() {
 

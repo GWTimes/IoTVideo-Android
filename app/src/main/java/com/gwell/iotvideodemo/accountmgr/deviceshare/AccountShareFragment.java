@@ -116,8 +116,8 @@ public class AccountShareFragment extends BaseFragment implements View.OnClickLi
 
     private void shareDevice(String shareId) {
         DeviceViewModel deviceViewModel = ViewModelProviders.of(getActivity()).get(DeviceViewModel.class);
-        LogUtils.i(TAG, "shareDevice shareId = " + shareId + " did = " + deviceViewModel.getDevice().getDid());
-        AccountMgr.getInstance().accountShare(shareId, deviceViewModel.getDevice().getDid(), new SubscriberListener() {
+        LogUtils.i(TAG, "shareDevice shareId = " + shareId + " did = " + deviceViewModel.getDevice().getDevId());
+        AccountMgr.getInstance().accountShare(shareId, deviceViewModel.getDevice().getDevId(), new SubscriberListener() {
             @Override
             public void onStart() {
 

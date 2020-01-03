@@ -8,7 +8,7 @@ public class DeviceList {
     /**
      * code : 0
      * msg : Success
-     * data : [{"did":"42949672973","deviceName":"42949672973","deviceType":null,"deviceMode":"app.pack.test","url":null,"shareType":"owner"}]
+     * data : [{"devId":"55484851000000000000000000000000","did":null,"deviceName":"42949672973","deviceType":null,"deviceMode":"app.pack.test","url":null,"shareType":"owner"}]
      */
 
     private int code;
@@ -41,7 +41,8 @@ public class DeviceList {
 
     public static class Device implements Serializable {
         /**
-         * did : 42949672973
+         * devId : 55484851000000000000000000000000
+         * did : null
          * deviceName : 42949672973
          * deviceType : null
          * deviceMode : app.pack.test
@@ -49,12 +50,21 @@ public class DeviceList {
          * shareType : owner
          */
 
+        private String devId;
         private String did;
         private String deviceName;
-        private Object deviceType;
+        private String deviceType;
         private String deviceMode;
-        private Object url;
+        private String url;
         private String shareType;
+
+        public String getDevId() {
+            return devId;
+        }
+
+        public void setDevId(String devId) {
+            this.devId = devId;
+        }
 
         public String getDid() {
             return did;
@@ -72,11 +82,11 @@ public class DeviceList {
             this.deviceName = deviceName;
         }
 
-        public Object getDeviceType() {
+        public String getDeviceType() {
             return deviceType;
         }
 
-        public void setDeviceType(Object deviceType) {
+        public void setDeviceType(String deviceType) {
             this.deviceType = deviceType;
         }
 
@@ -88,11 +98,11 @@ public class DeviceList {
             this.deviceMode = deviceMode;
         }
 
-        public Object getUrl() {
+        public String getUrl() {
             return url;
         }
 
-        public void setUrl(Object url) {
+        public void setUrl(String url) {
             this.url = url;
         }
 
@@ -107,11 +117,12 @@ public class DeviceList {
         @Override
         public String toString() {
             return "Device{" +
-                    "did='" + did + '\'' +
+                    "devId='" + devId + '\'' +
+                    ", did='" + did + '\'' +
                     ", deviceName='" + deviceName + '\'' +
-                    ", deviceType=" + deviceType +
+                    ", deviceType='" + deviceType + '\'' +
                     ", deviceMode='" + deviceMode + '\'' +
-                    ", url=" + url +
+                    ", url='" + url + '\'' +
                     ", shareType='" + shareType + '\'' +
                     '}';
         }

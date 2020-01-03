@@ -7,6 +7,11 @@
         android:title="@string/player"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_menu_model"
+        android:orderInCategory="1"
+        android:title="@string/device_model"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_menu_share"
         android:orderInCategory="1"
         android:title="@string/device_share"

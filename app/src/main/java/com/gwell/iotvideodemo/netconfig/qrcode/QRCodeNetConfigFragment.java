@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.netconfig.NetConfig;
 import com.gwell.iotvideo.netconfig.NetConfigInfo;
 import com.gwell.iotvideodemo.R;
@@ -52,7 +53,7 @@ public class QRCodeNetConfigFragment extends BaseFragment {
 
     private void createQRCodeAndDisplay() {
         NetConfigInfo netConfigInfo = mNetConfigInfoViewModel.getNetConfigInfo();
-        final Bitmap bitmap = NetConfig.newQRCodeNetConfig().createQRCode(netConfigInfo.getWifiName(), netConfigInfo.getWifiPassword(),
+        final Bitmap bitmap = IoTVideoSdk.getNetConfig().newQRCodeNetConfig().createQRCode(netConfigInfo.getWifiName(), netConfigInfo.getWifiPassword(),
                 netConfigInfo.getEncType(), 500);
         if (bitmap != null) {
             mQRCodeImage.setImageBitmap(bitmap);

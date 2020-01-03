@@ -4,8 +4,10 @@ import android.Manifest;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gwell.iotvideo.iotvideoplayer.IErrorListener;
@@ -23,6 +25,8 @@ import com.gwell.iotvideodemo.base.BaseActivity;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.Map;
+
+import com.gwell.iotvideo.iotvideoplayer.PlayerStateEnum;
 
 public class VideoPlayerActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "VideoPlayerActivity";
@@ -42,6 +46,9 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     private Button mOpenCamera;
     private Button mChooseCamera;
     private Button mCloseCamera;
+
+    private Button mClearOutput;
+    private TextView mResultTxt;
 
     private long mDeviceId = 42949672974L;
 
@@ -73,13 +80,25 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         mCloseCamera = findViewById(R.id.close_camera_btn);
         mCloseCamera.setOnClickListener(this);
 
+        mClearOutput = findViewById(R.id.tv_clear);
+        mClearOutput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mResultTxt.setText("");
+            }
+        });
+        mResultTxt = findViewById(R.id.output_txt);
+        mResultTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
+
         applyForStoragePerMission();
 
         if (getIntent() != null) {
-            String did = getIntent().getStringExtra("did");
+            String did = getIntent().getStringExtra("deviceID");
             if (!TextUtils.isEmpty(did)) {
                 mDeviceId = Long.valueOf(did);
                 LogUtils.i(TAG, "mDeviceId = " + mDeviceId);
+
+                appendToOutput("设备ID：" + mDeviceId);
             }
         }
 
@@ -99,6 +118,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         @Override
         public void onPrepared() {
             LogUtils.d(TAG, "onPrepared");
+            appendToOutput("开始准备");
         }
     };
 
@@ -106,6 +126,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         @Override
         public void onStatus(int status) {
             LogUtils.d(TAG, "onStatus status " + status);
+            appendToOutput("播放状态：" + getPlayStatus(status));
         }
     };
 
@@ -120,6 +141,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         @Override
         public void onError(int error) {
             LogUtils.d(TAG, "onError error " + error);
+            appendToOutput( "播放错误：" + error);
         }
     };
 
@@ -127,6 +149,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         @Override
         public void onReceive(ByteBuffer data) {
             LogUtils.d(TAG, "onReceive ----");
+            appendToOutput( "收到数据：" + data);
         }
     };
 
@@ -145,22 +168,29 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                             @Override
                             public void onResult(int code, String path) {
                                 Toast.makeText(VideoPlayerActivity.this, "code:" + code + " path:" + path, Toast.LENGTH_LONG).show();
+                                appendToOutput("截图结果：  返回码 " + code + " 路径 " + path);
                             }
                         });
                 break;
             case R.id.record_btn:
                 if (mMonitorPlayer.isRecording()) {
-                    mMonitorPlayer.stopRecord();
                     mRecordBtn.setText("开始录像");
+                    appendToOutput("停止录像");
+                    mMonitorPlayer.stopRecord();
                 } else {
+                    mRecordBtn.setText("停止录像");
+                    appendToOutput("开始录像");
                     mMonitorPlayer.startRecord(new File(Environment.getExternalStorageDirectory(), "xxx.mp4").getAbsolutePath(),
                             new IResultListener() {
                                 @Override
                                 public void onResult(int code, String path) {
                                     Toast.makeText(VideoPlayerActivity.this, "code:" + code + " path:" + path, Toast.LENGTH_LONG).show();
+                                    if(code != 0){
+                                        mRecordBtn.setText("开始录像");
+                                    }
+                                    appendToOutput("录像结果：  返回码 " + code + " 路径 " + path);
                                 }
                             });
-                    mRecordBtn.setText("停止录像");
                 }
                 break;
             case R.id.start_talk_btn:
@@ -237,5 +267,44 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
             mMonitorPlayer.release();
             mMonitorPlayer = null;
         }
+    }
+
+    private void appendToOutput(String text){
+        mResultTxt.append("\n" + text);
+        int offset=mResultTxt.getLineCount()*mResultTxt.getLineHeight();
+        if(offset>mResultTxt.getHeight()){
+            mResultTxt.scrollTo(0,offset-mResultTxt.getHeight());
+        }
+    }
+
+    private String getPlayStatus(int status){
+        String playStatus = "";
+        switch (status){
+            case PlayerStateEnum.STATE_IDLE :
+                playStatus = "未初始化";
+            break;
+            case PlayerStateEnum.STATE_INITIALIZED :
+                playStatus = "已初始化";
+                break;
+            case PlayerStateEnum.STATE_PREPARING :
+                playStatus = "准备中...";
+                break;
+            case PlayerStateEnum.STATE_READY :
+                playStatus = "准备完成";
+                break;
+            case PlayerStateEnum.STATE_LOADING :
+                playStatus = "加载中";
+                break;
+            case PlayerStateEnum.STATE_PLAY :
+                playStatus = "播放中";
+                break;
+            case PlayerStateEnum.STATE_PAUSE : {
+                playStatus = "暂停";
+            }break;
+            case PlayerStateEnum.STATE_STOP :
+                playStatus = "停止播放";
+                break;
+        }
+        return playStatus;
     }
 }
