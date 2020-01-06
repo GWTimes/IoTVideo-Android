@@ -119,13 +119,7 @@ public class DeviceShareListFragment extends BaseFragment implements View.OnClic
 
         @Override
         public void onBindViewHolder(@NonNull ItemHolder holder, int position) {
-            String name = mShareList.get(position).getNick();
-            if (TextUtils.isEmpty(name)) {
-                name = mShareList.get(position).getUserName();
-            }
-            if (TextUtils.isEmpty(name)) {
-                name = mShareList.get(position).getIvUid();
-            }
+            String name = mShareList.get(position).getDisplayName();
             holder.accountName.setText(name);
         }
 

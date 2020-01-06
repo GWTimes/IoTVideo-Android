@@ -1,5 +1,7 @@
 package com.gwell.iotvideodemo.accountmgr.deviceshare;
 
+import android.text.TextUtils;
+
 import java.util.List;
 
 public class ShareList {
@@ -92,6 +94,18 @@ public class ShareList {
 
             public void setHeadUrl(String headUrl) {
                 this.headUrl = headUrl;
+            }
+
+            public String getDisplayName() {
+                if (!TextUtils.isEmpty(nick)) {
+                    return nick;
+                } else if (!TextUtils.isEmpty(userName)) {
+                    return userName;
+                } else if (!TextUtils.isEmpty(ivUid)) {
+                    return ivUid;
+                }
+
+                return "unknown";
             }
         }
     }

@@ -109,7 +109,11 @@ public class DeviceManagerActivity extends BaseActivity {
                         }
                         break;
                     case R.id.action_menu_unbind:
-                        unbindDevice(device);
+                        if ("owner".equals(device.getShareType())) {
+                            unbindDevice(device);
+                        } else {
+                            Snackbar.make(anchor, R.string.you_are_not_owner, Snackbar.LENGTH_LONG).show();
+                        }
                         break;
                 }
                 return false;

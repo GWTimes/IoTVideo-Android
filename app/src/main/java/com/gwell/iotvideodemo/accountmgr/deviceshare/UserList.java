@@ -1,5 +1,7 @@
 package com.gwell.iotvideodemo.accountmgr.deviceshare;
 
+import android.text.TextUtils;
+
 public class UserList {
 
     /**
@@ -79,6 +81,18 @@ public class UserList {
 
         public void setHeadUrl(String headUrl) {
             this.headUrl = headUrl;
+        }
+
+        public String getDisplayName() {
+            if (!TextUtils.isEmpty(nick)) {
+                return nick;
+            } else if (!TextUtils.isEmpty(userName)) {
+                return userName;
+            } else if (!TextUtils.isEmpty(ivUid)) {
+                return ivUid;
+            }
+
+            return "unknown";
         }
     }
 }

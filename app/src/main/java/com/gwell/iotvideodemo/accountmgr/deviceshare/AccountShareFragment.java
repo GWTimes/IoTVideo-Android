@@ -58,7 +58,8 @@ public class AccountShareFragment extends BaseFragment implements View.OnClickLi
 
             @Override
             public void onBindViewHolder(@NonNull ItemHolder holder, final int position) {
-                holder.userName.setText(mUserList.get(position).getNick());
+                UserList.User user = mUserList.get(position);
+                holder.userName.setText(user.getDisplayName());
                 holder.rootView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
