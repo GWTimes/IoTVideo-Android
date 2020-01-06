@@ -61,9 +61,15 @@ public class RetrievePasswordFragment extends BaseFragment implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_get_vcode:
+                if (getActivity() instanceof LoginActivity) {
+                    ((LoginActivity) getActivity()).hideSoftKeyboard();
+                }
                 getVCodeClicked();
                 break;
             case R.id.btn_retrieve:
+                if (getActivity() instanceof LoginActivity) {
+                    ((LoginActivity) getActivity()).hideSoftKeyboard();
+                }
                 retrieveClicked();
                 break;
         }

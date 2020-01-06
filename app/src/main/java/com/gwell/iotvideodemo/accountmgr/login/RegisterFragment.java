@@ -61,9 +61,15 @@ public class RegisterFragment extends BaseFragment implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_get_vcode:
+                if (getActivity() instanceof LoginActivity) {
+                    ((LoginActivity) getActivity()).hideSoftKeyboard();
+                }
                 getVCodeClicked();
                 break;
             case R.id.btn_register:
+                if (getActivity() instanceof LoginActivity) {
+                    ((LoginActivity) getActivity()).hideSoftKeyboard();
+                }
                 registerClicked();
                 break;
         }

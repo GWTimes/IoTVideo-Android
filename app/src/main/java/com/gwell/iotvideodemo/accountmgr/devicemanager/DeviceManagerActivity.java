@@ -91,12 +91,12 @@ public class DeviceManagerActivity extends BaseActivity {
                 switch (item.getItemId()) {
                     case R.id.action_menu_player:
                         Intent playIntent = new Intent(DeviceManagerActivity.this, VideoPlayerActivity.class);
-                        playIntent.putExtra("deviceID", device.getDeviceName());
+                        playIntent.putExtra("deviceID", device.getDid());
                         startActivity(playIntent);
                         break;
                     case R.id.action_menu_model:
                         Intent messageIntent = new Intent(DeviceManagerActivity.this, DeviceMessageActivity.class);
-                        messageIntent.putExtra("deviceID", device.getDeviceName());
+                        messageIntent.putExtra("deviceID", device.getDid());
                         startActivity(messageIntent);
                         break;
                     case R.id.action_menu_share:

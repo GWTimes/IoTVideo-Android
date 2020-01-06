@@ -4,17 +4,14 @@ import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.messagemgr.IResultListener;
 import com.gwell.iotvideo.netconfig.DeviceInfo;
 import com.gwell.iotvideo.netconfig.NetConfigInfo;
+import com.gwell.iotvideodemo.base.HttpRequestState;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class NetConfigViewModel extends ViewModel {
-    static final int START_BIND = 1;
-    static final int BIND_SUCCESS = 2;
-    static final int BIND_ERROR = 3;
-
     private MutableLiveData<NetConfigInfo> mNetConfigInfoData;
-    private MutableLiveData<Integer> mNetConfigStateData;
+    private MutableLiveData<HttpRequestState> mNetConfigStateData;
     private MutableLiveData<DeviceInfo[]> mLanDeviceData;
 
     private NetConfigHelper mNetConfigHelper;
@@ -42,16 +39,7 @@ public class NetConfigViewModel extends ViewModel {
         return mNetConfigInfoData.getValue();
     }
 
-    void updateNetConfigState(Integer value) {
-        mNetConfigStateData.setValue(value);
-    }
-
-    int getNetConfigState() {
-        Integer value = mNetConfigStateData.getValue();
-        return value == null ? 0 : value;
-    }
-
-    public MutableLiveData<Integer> getNetConfigStateData() {
+    public MutableLiveData<HttpRequestState> getNetConfigStateData() {
         return mNetConfigStateData;
     }
 
@@ -64,10 +52,10 @@ public class NetConfigViewModel extends ViewModel {
     }
 
     public void bindDevice(String did) {
-        mNetConfigHelper.bindDevice(did);
+        mNetConfigHelper.bindDevice(did, mNetConfigStateData);
     }
 
     public void getNetConfigToken(IResultListener listener) {
-        IoTVideoSdk.getNetConfig().getNetConfigToken(listener);
+        mNetConfigHelper.getNetConfigToken(listener);
     }
 }

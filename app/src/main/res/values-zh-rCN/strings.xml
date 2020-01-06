@@ -70,4 +70,8 @@
     <string name="success">成功</string>
     <string name="failure">失败</string>
     <string name="device_model">物模型</string>
+    <string name="local_monitor">局域网监控</string>
+    <string name="share_list">已分享列表</string>
+    <string name="fresh_list">刷新列表</string>
+    <string name="flip_to_delete">滑动删除</string>
 </resources>

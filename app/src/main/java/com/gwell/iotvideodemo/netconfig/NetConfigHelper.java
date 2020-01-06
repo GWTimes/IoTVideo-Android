@@ -1,18 +1,16 @@
 package com.gwell.iotvideodemo.netconfig;
 
-import com.google.gson.JsonObject;
-import com.gwell.http.SubscriberListener;
 import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
 import com.gwell.iotvideo.messagemgr.IResultListener;
 import com.gwell.iotvideo.netconfig.DeviceInfo;
-import com.gwell.iotvideo.netconfig.NetConfig;
+import com.gwell.iotvideo.utils.LogUtils;
+import com.gwell.iotvideodemo.base.HttpRequestState;
+import com.gwell.iotvideodemo.base.SimpleSubscriberListener;
 
-import static com.gwell.iotvideodemo.netconfig.NetConfigViewModel.BIND_ERROR;
-import static com.gwell.iotvideodemo.netconfig.NetConfigViewModel.BIND_SUCCESS;
-import static com.gwell.iotvideodemo.netconfig.NetConfigViewModel.START_BIND;
+import androidx.lifecycle.MutableLiveData;
 
-public class NetConfigHelper {
+class NetConfigHelper {
 
     private NetConfigViewModel mNetConfigViewModel;
 
@@ -20,31 +18,21 @@ public class NetConfigHelper {
         mNetConfigViewModel = model;
     }
 
-    void bindDevice(String did) {
-        AccountMgr.getInstance().deviceBind(did, new SubscriberListener() {
-            @Override
-            public void onStart() {
-                mNetConfigViewModel.updateNetConfigState(START_BIND);
-            }
-
-            @Override
-            public void onSuccess(JsonObject response) {
-                mNetConfigViewModel.updateNetConfigState(BIND_SUCCESS);
-            }
-
-            @Override
-            public void onFail(Throwable e) {
-                mNetConfigViewModel.updateNetConfigState(BIND_ERROR);
-            }
-        });
+    void bindDevice(String did, MutableLiveData<HttpRequestState> httpRequestStateMutableLiveData) {
+        AccountMgr.getInstance().deviceBind(did, new SimpleSubscriberListener(httpRequestStateMutableLiveData));
     }
 
-    public void findDevices() {
+    void findDevices() {
         DeviceInfo[] deviceInfos = IoTVideoSdk.getNetConfig().newWiredNetConfig().getDeviceList();
         mNetConfigViewModel.getLanDeviceData().setValue(deviceInfos);
+        if(deviceInfos != null){
+            for (DeviceInfo deviceInfo : deviceInfos) {
+                LogUtils.d("NetConfigHelper", "findDevices " + deviceInfo);
+            }
+        }
     }
 
-    public void getNetConfigToken(IResultListener listener) {
+    void getNetConfigToken(IResultListener listener) {
         IoTVideoSdk.getNetConfig().getNetConfigToken(listener);
     }
 }

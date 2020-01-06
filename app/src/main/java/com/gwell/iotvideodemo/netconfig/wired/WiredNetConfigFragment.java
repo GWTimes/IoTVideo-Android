@@ -1,5 +1,6 @@
 package com.gwell.iotvideodemo.netconfig.wired;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,13 +10,12 @@ import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.gwell.iotvideo.netconfig.DeviceInfo;
-import com.gwell.iotvideo.netconfig.NetConfig;
 import com.gwell.iotvideo.netconfig.NetConfigInfo;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseFragment;
-import com.gwell.iotvideodemo.netconfig.NetConfigActivity;
 import com.gwell.iotvideodemo.netconfig.NetConfigViewModel;
 import com.gwell.iotvideodemo.netconfig.NetConfigViewModelFactory;
+import com.gwell.iotvideodemo.videoplayer.VideoPlayerActivity;
 import com.gwell.iotvideodemo.widget.RecycleViewDivider;
 
 import java.util.ArrayList;
@@ -66,10 +66,18 @@ public class WiredNetConfigFragment extends BaseFragment {
             public void onBindViewHolder(@NonNull DeviceItemHolder holder, int position) {
                 final DeviceInfo deviceInfo = mDeviceInfoList.get(position);
                 holder.tvDeviceName.setText(String.valueOf(deviceInfo.deviceID));
-                holder.llDeviceInfo.setOnClickListener(new View.OnClickListener() {
+                holder.tvBindDevice.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        bindDevice(String.valueOf(deviceInfo.deviceID));
+                        bindDevice(deviceInfo.tencentID);
+                    }
+                });
+                holder.tvMonitor.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent playIntent = new Intent(WiredNetConfigFragment.this.getContext(), VideoPlayerActivity.class);
+                        playIntent.putExtra("deviceID", String.valueOf(deviceInfo.deviceID));
+                        startActivity(playIntent);
                     }
                 });
             }
@@ -106,13 +114,15 @@ public class WiredNetConfigFragment extends BaseFragment {
     }
 
     class DeviceItemHolder extends RecyclerView.ViewHolder {
-        LinearLayout llDeviceInfo;
         TextView tvDeviceName;
+        TextView tvBindDevice;
+        TextView tvMonitor;
 
         DeviceItemHolder(View view) {
             super(view);
-            llDeviceInfo = view.findViewById(R.id.ll_device_info);
+            tvBindDevice = view.findViewById(R.id.bind_device);
             tvDeviceName = view.findViewById(R.id.device_name);
+            tvMonitor = view.findViewById(R.id.monitor_device);
         }
     }
 

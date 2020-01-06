@@ -65,6 +65,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.start_preview).setOnClickListener(this);
         findViewById(R.id.start_record).setOnClickListener(this);
         findViewById(R.id.start_web_api_activity).setOnClickListener(this);
+        if (BuildConfig.DEBUG) {
+            findViewById(R.id.start_web_api_activity).setVisibility(View.VISIBLE);
+        }
         findViewById(R.id.start_qrcode_activity).setOnClickListener(this);
         findViewById(R.id.start_player_activity).setOnClickListener(this);
         findViewById(R.id.start_net_config_activity).setOnClickListener(this);
@@ -261,7 +264,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                     @Override
                     public void onSuccess(JsonObject response) {
-                        Snackbar.make(mLlFunctions, response.toString(), Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(mLlFunctions, R.string.success, Snackbar.LENGTH_LONG).show();
                     }
 
                     @Override

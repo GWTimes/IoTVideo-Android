@@ -75,6 +75,9 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login:
+                if (getActivity() instanceof LoginActivity) {
+                    ((LoginActivity) getActivity()).hideSoftKeyboard();
+                }
                 loginClicked();
                 break;
 

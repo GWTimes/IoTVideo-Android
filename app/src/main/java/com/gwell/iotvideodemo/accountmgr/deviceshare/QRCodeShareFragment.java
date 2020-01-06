@@ -6,24 +6,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.JsonObject;
-import com.gwell.http.SubscriberListener;
 import com.gwell.http.utils.HttpUtils;
-import com.gwell.iotvideo.accountmgr.AccountMgr;
+import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideo.utils.qrcode.QRCode;
 import com.gwell.iotvideodemo.R;
-import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceList;
 import com.gwell.iotvideodemo.base.BaseFragment;
+import com.gwell.iotvideodemo.base.HttpRequestState;
 import com.gwell.zxing.util.CodeUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 public class QRCodeShareFragment extends BaseFragment implements View.OnClickListener {
+    private static final String TAG = "QRCodeShareFragment";
+
     private ImageView mQRCodeImage;
+    private TextView mQRCodeTextView;
+    private DeviceShareViewModel mDeviceShareViewModel;
 
     @Nullable
     @Override
@@ -35,40 +39,39 @@ public class QRCodeShareFragment extends BaseFragment implements View.OnClickLis
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mQRCodeImage = view.findViewById(R.id.qrcode_image);
+        mQRCodeTextView = view.findViewById(R.id.qrcode_text);
         view.findViewById(R.id.fresh_qrcode).setOnClickListener(this);
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        mDeviceShareViewModel = ViewModelProviders.of(getActivity()).get(DeviceShareViewModel.class);
+        mDeviceShareViewModel.getGenShareQRCodeData().observe(getActivity(), new Observer<HttpRequestState>() {
+            @Override
+            public void onChanged(HttpRequestState httpRequestState) {
+                switch (httpRequestState.getStatus()) {
+                    case ERROR:
+                        Snackbar.make(mQRCodeImage, httpRequestState.getStatusTip(), Snackbar.LENGTH_LONG).show();
+                        break;
+                    case SUCCESS:
+                        GenShareQRCodeResult result = HttpUtils.JsonToEntity(httpRequestState.getJsonObject().toString(), GenShareQRCodeResult.class);
+                        QRCode qrCode = new QRCode(QRCode.FUNCTION_SHARE_DEVICE);
+                        qrCode.setShareToken(result.getData().getQrcodeToken());
+                        createQRCodeAndDisplay(qrCode.toQRContent());
+                        LogUtils.i(TAG, "share device QRCode = " + qrCode.toString());
+                        mQRCodeTextView.setText(qrCode.toString());
+                        break;
+                }
+            }
+        });
+        mDeviceShareViewModel.genShareQrcode();
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.fresh_qrcode:
-                genShareQrcode();
-                break;
+        if (view.getId() == R.id.fresh_qrcode) {
+            mDeviceShareViewModel.genShareQrcode();
         }
-    }
-
-    private void genShareQrcode() {
-        DeviceViewModel deviceViewModel = ViewModelProviders.of(getActivity()).get(DeviceViewModel.class);
-        DeviceList.Device device = deviceViewModel.getDevice();
-        AccountMgr.getInstance().genShareQrcode(device.getDevId(), device.getDeviceName(), device.getDeviceName(), new SubscriberListener() {
-            @Override
-            public void onStart() {
-
-            }
-
-            @Override
-            public void onSuccess(JsonObject response) {
-                GenShareQRCodeResult result = HttpUtils.JsonToEntity(response.toString(), GenShareQRCodeResult.class);
-                QRCode qrCode = new QRCode(QRCode.FUNCTION_SHARE_DEVICE);
-                qrCode.setShareToken(result.getData().getQrcodeToken());
-                createQRCodeAndDisplay(qrCode.toQRContent());
-            }
-
-            @Override
-            public void onFail(Throwable e) {
-                Snackbar.make(mQRCodeImage, e.getMessage(), Snackbar.LENGTH_LONG).show();
-            }
-        });
     }
 
     private void createQRCodeAndDisplay(String text) {

@@ -25,7 +25,7 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView, View.OnTouchLis
     private var mIsVisibleToUser = false
     private var mIsSetUserVisibleHint = false
     private var mDetector: GestureDetectorCompat? = null
-    private var mView: View? = null
+    protected var mRootView: View? = null
 
 
     /**
@@ -67,9 +67,9 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView, View.OnTouchLis
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (mView != null) return mView
+        if (mRootView != null) return mRootView
 
-        mView = inflater.inflate(getResId(), container, false)
+        mRootView = inflater.inflate(getResId(), container, false)
 
         initFragmentConfig(mFragmentConfig)
 
@@ -109,7 +109,7 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView, View.OnTouchLis
             }
         }
 
-        return mView
+        return mRootView
     }
 
     protected abstract fun initFragmentConfig(fragmentConfig: DialogFragmentConfig)

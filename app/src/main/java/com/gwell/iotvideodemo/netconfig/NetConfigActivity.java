@@ -6,14 +6,11 @@ import android.view.MenuItem;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
-import com.google.gson.JsonObject;
-import com.gwell.http.SubscriberListener;
-import com.gwell.iotvideo.accountmgr.AccountMgr;
 import com.gwell.iotvideo.netconfig.NetConfigInfo;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseActivity;
+import com.gwell.iotvideodemo.base.HttpRequestState;
 import com.gwell.iotvideodemo.netconfig.ap.APNetConfigFragment;
-import com.gwell.iotvideodemo.netconfig.bluetooth.BTNetConfigFragment;
 import com.gwell.iotvideodemo.netconfig.qrcode.QRCodeNetConfigFragment;
 import com.gwell.iotvideodemo.netconfig.wired.WiredNetConfigFragment;
 
@@ -53,19 +50,18 @@ public class NetConfigActivity extends BaseActivity {
         mNetConfigInfoViewModel = ViewModelProviders.of(this, new NetConfigViewModelFactory())
                 .get(NetConfigViewModel.class);
         mNetConfigInfoViewModel.updateNetConfigInfo(mNetConfigInfo);
-        mNetConfigInfoViewModel.getNetConfigStateData().observe(this, new Observer<Integer>() {
+        mNetConfigInfoViewModel.getNetConfigStateData().observe(this, new Observer<HttpRequestState>() {
             @Override
-            public void onChanged(Integer integer) {
-                int state = integer == null ? -1 : integer;
-                switch (state) {
-                    case NetConfigViewModel.START_BIND:
+            public void onChanged(HttpRequestState httpRequestState) {
+                switch (httpRequestState.getStatus()) {
+                    case START:
                         showProgressDialog();
                         break;
-                    case NetConfigViewModel.BIND_SUCCESS:
+                    case SUCCESS:
                         dismissProgressDialog();
                         Snackbar.make(mViewPager, R.string.success, Snackbar.LENGTH_LONG).show();
                         break;
-                    case NetConfigViewModel.BIND_ERROR:
+                    case ERROR:
                         dismissProgressDialog();
                         Snackbar.make(mViewPager, R.string.failure, Snackbar.LENGTH_LONG).show();
                         break;

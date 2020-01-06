@@ -9,13 +9,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.JsonObject;
-import com.gwell.http.SubscriberListener;
 import com.gwell.http.utils.HttpUtils;
-import com.gwell.iotvideo.accountmgr.AccountMgr;
-import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseFragment;
+import com.gwell.iotvideodemo.base.HttpRequestState;
 import com.gwell.iotvideodemo.widget.RecycleViewDivider;
 
 import java.util.ArrayList;
@@ -23,6 +20,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,6 +32,7 @@ public class AccountShareFragment extends BaseFragment implements View.OnClickLi
     private RecyclerView mRVUserList;
     private List<UserList.User> mUserList;
     private RecyclerView.Adapter<ItemHolder> mAdapter;
+    private DeviceShareViewModel mDeviceShareViewModel;
 
     @Nullable
     @Override
@@ -63,7 +62,7 @@ public class AccountShareFragment extends BaseFragment implements View.OnClickLi
                 holder.rootView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        shareDevice(mUserList.get(position).getIvUid());
+                        mDeviceShareViewModel.shareDevice(mUserList.get(position).getIvUid());
                     }
                 });
             }
@@ -77,62 +76,47 @@ public class AccountShareFragment extends BaseFragment implements View.OnClickLi
         mRVUserList.addItemDecoration(new RecycleViewDivider(getContext(), RecycleViewDivider.VERTICAL));
         mRVUserList.setAdapter(mAdapter);
         view.findViewById(R.id.confirm_to_share).setOnClickListener(this);
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        mDeviceShareViewModel = ViewModelProviders.of(getActivity()).get(DeviceShareViewModel.class);
+        mDeviceShareViewModel.getFindUserData().observe(getActivity(), new Observer<HttpRequestState>() {
+            @Override
+            public void onChanged(HttpRequestState httpRequestState) {
+                switch (httpRequestState.getStatus()) {
+                    case START:
+                        mUserList.clear();
+                        break;
+                    case SUCCESS:
+                        UserList userList = HttpUtils.JsonToEntity(httpRequestState.getJsonObject().toString(), UserList.class);
+                        if (userList.getData() != null) {
+                            mUserList.add(userList.getData());
+                            mAdapter.notifyDataSetChanged();
+                            mDeviceShareViewModel.shareDevice(userList.getData().getIvUid());
+                        } else {
+                            Snackbar.make(mRVUserList, "no such user", Snackbar.LENGTH_LONG).show();
+                        }
+                        break;
+                    case ERROR:
+                        Snackbar.make(mRVUserList, httpRequestState.getE().getMessage(), Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        mDeviceShareViewModel.getDeviceShareData().observe(getActivity(), new Observer<HttpRequestState>() {
+            @Override
+            public void onChanged(HttpRequestState httpRequestState) {
+                Snackbar.make(mInputAccount, httpRequestState.getStatusTip(), Snackbar.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.confirm_to_share:
-                findUser(mInputAccount.getText().toString());
-                break;
+        if (view.getId() == R.id.confirm_to_share) {
+            mDeviceShareViewModel.findUser(mInputAccount.getText().toString());
         }
-    }
-
-    private void findUser(String account) {
-        AccountMgr.getInstance().findUser("86", account, new SubscriberListener() {
-            @Override
-            public void onStart() {
-                mUserList.clear();
-            }
-
-            @Override
-            public void onSuccess(JsonObject response) {
-                LogUtils.i(TAG, "findUser " + response.toString());
-                UserList userList = HttpUtils.JsonToEntity(response.toString(), UserList.class);
-                if (userList.getData() != null) {
-                    mUserList.add(userList.getData());
-                    mAdapter.notifyDataSetChanged();
-                } else {
-                    Snackbar.make(mRVUserList, "no such user", Snackbar.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFail(Throwable e) {
-                Snackbar.make(mRVUserList, e.getMessage(), Snackbar.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void shareDevice(String shareId) {
-        DeviceViewModel deviceViewModel = ViewModelProviders.of(getActivity()).get(DeviceViewModel.class);
-        LogUtils.i(TAG, "shareDevice shareId = " + shareId + " did = " + deviceViewModel.getDevice().getDevId());
-        AccountMgr.getInstance().accountShare(shareId, deviceViewModel.getDevice().getDevId(), new SubscriberListener() {
-            @Override
-            public void onStart() {
-
-            }
-
-            @Override
-            public void onSuccess(JsonObject response) {
-                Snackbar.make(mInputAccount, "share success", Snackbar.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFail(Throwable e) {
-                Snackbar.make(mInputAccount, e.getMessage(), Snackbar.LENGTH_LONG).show();
-            }
-        });
     }
 
     private class ItemHolder extends RecyclerView.ViewHolder {

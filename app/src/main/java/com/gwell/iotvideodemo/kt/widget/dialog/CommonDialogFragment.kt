@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.text.method.ScrollingMovementMethod
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.gwell.iotvideodemo.R
@@ -42,6 +43,8 @@ class CommonDialogFragment : BaseDialogFragment(), View.OnClickListener {
     }
 
     override fun init(savedInstanceState: Bundle?) {
+
+        tv_content.movementMethod = ScrollingMovementMethod.getInstance()
 
         iv_dialog_bg.round(r = 2.0f, solidColor = Color.parseColor("#FFFFFF"))
         tv_cancel.round(r = 2.0f, solidColor = Color.parseColor("#ff7676"))

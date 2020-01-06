@@ -12,8 +12,8 @@ public class DeviceViewModelFactory implements ViewModelProvider.Factory {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(DeviceViewModel.class)) {
-            return (T) new DeviceViewModel(new DeviceList.Device());
+        if (modelClass.isAssignableFrom(DeviceShareViewModel.class)) {
+            return (T) new DeviceShareViewModel(new DeviceList.Device());
         } else {
             throw new IllegalArgumentException("Unknown ViewModel class");
         }

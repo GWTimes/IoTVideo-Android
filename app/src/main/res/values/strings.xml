@@ -70,4 +70,8 @@
     <string name="success">success</string>
     <string name="failure">failure</string>
     <string name="device_model">device_model</string>
+    <string name="local_monitor">local monitor</string>
+    <string name="share_list">share list</string>
+    <string name="fresh_list">fresh list</string>
+    <string name="flip_to_delete">flip to delete</string>
 </resources>

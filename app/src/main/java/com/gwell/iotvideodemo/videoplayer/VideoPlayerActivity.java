@@ -199,6 +199,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                     public void OnPermissions(boolean granted) {
                         if (granted) {
                             mMonitorPlayer.startTalk();
+                            appendToOutput("开始对讲");
                         }
                     }
                 }, Manifest.permission.RECORD_AUDIO);
@@ -206,6 +207,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
             case R.id.stop_talk_btn:
                 if (mMonitorPlayer.isTalking()) {
                     mMonitorPlayer.stopTalk();
+                    appendToOutput("结束对讲");
                 }
                 break;
             case R.id.open_camera_btn:
