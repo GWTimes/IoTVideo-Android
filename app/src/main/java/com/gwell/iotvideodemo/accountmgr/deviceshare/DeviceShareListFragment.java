@@ -1,7 +1,6 @@
 package com.gwell.iotvideodemo.accountmgr.deviceshare;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,6 +85,7 @@ public class DeviceShareListFragment extends BaseFragment implements View.OnClic
                     mAdapter.notifyItemRemoved(httpRequestState.position);
                 } else if (status == HttpRequestState.Status.ERROR) {
                     Snackbar.make(mRVShareList, "cancel share " + httpRequestState.httpRequestState.getStatusTip(), Snackbar.LENGTH_LONG).show();
+                    mAdapter.notifyDataSetChanged();
                 }
             }
         });

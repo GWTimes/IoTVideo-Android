@@ -56,7 +56,7 @@
     <string name="start_net_config">start net config</string>
     <string name="find_device">Find Device</string>
     <string name="click_to_bind">click to bind</string>
-    <string name="click_to_operate">click to operate</string>
+    <string name="click_to_operate">operate</string>
     <string name="unbind">unbind</string>
     <string name="device_manager">device manager</string>
     <string name="device_share">device share</string>

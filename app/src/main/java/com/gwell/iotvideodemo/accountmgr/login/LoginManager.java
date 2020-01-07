@@ -14,7 +14,7 @@ import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_VCODE
 import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_VCODE_START;
 import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_VCODE_SUCCESS;
 
-public class LoginManager {
+class LoginManager {
     private LoginViewModel mLoginViewModel;
 
     LoginManager(LoginViewModel loginViewModel) {

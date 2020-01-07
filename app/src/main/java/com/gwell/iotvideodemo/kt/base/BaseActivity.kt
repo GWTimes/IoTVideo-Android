@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Point
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -41,6 +42,12 @@ abstract class BaseActivity<P : IBasePresenter> : AppCompatActivity(), IBaseView
         }
 
         setContentView(getResId())
+
+        val actionBar = supportActionBar
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true)
+            actionBar.setDisplayShowHomeEnabled(true)
+        }
 
         if (activityConfig.isUseStatusBar) {
             StatusBarUtils.setColor(this, getStatusBarColor(), 0)
@@ -130,6 +137,14 @@ abstract class BaseActivity<P : IBasePresenter> : AppCompatActivity(), IBaseView
             mBasePresenter.dispose()
         }
         if (activityConfig.isApplyRxBus) RxBus.getDefault().unregister(this)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     /**

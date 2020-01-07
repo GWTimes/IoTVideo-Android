@@ -17,6 +17,7 @@ import com.gwell.iotvideo.messagemgr.Message;
 import com.gwell.iotvideo.netconfig.NetConfigInfo;
 import com.gwell.iotvideo.netconfig.data.NetMatchTokenResult;
 import com.gwell.iotvideo.utils.LogUtils;
+import com.gwell.iotvideo.utils.qrcode.QRCode;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseFragment;
 import com.gwell.iotvideodemo.netconfig.NetConfigViewModel;
@@ -84,8 +85,9 @@ public class QRCodeNetConfigFragment extends BaseFragment {
 
     private void createQRCodeAndDisplay(String netConfigToken) {
         NetConfigInfo netConfigInfo = mNetConfigInfoViewModel.getNetConfigInfo();
-        final Bitmap bitmap = IoTVideoSdk.getNetConfig().newQRCodeNetConfig().createQRCode(netConfigToken, netConfigInfo.getWifiName(), netConfigInfo.getWifiPassword(),
-                netConfigInfo.getEncType(), 500);
+        QRCode qrCode = IoTVideoSdk.getNetConfig().newQRCodeNetConfig().createQRCode(netConfigToken,
+                netConfigInfo.getWifiName(), netConfigInfo.getWifiPassword(), netConfigInfo.getEncType());
+        final Bitmap bitmap = qrCode.toBitmap(500);
         if (bitmap != null) {
             mQRCodeImage.setImageBitmap(bitmap);
             mQRCodeImage.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +96,7 @@ public class QRCodeNetConfigFragment extends BaseFragment {
                     showBigQrCodeDialog(bitmap);
                 }
             });
-            mTvNetConfigInfo.setText(netConfigInfo.toString());
+            mTvNetConfigInfo.setText(qrCode.toString());
         }
     }
 

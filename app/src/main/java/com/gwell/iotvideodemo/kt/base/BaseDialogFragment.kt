@@ -150,7 +150,7 @@ abstract class BaseDialogFragment : DialogFragment(), IBaseView, View.OnTouchLis
     }
 
     protected open fun onVisibleToUserChanged(isVisibleToUser: Boolean) {
-        Log.d(TAG, "##onVisibleToUserChanged() isVisibleToUser = $isVisibleToUser")
+        //Log.d(TAG, "##onVisibleToUserChanged() isVisibleToUser = $isVisibleToUser")
     }
 
     override fun onDestroyView() {

@@ -150,7 +150,7 @@ abstract class BaseFragment<P : IBasePresenter> : Fragment(), IBaseView {
      * fragment 可见变化
      */
     protected open fun onVisibleToUserChanged(isVisibleToUser: Boolean) {
-        Log.d(TAG, "##onVisibleToUserChanged() isVisibleToUser = $isVisibleToUser")
+        //Log.d(TAG, "##onVisibleToUserChanged() isVisibleToUser = $isVisibleToUser")
     }
 
 

@@ -26,7 +26,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".messagemgr.DeviceMessageActivity" />
         <activity
             android:name=".WelcomeActivity"
             android:theme="@style/LauncherActivity">
@@ -75,6 +74,9 @@
             android:name=".accountmgr.deviceshare.DeviceShareActivity"
             android:label="@string/device_share"
             android:theme="@style/AppNoActionBarTheme" />
+        <activity
+            android:name=".messagemgr.DeviceMessageActivity"
+            android:label="@string/device_model" />
     </application>
 
 </manifest>

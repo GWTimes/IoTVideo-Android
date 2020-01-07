@@ -56,7 +56,7 @@ public class QRCodeShareFragment extends BaseFragment implements View.OnClickLis
                     case SUCCESS:
                         GenShareQRCodeResult result = HttpUtils.JsonToEntity(httpRequestState.getJsonObject().toString(), GenShareQRCodeResult.class);
                         QRCode qrCode = new QRCode(QRCode.FUNCTION_SHARE_DEVICE);
-                        qrCode.setShareToken(result.getData().getQrcodeToken());
+                        qrCode.shareToken = String.valueOf(result.getData().getQrcodeToken());
                         createQRCodeAndDisplay(qrCode.toQRContent());
                         LogUtils.i(TAG, "share device QRCode = " + qrCode.toString());
                         mQRCodeTextView.setText(qrCode.toString());

@@ -67,6 +67,7 @@ class SetDataFragment : BaseFragment<DeviceMessagePresenter>(), IDeviceModelView
     }
 
     override fun updateModelData(list: MutableList<DeviceModelItemData>) {
+        data.clear()
         data.addAll(list)
         mAdapter.notifyDataSetChanged()
     }
