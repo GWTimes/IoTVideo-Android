@@ -12,7 +12,8 @@ import android.widget.Toast;
 
 import com.gwell.iotvideo.iotvideoplayer.IErrorListener;
 import com.gwell.iotvideo.iotvideoplayer.IPreparedListener;
-import com.gwell.iotvideo.iotvideoplayer.IResultListener;
+import com.gwell.iotvideo.iotvideoplayer.IRecordListener;
+import com.gwell.iotvideo.iotvideoplayer.ISnapShotListener;
 import com.gwell.iotvideo.iotvideoplayer.IStatusListener;
 import com.gwell.iotvideo.iotvideoplayer.ITimeListener;
 import com.gwell.iotvideo.iotvideoplayer.IUserDataListener;
@@ -164,7 +165,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.snap_btn:
                 mMonitorPlayer.snapShot(new File(Environment.getExternalStorageDirectory(), "xxx.jpeg").getAbsolutePath(),
-                        new IResultListener() {
+                        new ISnapShotListener() {
                             @Override
                             public void onResult(int code, String path) {
                                 Toast.makeText(VideoPlayerActivity.this, "code:" + code + " path:" + path, Toast.LENGTH_LONG).show();
@@ -181,7 +182,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                     mRecordBtn.setText("停止录像");
                     appendToOutput("开始录像");
                     mMonitorPlayer.startRecord(new File(Environment.getExternalStorageDirectory(), "xxx.mp4").getAbsolutePath(),
-                            new IResultListener() {
+                            new IRecordListener() {
                                 @Override
                                 public void onResult(int code, String path) {
                                     Toast.makeText(VideoPlayerActivity.this, "code:" + code + " path:" + path, Toast.LENGTH_LONG).show();

@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -17,6 +18,10 @@ import com.google.gson.JsonObject;
 import com.gwell.http.SubscriberListener;
 import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
+import com.gwell.iotvideo.messagemgr.EventMessage;
+import com.gwell.iotvideo.messagemgr.IEventListener;
+import com.gwell.iotvideo.messagemgr.IModelListener;
+import com.gwell.iotvideo.messagemgr.ModelMessage;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideo.utils.qrcode.QRCode;
 import com.gwell.iotvideo.utils.qrcode.QRCodeHelper;
@@ -50,6 +55,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private View mNavigationHead;
     private DrawerLayout mDrawer;
     private TextView mTvAppVersion;
+    private long mFirstTimeClickBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +82,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         //设置log
         applyForStoragePerMission();
+
+        registerNotify();
     }
 
     @Override
@@ -198,6 +206,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void onBackPressed() {
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START);
+        } else {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - mFirstTimeClickBack < 2000) {
+                finish();
+            } else {
+                mFirstTimeClickBack = currentTime;
+            }
         }
     }
 
@@ -274,5 +289,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 });
             }
         }
+    }
+
+    private void registerNotify(){
+        IoTVideoSdk.getMessageMgr().addEventListener(new IEventListener() {
+            @Override
+            public void onNotify(EventMessage data) {
+                Toast.makeText(getApplicationContext(), data.data, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        IoTVideoSdk.getMessageMgr().addModelListener(new IModelListener() {
+            @Override
+            public void onNotify(ModelMessage data) {
+                Toast.makeText(getApplicationContext(), data.data, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

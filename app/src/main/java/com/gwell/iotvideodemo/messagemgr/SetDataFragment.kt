@@ -90,9 +90,9 @@ class SetDataFragment : BaseFragment<DeviceMessagePresenter>(), IDeviceModelView
                 .outSideFinish(false)
                 .callback(ok = {
                     LogUtils.d(TAG, "setData path is $path, data is $it")
-                    IoTVideoSdk.getMessageMgr().setData(mBasePresenter.deviceId, path, it, object : IResultListener {
-                        override fun onSuccess(p0: Message?) {
-                            LogUtils.d(TAG, "setData" + (p0 as ModelMessage).data)
+                    IoTVideoSdk.getMessageMgr().setData(mBasePresenter.deviceId, path, it, object : IResultListener<ModelMessage> {
+                        override fun onSuccess(p0: ModelMessage?) {
+                            LogUtils.d(TAG, "setData" + p0!!.data)
                             Toast.makeText(this@SetDataFragment.context, "设置${path}成功", Toast.LENGTH_LONG).show()
 
                             mBasePresenter.initModelData(mBasePresenter.deviceId)

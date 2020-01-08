@@ -19,7 +19,7 @@ class DeviceMessageActivity : BaseActivity<DeviceMessagePresenter>(), IDeviceMod
     private lateinit var mSetDataFragment: SetDataFragment
     private lateinit var mSendDataToDeviceFragment: SendDataToDeviceFragment
     private lateinit var mSendDataToServerFragment: SendDataToServerFragment
-
+    private lateinit var mGetPlaybackFragment: GetPlaybackFragment
 
     override fun getResId(): Int = R.layout.activity_device_message
 
@@ -33,10 +33,12 @@ class DeviceMessageActivity : BaseActivity<DeviceMessagePresenter>(), IDeviceMod
         mSetDataFragment = SetDataFragment()
         mSendDataToDeviceFragment = SendDataToDeviceFragment()
         mSendDataToServerFragment = SendDataToServerFragment()
+        mGetPlaybackFragment = GetPlaybackFragment()
         addFragment(mGetDataFragment, "GetDataFragment")
         addFragment(mSetDataFragment, "SetDataFragment")
         addFragment(mSendDataToDeviceFragment, "SendDataToDeviceFragment")
         addFragment(mSendDataToServerFragment, "SendDataToServerFragment")
+        addFragment(mGetPlaybackFragment, "GetPlaybackFragment")
 
         //获取物模型
         mBasePresenter = DeviceMessagePresenter(this)
@@ -47,12 +49,14 @@ class DeviceMessageActivity : BaseActivity<DeviceMessagePresenter>(), IDeviceMod
         mSetDataFragment.mBasePresenter = mBasePresenter
         mSendDataToDeviceFragment.mBasePresenter = mBasePresenter
         mSendDataToServerFragment.mBasePresenter = mBasePresenter
+        mGetPlaybackFragment.mBasePresenter = mBasePresenter
 
         when (checkId) {
             R.id.rb_get_data -> switchFragment(mGetDataFragment)
             R.id.rb_set_data -> switchFragment(mSetDataFragment)
             R.id.rb_send_data_device -> switchFragment(mSendDataToDeviceFragment)
             R.id.rb_send_data_server -> switchFragment(mSendDataToServerFragment)
+            R.id.rb_get_playback -> switchFragment(mGetPlaybackFragment)
         }
 
         //设置监听
@@ -66,6 +70,7 @@ class DeviceMessageActivity : BaseActivity<DeviceMessagePresenter>(), IDeviceMod
                 R.id.rb_set_data -> switchFragment(mSetDataFragment)
                 R.id.rb_send_data_device -> switchFragment(mSendDataToDeviceFragment)
                 R.id.rb_send_data_server -> switchFragment(mSendDataToServerFragment)
+                R.id.rb_get_playback -> switchFragment(mGetPlaybackFragment)
             }
         }
     }
@@ -95,7 +100,7 @@ class DeviceMessageActivity : BaseActivity<DeviceMessagePresenter>(), IDeviceMod
     }
 
     private fun hideAllSelected(transaction: FragmentTransaction, targetFragment: Fragment) {
-        val listFragment = arrayListOf(mGetDataFragment, mSetDataFragment, mSendDataToDeviceFragment, mSendDataToServerFragment)
+        val listFragment = arrayListOf(mGetDataFragment, mSetDataFragment, mSendDataToDeviceFragment, mSendDataToServerFragment, mGetPlaybackFragment)
         listFragment.remove(targetFragment)
         listFragment.forEach {
             transaction.hide(it)

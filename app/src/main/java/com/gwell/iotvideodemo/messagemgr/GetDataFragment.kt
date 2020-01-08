@@ -81,12 +81,12 @@ class GetDataFragment : BaseFragment<DeviceMessagePresenter>(), IDeviceModelView
 
         LogUtils.d(TAG, "getData path is $path")
 
-        IoTVideoSdk.getMessageMgr().getData(mBasePresenter.deviceId, path, object : IResultListener {
+        IoTVideoSdk.getMessageMgr().getData(mBasePresenter.deviceId, path, object : IResultListener<ModelMessage> {
             override fun onStart() {
             }
 
-            override fun onSuccess(p0: Message?) {
-                LogUtils.d(TAG, "getData" + (p0 as ModelMessage).data)
+            override fun onSuccess(p0: ModelMessage?) {
+                LogUtils.d(TAG, "getData" + p0!!.data)
                 CommonDialogFragment.newDialog()
                         .title(path)
                         .tips(p0.data)

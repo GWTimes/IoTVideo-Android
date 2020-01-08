@@ -3,6 +3,7 @@ package com.gwell.iotvideodemo.messagemgr
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import com.gwell.iotvideo.IoTVideoSdk
+import com.gwell.iotvideo.messagemgr.DataMessage
 import com.gwell.iotvideo.messagemgr.IResultListener
 import com.gwell.iotvideo.messagemgr.Message
 import com.gwell.iotvideo.utils.LogUtils
@@ -22,8 +23,8 @@ class SendDataToDeviceFragment : BaseFragment<DeviceMessagePresenter>() {
         result_txt.movementMethod = ScrollingMovementMethod.getInstance()
 
         tv_run.click {
-            IoTVideoSdk.getMessageMgr().sendDataToDevice(mBasePresenter.deviceId, null, object : IResultListener {
-                override fun onSuccess(p0: Message?) {
+            IoTVideoSdk.getMessageMgr().sendDataToDevice(mBasePresenter.deviceId, null, object : IResultListener<DataMessage> {
+                override fun onSuccess(p0: DataMessage?) {
 
                 }
 
