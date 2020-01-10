@@ -87,6 +87,9 @@ dependencies {
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     implementation 'com.airbnb.android:lottie:2.7.0'
 
+    //全局悬浮框
+    implementation 'com.github.yhaolpz:FloatWindow:1.0.9'
+
     implementation(name: "accountmgr-release", ext: 'aar')
     implementation(name: "vas-release", ext: 'aar')
 
