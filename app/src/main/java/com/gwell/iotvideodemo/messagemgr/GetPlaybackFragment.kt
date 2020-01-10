@@ -34,7 +34,7 @@ class GetPlaybackFragment : BaseFragment<DeviceMessagePresenter>() {
                 }
 
                 override fun onError(errorCode: Int, errorMsg: String?) {
-                    LogUtils.d(TAG, "sendDataToDevice error code $errorCode,  $errorMsg")
+                    LogUtils.d(TAG, "getPlaybackList error code $errorCode,  $errorMsg")
                     result_txt.text = "error code : $errorCode, content : $errorMsg"
                 }
 

@@ -546,8 +546,7 @@ public class TestWebApiActivity extends BaseActivity {
                 list.add("2");
                 return list;
             } else if (infoType == File.class) {
-                return new File(Environment.getExternalStorageDirectory() + File.separator + "Doorbell" + File.separator +
-                        "errorLog" + File.separator + "1.log");
+                return null;
             }
             return value;
         }

@@ -104,6 +104,19 @@
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
 
+            <Button
+                android:id="@+id/start_vas_activity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:backgroundTint="#F86500"
+                android:gravity="center_horizontal"
+                android:padding="20dp"
+                android:text="@string/vas"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

@@ -142,6 +142,8 @@ public class BaseActivity extends AppCompatActivity {
         }
         if (shouldShowRequestPermissionRationale(permissions)) {
             showPermissionTipDialog(listener, tipStringResId, permissions);
+        } else {
+            requestPermissions(listener, permissions);
         }
     }
 

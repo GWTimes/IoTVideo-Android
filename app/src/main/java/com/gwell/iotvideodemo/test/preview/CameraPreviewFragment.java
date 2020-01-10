@@ -54,6 +54,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.gwell.iotvideo.utils.LogUtils;
+import com.gwell.iotvideodemo.MyApp;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseFragment;
 
@@ -614,7 +615,7 @@ public class CameraPreviewFragment extends BaseFragment
     }
 
     private String getVideoFilePath() {
-        final File dir = new File(Environment.getExternalStorageDirectory() + File.separator + "IotVideo" + File.separator + "CameraPreview");
+        final File dir = new File(MyApp.APP_VIDEO_PATH + File.separator + "CameraPreview");
         if (!dir.exists() && !dir.mkdirs()) {
             return null;
         }

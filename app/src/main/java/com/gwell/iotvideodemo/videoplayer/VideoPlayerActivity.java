@@ -20,6 +20,7 @@ import com.gwell.iotvideo.iotvideoplayer.IUserDataListener;
 import com.gwell.iotvideo.iotvideoplayer.IoTVideoView;
 import com.gwell.iotvideo.iotvideoplayer.player.MonitorPlayer;
 import com.gwell.iotvideo.utils.LogUtils;
+import com.gwell.iotvideodemo.MyApp;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseActivity;
 
@@ -164,7 +165,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 mMonitorPlayer.stop();
                 break;
             case R.id.snap_btn:
-                mMonitorPlayer.snapShot(new File(Environment.getExternalStorageDirectory(), "xxx.jpeg").getAbsolutePath(),
+                mMonitorPlayer.snapShot(new File(MyApp.APP_PIC_PATH, "xxx.jpeg").getAbsolutePath(),
                         new ISnapShotListener() {
                             @Override
                             public void onResult(int code, String path) {
@@ -181,7 +182,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 } else {
                     mRecordBtn.setText("停止录像");
                     appendToOutput("开始录像");
-                    mMonitorPlayer.startRecord(new File(Environment.getExternalStorageDirectory(), "xxx.mp4").getAbsolutePath(),
+                    mMonitorPlayer.startRecord(new File(MyApp.APP_VIDEO_PATH, "xxx.mp4").getAbsolutePath(),
                             new IRecordListener() {
                                 @Override
                                 public void onResult(int code, String path) {

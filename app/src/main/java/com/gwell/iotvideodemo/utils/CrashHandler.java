@@ -8,6 +8,7 @@ import android.os.Environment;
 
 import com.gwell.iotvideo.BuildConfig;
 import com.gwell.iotvideo.utils.LogUtils;
+import com.gwell.iotvideodemo.MyApp;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,7 +26,7 @@ import androidx.annotation.NonNull;
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
     private static final String TAG = "CrashHandler";
 
-    private static final String CRASH_PATH = Environment.getExternalStorageDirectory().getPath() +
+    private static final String CRASH_PATH = MyApp.APP_DOC_PATH +
             File.separator + "IoTVideo" + File.separator + "errorLog";
 
     // 系统默认的UncaughtException处理类

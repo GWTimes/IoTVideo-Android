@@ -59,11 +59,11 @@ public class NetConfigActivity extends BaseActivity {
                         break;
                     case SUCCESS:
                         dismissProgressDialog();
-                        Snackbar.make(mViewPager, R.string.success, Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(mViewPager, httpRequestState.getStatusTip(), Snackbar.LENGTH_LONG).show();
                         break;
                     case ERROR:
                         dismissProgressDialog();
-                        Snackbar.make(mViewPager, R.string.failure, Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(mViewPager, httpRequestState.getStatusTip(), Snackbar.LENGTH_LONG).show();
                         break;
                 }
             }

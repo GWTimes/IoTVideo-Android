@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.gwell.http.HttpCode;
+import com.gwell.http.HttpSender;
 import com.gwell.http.SubscriberListener;
 import com.gwell.http.utils.HttpUtils;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
@@ -111,6 +112,28 @@ public class DeviceManagerActivity extends BaseActivity {
                     case R.id.action_menu_unbind:
                         if ("owner".equals(device.getShareType())) {
                             unbindDevice(device);
+                        } else {
+                            Snackbar.make(anchor, R.string.you_are_not_owner, Snackbar.LENGTH_LONG).show();
+                        }
+                        break;
+                    case R.id.action_menu_vas:
+                        if ("owner".equals(device.getShareType())) {
+                            HttpSender.getInstance().cloudStorageCreate(device.getDevId(), new SubscriberListener() {
+                                @Override
+                                public void onStart() {
+
+                                }
+
+                                @Override
+                                public void onSuccess(JsonObject response) {
+                                    Snackbar.make(anchor, response.toString(), Snackbar.LENGTH_LONG).show();
+                                }
+
+                                @Override
+                                public void onFail(Throwable e) {
+                                    Snackbar.make(anchor, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                                }
+                            });
                         } else {
                             Snackbar.make(anchor, R.string.you_are_not_owner, Snackbar.LENGTH_LONG).show();
                         }

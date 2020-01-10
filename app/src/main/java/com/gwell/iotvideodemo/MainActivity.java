@@ -31,6 +31,7 @@ import com.gwell.iotvideodemo.test.TestWebApiActivity;
 import com.gwell.iotvideodemo.base.BaseActivity;
 import com.gwell.iotvideodemo.netconfig.PrepareNetConfigActivity;
 import com.gwell.iotvideodemo.test.TestQRCodeActivity;
+import com.gwell.iotvideodemo.vas.VasActivity;
 import com.gwell.iotvideodemo.videoplayer.CustomCaptureActivity;
 import com.gwell.iotvideodemo.videoplayer.VideoPlayerActivity;
 import com.gwell.iotvideodemo.test.preview.CameraActivity;
@@ -43,6 +44,8 @@ import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.drawerlayout.widget.DrawerLayout;
+
+import org.json.JSONObject;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
@@ -71,8 +74,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.start_preview).setOnClickListener(this);
         findViewById(R.id.start_record).setOnClickListener(this);
         findViewById(R.id.start_web_api_activity).setOnClickListener(this);
+        findViewById(R.id.start_vas_activity).setOnClickListener(this);
         if (BuildConfig.DEBUG) {
             findViewById(R.id.start_web_api_activity).setVisibility(View.VISIBLE);
+            findViewById(R.id.start_vas_activity).setVisibility(View.VISIBLE);
         }
         findViewById(R.id.start_qrcode_activity).setOnClickListener(this);
         findViewById(R.id.start_player_activity).setOnClickListener(this);
@@ -120,6 +125,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             case R.id.start_device_manager_activity:
                 startDeviceManagerActivity();
                 break;
+            case R.id.start_vas_activity:
+                startVasActivity();
+                break;
         }
     }
 
@@ -157,6 +165,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void startDeviceManagerActivity() {
         Intent intent = new Intent(this, DeviceManagerActivity.class);
+        startActivity(intent);
+    }
+
+    private void startVasActivity() {
+        Intent intent = new Intent(this, VasActivity.class);
         startActivity(intent);
     }
 
@@ -302,7 +315,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         IoTVideoSdk.getMessageMgr().addModelListener(new IModelListener() {
             @Override
             public void onNotify(ModelMessage data) {
-                Toast.makeText(getApplicationContext(), data.data, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "deviceId:" + data.device +
+                        ", path:" + data.path + ", data:" + data.data, Toast.LENGTH_LONG).show();
+
+//                try {
+//                    JSONObject jsonObject = new JSONObject(data.data);
+//                    LogUtils.e(TAG, "yepan " + jsonObject.getJSONObject("_online").getString("stVal"));
+//                }catch (Exception e){
+//                    LogUtils.e(TAG, e.getMessage());
+//                }
+
             }
         });
     }

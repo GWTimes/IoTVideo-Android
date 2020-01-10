@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.gwell.iotvideo.iotvideoplayer.capture.VideoCapture;
+import com.gwell.iotvideodemo.MyApp;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseFragment;
 
@@ -67,7 +68,7 @@ public class VideoRecordFragment extends BaseFragment
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         mButtonVideo = view.findViewById(R.id.video);
         mButtonVideo.setOnClickListener(this);
-        mVideoCapture = new VideoCapture();
+        mVideoCapture = new VideoCapture(MyApp.APP_VIDEO_PATH);
     }
 
     @Override

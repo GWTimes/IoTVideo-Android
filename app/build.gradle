@@ -9,7 +9,7 @@ apply plugin: 'kotlin-kapt'
 
 def BUILD_TIME = new Date().format("MMddHHmm")
 def VERSION_PRE = "0.1"
-def SVN_VERSION = 11
+def SVN_VERSION = 13
 
 android {
     compileSdkVersion 29
@@ -88,12 +88,13 @@ dependencies {
     implementation 'com.airbnb.android:lottie:2.7.0'
 
     implementation(name: "accountmgr-release", ext: 'aar')
+    implementation(name: "vas-release", ext: 'aar')
 
     //IoTVideo core
     implementation(name: "iotvideo-release", ext: 'aar')
     implementation 'com.google.zxing:core:3.3.0'
     implementation 'com.clj.fastble:FastBleLib:2.3.4'
-    implementation 'com.squareup.okhttp3:okhttp:4.2.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.3.0'
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
