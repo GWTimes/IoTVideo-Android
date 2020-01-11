@@ -74,10 +74,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.start_preview).setOnClickListener(this);
         findViewById(R.id.start_record).setOnClickListener(this);
         findViewById(R.id.start_web_api_activity).setOnClickListener(this);
-        findViewById(R.id.start_vas_activity).setOnClickListener(this);
         if (BuildConfig.DEBUG) {
             findViewById(R.id.start_web_api_activity).setVisibility(View.VISIBLE);
-            findViewById(R.id.start_vas_activity).setVisibility(View.VISIBLE);
         }
         findViewById(R.id.start_qrcode_activity).setOnClickListener(this);
         findViewById(R.id.start_player_activity).setOnClickListener(this);
@@ -124,9 +122,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.start_device_manager_activity:
                 startDeviceManagerActivity();
-                break;
-            case R.id.start_vas_activity:
-                startVasActivity();
                 break;
         }
     }

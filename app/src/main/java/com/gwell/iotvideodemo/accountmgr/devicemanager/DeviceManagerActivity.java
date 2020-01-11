@@ -21,6 +21,7 @@ import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.accountmgr.deviceshare.DeviceShareActivity;
 import com.gwell.iotvideodemo.base.BaseActivity;
 import com.gwell.iotvideodemo.messagemgr.DeviceMessageActivity;
+import com.gwell.iotvideodemo.vas.VasActivity;
 import com.gwell.iotvideodemo.videoplayer.VideoPlayerActivity;
 import com.gwell.iotvideodemo.widget.RecycleViewDivider;
 
@@ -118,22 +119,9 @@ public class DeviceManagerActivity extends BaseActivity {
                         break;
                     case R.id.action_menu_vas:
                         if ("owner".equals(device.getShareType())) {
-                            HttpSender.getInstance().cloudStorageCreate(device.getDevId(), new SubscriberListener() {
-                                @Override
-                                public void onStart() {
-
-                                }
-
-                                @Override
-                                public void onSuccess(JsonObject response) {
-                                    Snackbar.make(anchor, response.toString(), Snackbar.LENGTH_LONG).show();
-                                }
-
-                                @Override
-                                public void onFail(Throwable e) {
-                                    Snackbar.make(anchor, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                                }
-                            });
+                            Intent vasIntent = new Intent(DeviceManagerActivity.this, VasActivity.class);
+                            vasIntent.putExtra("Device", device);
+                            startActivity(vasIntent);
                         } else {
                             Snackbar.make(anchor, R.string.you_are_not_owner, Snackbar.LENGTH_LONG).show();
                         }

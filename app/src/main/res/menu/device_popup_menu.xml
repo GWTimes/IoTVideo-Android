@@ -24,7 +24,6 @@
     <item
         android:id="@+id/action_menu_vas"
         android:orderInCategory="2"
-        android:title="购买1个月云套餐"
-        app:showAsAction="never"
-        android:visible="false"/>
+        android:title="@string/vas"
+        app:showAsAction="never"/>
 </menu>
