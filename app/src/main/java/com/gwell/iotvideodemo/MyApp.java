@@ -26,12 +26,12 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        CrashHandler.getInstance().init(getApplicationContext());
         APP_VIDEO_PATH = getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath();
         APP_PIC_PATH = getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
         APP_DOC_PATH = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath();
         IoTVideoSdk.init(getApplicationContext(), 103, "440234147841");
         IoTVideoSdk.setLogPath(MyApp.APP_DOC_PATH + File.separator + "xLog");
-        CrashHandler.getInstance().init(getApplicationContext());
 
 //        if(BuildConfig.DEBUG){
 //            //悬浮框
