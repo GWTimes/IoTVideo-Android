@@ -2,9 +2,7 @@ package com.gwell.iotvideodemo.vas;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
@@ -16,21 +14,33 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.gwell.http.HttpSender;
 import com.gwell.http.SubscriberListener;
+import com.gwell.http.utils.HttpUtils;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideo.vas.VasService;
 import com.gwell.iotvideo.vas.vas;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceList;
 import com.gwell.iotvideodemo.base.BaseActivity;
+import com.gwell.iotvideodemo.videoplayer.CommonPlayerActivity;
+import com.gwell.iotvideodemo.widget.RecycleViewDivider;
+import com.gwell.iotvideodemo.widget.SimpleRecyclerViewAdapter;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
-public class VasActivity extends BaseActivity implements View.OnClickListener {
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+public class VasActivity extends BaseActivity implements View.OnClickListener, SimpleRecyclerViewAdapter.OnItemClickListener {
     private static final String TAG = "VasActivity";
 
     private RadioGroup mRGChannel;
-    private TextView mTvBuyStartTime, mTvBuyEndTime, mTvPlaybackStartTime, mTvPlaybackEndTime, mTvPlaybackList;
+    private TextView mTvBuyStartTime, mTvBuyEndTime, mTvPlaybackStartTime, mTvPlaybackEndTime;
+    private RecyclerView mRVPlaybackList;
+    private SimpleRecyclerViewAdapter<String> mAdapter;
+    private List<String> mM3U8List;
 
     private VasService mVasService;
 
@@ -64,8 +74,13 @@ public class VasActivity extends BaseActivity implements View.OnClickListener {
         mTvPlaybackStartTime.setOnClickListener(this);
         mTvPlaybackEndTime = findViewById(R.id.playback_end_time);
         mTvPlaybackEndTime.setOnClickListener(this);
-        mTvPlaybackList = findViewById(R.id.playback_list);
-        mTvPlaybackList.setOnClickListener(this);
+        mRVPlaybackList = findViewById(R.id.playback_list);
+        mM3U8List = new ArrayList<>();
+        mAdapter = new SimpleRecyclerViewAdapter<>(this, mM3U8List);
+        mRVPlaybackList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+        mRVPlaybackList.addItemDecoration(new RecycleViewDivider(this, RecycleViewDivider.VERTICAL));
+        mRVPlaybackList.setAdapter(mAdapter);
+        mAdapter.setOnItemClickListener(this);
         mVasService = vas.getVasService();
         findViewById(R.id.buy).setOnClickListener(this);
         findViewById(R.id.playback).setOnClickListener(this);
@@ -135,21 +150,28 @@ public class VasActivity extends BaseActivity implements View.OnClickListener {
 
                 @Override
                 public void onSuccess(JsonObject response) {
-                    mTvPlaybackList.setText(response.toString());
+                    PlaybackList playbackList = HttpUtils.JsonToEntity(response.toString(), PlaybackList.class);
+                    if (playbackList == null) {
+                        Snackbar.make(mRVPlaybackList, "invalid data", Snackbar.LENGTH_LONG).show();
+                        return;
+                    }
+                    if (playbackList.getData() != null && playbackList.getData().getPalyList() != null) {
+                        mM3U8List.clear();
+                        for (PlaybackList.DataBean.PalyListBean item : playbackList.getData().getPalyList()) {
+                            mM3U8List.add(item.getM3u8Url());
+                        }
+                        mAdapter.notifyDataSetChanged();
+                        Snackbar.make(mRVPlaybackList, "count = " + mM3U8List.size(), Snackbar.LENGTH_LONG).show();
+                    } else {
+                        Snackbar.make(mRVPlaybackList, "invalid data", Snackbar.LENGTH_LONG).show();
+                    }
                 }
 
                 @Override
                 public void onFail(Throwable e) {
-                    mTvPlaybackList.setText(e.getMessage());
+                    Snackbar.make(mRVPlaybackList, e.getMessage(), Snackbar.LENGTH_LONG).show();
                 }
             });
-        } else if (view.getId() == R.id.playback_list) {
-            //获取剪贴板管理器：
-            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            // 创建普通字符型ClipData
-            ClipData mClipData = ClipData.newPlainText("Label", mTvPlaybackList.getText().toString());
-            // 将ClipData内容放到系统剪贴板里。
-            cm.setPrimaryClip(mClipData);
         }
     }
 
@@ -194,5 +216,16 @@ public class VasActivity extends BaseActivity implements View.OnClickListener {
         String time = DateFormat.getTimeInstance(DateFormat.SHORT).format(calendar.getTime());
         timeTextView.setText(time);
         return calendar.getTimeInMillis();
+    }
+
+    private void startPlayActivity(String url) {
+        Intent intent = new Intent(this, CommonPlayerActivity.class);
+        intent.putExtra("URI", url);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onRecyclerViewItemClick(int position) {
+        startPlayActivity(mM3U8List.get(position));
     }
 }

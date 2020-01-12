@@ -122,13 +122,13 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_margin="16dp"
-        android:text="回放" />M
+        android:text="回放" />
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/playback_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_margin="16dp"/>
+        android:layout_margin="16dp" />
 
 </LinearLayout>

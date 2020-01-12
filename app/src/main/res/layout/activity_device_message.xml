@@ -34,19 +34,19 @@
             android:id="@+id/rb_send_data_device"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_marginTop="10dp"
             android:text="发送数据到设备"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:visibility="gone" />
 
         <RadioButton
             android:id="@+id/rb_send_data_server"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:visibility="gone"
             android:text="发送数据到服务器"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:visibility="gone" />
 
         <RadioButton
             android:id="@+id/rb_get_playback"
@@ -54,7 +54,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="获取设备回放列表"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:visibility="gone" />
     </RadioGroup>
 
     <FrameLayout

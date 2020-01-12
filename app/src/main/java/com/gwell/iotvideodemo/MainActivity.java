@@ -26,6 +26,7 @@ import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideo.utils.qrcode.QRCode;
 import com.gwell.iotvideo.utils.qrcode.QRCodeHelper;
 import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceManagerActivity;
+import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceModelManager;
 import com.gwell.iotvideodemo.accountmgr.login.LoginActivity;
 import com.gwell.iotvideodemo.test.TestWebApiActivity;
 import com.gwell.iotvideodemo.base.BaseActivity;
@@ -312,15 +313,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             public void onNotify(ModelMessage data) {
                 Toast.makeText(getApplicationContext(), "deviceId:" + data.device +
                         ", path:" + data.path + ", data:" + data.data, Toast.LENGTH_LONG).show();
-
-//                try {
-//                    JSONObject jsonObject = new JSONObject(data.data);
-//                    LogUtils.e(TAG, "yepan " + jsonObject.getJSONObject("_online").getString("stVal"));
-//                }catch (Exception e){
-//                    LogUtils.e(TAG, e.getMessage());
-//                }
-
             }
         });
+
+        //监听模型变化
+        IoTVideoSdk.getMessageMgr().addModelListener(DeviceModelManager.getInstance());
     }
 }

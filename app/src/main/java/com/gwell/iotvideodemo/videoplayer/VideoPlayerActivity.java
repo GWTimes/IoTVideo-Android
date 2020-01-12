@@ -26,6 +26,8 @@ import com.gwell.iotvideodemo.base.BaseActivity;
 
 import java.io.File;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 import com.gwell.iotvideo.iotvideoplayer.PlayerStateEnum;
@@ -53,6 +55,8 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     private TextView mResultTxt;
 
     private long mDeviceId = 42949672974L;
+
+    private SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +96,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         mResultTxt = findViewById(R.id.output_txt);
         mResultTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
 
-        applyForStoragePerMission();
-
         if (getIntent() != null) {
             String did = getIntent().getStringExtra("deviceID");
             if (!TextUtils.isEmpty(did)) {
@@ -114,6 +116,8 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         mMonitorPlayer.setUserDataListener(mUserDataListener);
 
         //mVideoView.prepare();
+
+        applyForStoragePerMission();
     }
 
     private IPreparedListener mPreparedListener = new IPreparedListener() {
@@ -165,7 +169,9 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 mMonitorPlayer.stop();
                 break;
             case R.id.snap_btn:
-                mMonitorPlayer.snapShot(new File(MyApp.APP_PIC_PATH, "xxx.jpeg").getAbsolutePath(),
+                Date date = new Date();
+                String dateStringParse = mSimpleDateFormat.format(date);
+                mMonitorPlayer.snapShot(new File(MyApp.APP_PIC_PATH, dateStringParse + ".jpeg").getAbsolutePath(),
                         new ISnapShotListener() {
                             @Override
                             public void onResult(int code, String path) {
@@ -182,7 +188,9 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 } else {
                     mRecordBtn.setText("停止录像");
                     appendToOutput("开始录像");
-                    mMonitorPlayer.startRecord(new File(MyApp.APP_VIDEO_PATH, "xxx.mp4").getAbsolutePath(),
+                    Date tdate = new Date();
+                    String tdateStringParse = mSimpleDateFormat.format(tdate);
+                    mMonitorPlayer.startRecord(new File(MyApp.APP_VIDEO_PATH, tdateStringParse + ".mp4").getAbsolutePath(),
                             new IRecordListener() {
                                 @Override
                                 public void onResult(int code, String path) {

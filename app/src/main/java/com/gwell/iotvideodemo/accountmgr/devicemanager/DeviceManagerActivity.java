@@ -31,6 +31,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -62,6 +63,7 @@ public class DeviceManagerActivity extends BaseActivity {
             public void onBindViewHolder(@NonNull final DeviceItemHolder holder, int position) {
                 final DeviceList.Device deviceInfo = mDeviceInfoList.get(position);
                 holder.tvDeviceName.setText(deviceInfo.getDeviceName());
+                holder.tvOnline.setText(DeviceModelManager.getInstance().isOnline(Long.parseLong(deviceInfo.getDid())) ? "在线" : "离线");
                 holder.llDeviceInfo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -185,15 +187,17 @@ public class DeviceManagerActivity extends BaseActivity {
     }
 
     class DeviceItemHolder extends RecyclerView.ViewHolder {
-        LinearLayout llDeviceInfo;
+        ConstraintLayout llDeviceInfo;
         TextView tvDeviceName;
         TextView tvOperator;
+        TextView tvOnline;
 
         DeviceItemHolder(View view) {
             super(view);
             llDeviceInfo = view.findViewById(R.id.ll_device_info);
             tvDeviceName = view.findViewById(R.id.device_name);
             tvOperator = view.findViewById(R.id.operate_device);
+            tvOnline = view.findViewById(R.id.tv_online);
         }
     }
 }

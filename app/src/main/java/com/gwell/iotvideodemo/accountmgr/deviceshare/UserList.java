@@ -2,6 +2,8 @@ package com.gwell.iotvideodemo.accountmgr.deviceshare;
 
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 public class UserList {
 
     /**
@@ -93,6 +95,12 @@ public class UserList {
             }
 
             return "unknown";
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return getDisplayName();
         }
     }
 }

@@ -5,8 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.gwell.http.utils.HttpUtils;
@@ -14,6 +12,7 @@ import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseFragment;
 import com.gwell.iotvideodemo.base.HttpRequestState;
 import com.gwell.iotvideodemo.widget.RecycleViewDivider;
+import com.gwell.iotvideodemo.widget.SimpleRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +24,13 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class AccountShareFragment extends BaseFragment implements View.OnClickListener {
+public class AccountShareFragment extends BaseFragment implements View.OnClickListener, SimpleRecyclerViewAdapter.OnItemClickListener {
     private static final String TAG = "AccountShareFragment";
 
     private EditText mInputAccount;
     private RecyclerView mRVUserList;
     private List<UserList.User> mUserList;
-    private RecyclerView.Adapter<ItemHolder> mAdapter;
+    private SimpleRecyclerViewAdapter<UserList.User> mAdapter;
     private DeviceShareViewModel mDeviceShareViewModel;
 
     @Nullable
@@ -46,33 +45,8 @@ public class AccountShareFragment extends BaseFragment implements View.OnClickLi
         mInputAccount = view.findViewById(R.id.account_to_share);
         mRVUserList = view.findViewById(R.id.user_list);
         mUserList = new ArrayList<>();
-        mAdapter = new RecyclerView.Adapter<ItemHolder>() {
-
-            @NonNull
-            @Override
-            public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(getActivity()).inflate(R.layout.item_user, parent, false);
-                ItemHolder holder = new ItemHolder(view);
-                return holder;
-            }
-
-            @Override
-            public void onBindViewHolder(@NonNull ItemHolder holder, final int position) {
-                UserList.User user = mUserList.get(position);
-                holder.userName.setText(user.getDisplayName());
-                holder.rootView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mDeviceShareViewModel.shareDevice(mUserList.get(position).getIvUid());
-                    }
-                });
-            }
-
-            @Override
-            public int getItemCount() {
-                return mUserList.size();
-            }
-        };
+        mAdapter = new SimpleRecyclerViewAdapter<>(getContext(), mUserList);
+        mAdapter.setOnItemClickListener(this);
         mRVUserList.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         mRVUserList.addItemDecoration(new RecycleViewDivider(getContext(), RecycleViewDivider.VERTICAL));
         mRVUserList.setAdapter(mAdapter);
@@ -120,14 +94,8 @@ public class AccountShareFragment extends BaseFragment implements View.OnClickLi
         }
     }
 
-    private class ItemHolder extends RecyclerView.ViewHolder {
-        LinearLayout rootView;
-        TextView userName;
-
-        ItemHolder(@NonNull View itemView) {
-            super(itemView);
-            rootView = itemView.findViewById(R.id.root_view);
-            userName = itemView.findViewById(R.id.user_item_name);
-        }
+    @Override
+    public void onRecyclerViewItemClick(int position) {
+        mDeviceShareViewModel.shareDevice(mUserList.get(position).getIvUid());
     }
 }
