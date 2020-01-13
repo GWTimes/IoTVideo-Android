@@ -6,13 +6,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.gwell.http.HttpCode;
-import com.gwell.http.HttpSender;
 import com.gwell.http.SubscriberListener;
 import com.gwell.http.utils.HttpUtils;
 import com.gwell.iotvideo.accountmgr.AccountMgr;

@@ -12,7 +12,6 @@ import android.widget.TimePicker;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
-import com.gwell.http.HttpSender;
 import com.gwell.http.SubscriberListener;
 import com.gwell.http.utils.HttpUtils;
 import com.gwell.iotvideo.utils.LogUtils;
@@ -125,7 +124,7 @@ public class VasActivity extends BaseActivity implements View.OnClickListener, S
                 }
             });
         } else if (view.getId() == R.id.buy) {
-            HttpSender.getInstance().cloudStorageCreate(mDevice.getDevId(), mBuyStartTime, mBuyEndTime, new SubscriberListener() {
+            mVasService.cloudStorageCreate(mDevice.getDevId(), mBuyStartTime, mBuyEndTime, new SubscriberListener() {
                 @Override
                 public void onStart() {
 
@@ -142,7 +141,7 @@ public class VasActivity extends BaseActivity implements View.OnClickListener, S
                 }
             });
         } else if (view.getId() == R.id.playback) {
-            HttpSender.getInstance().cloudStoragePlayback(mDevice.getDevId(), 28800, mPlaybackStartTime, mPlaybackEndTime, new SubscriberListener() {
+            mVasService.cloudStoragePlayback(mDevice.getDevId(), 28800, mPlaybackStartTime, mPlaybackEndTime, new SubscriberListener() {
                 @Override
                 public void onStart() {
 

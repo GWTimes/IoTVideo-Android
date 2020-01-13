@@ -66,6 +66,11 @@ android {
             }
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -89,6 +94,9 @@ dependencies {
 
     //全局悬浮框
     implementation 'com.github.yhaolpz:FloatWindow:1.0.9'
+
+    //ExoPlayer
+    implementation 'com.ycjiang:VideoPlayModule:2.3.50'
 
     implementation(name: "accountmgr-release", ext: 'aar')
     implementation(name: "vas-release", ext: 'aar')
