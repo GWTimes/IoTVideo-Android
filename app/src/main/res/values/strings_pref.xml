@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="N_A" translatable="false">N/A</string>
+    <string name="close" translatable="false">Close</string>
+    <string name="exit" translatable="false">Exit</string>
+    <string name="sample" translatable="false">Sample</string>
+    <string name="recent" translatable="false">Recent</string>
+    <string name="settings" translatable="false">Settings</string>
+    <string name="tracks" translatable="false">Tracks</string>
+    <string name="toggle_player" translatable="false">Player</string>
+    <string name="toggle_render" translatable="false">Render</string>
+    <string name="toggle_ratio" translatable="false">Scale</string>
+    <string name="show_info" translatable="false">Info</string>
+    <string name="vdec" translatable="false">vdec</string>
+    <string name="fps" translatable="false">fps</string>
+    <string name="v_cache" translatable="false">v-cache</string>
+    <string name="a_cache" translatable="false">a-cache</string>
+    <string name="load_cost" translatable="false">load-cost</string>
+    <string name="seek_cost" translatable="false">seek_cost</string>
+    <string name="seek_load_cost" translatable="false">seek_load_cost</string>
+    <string name="tcp_speed" translatable="false">tcp_speed</string>
+    <string name="bit_rate" translatable="false">bit_rate</string>
+
+    <string name="media_information" translatable="false">Media Information</string>
+    <string name="mi_player" translatable="false">Player</string>
+    <string name="mi_media" translatable="false">Media</string>
+    <string name="mi_profile_level" translatable="false">Profile level</string>
+    <string name="mi_pixel_format" translatable="false">Pixel format</string>
+    <string name="mi_resolution" translatable="false">Resolution</string>
+    <string name="mi_length" translatable="false">Length</string>
+    <string name="mi_stream_fmt1" translatable="false">Stream #%d</string>
+    <string name="mi_type" translatable="false">Type</string>
+    <string name="mi_language" translatable="false">Language</string>
+    <string name="mi_codec" translatable="false">Codec</string>
+    <string name="mi_frame_rate" translatable="false">Frame rate</string>
+    <string name="mi_bit_rate" translatable="false">Bit rate</string>
+    <string name="mi_sample_rate" translatable="false">Sample rate</string>
+    <string name="mi_channels" translatable="false">Channels</string>
+    <string name="mi__selected_video_track" translatable="false">*</string>
+    <string name="mi__selected_audio_track" translatable="false">*</string>
+    <string name="mi__selected_subtitle_track" translatable="false">*</string>
+
+    <string name="TrackType_video" translatable="false">Video</string>
+    <string name="TrackType_audio" translatable="false">Audio</string>
+    <string name="TrackType_subtitle" translatable="false">Subtitle</string>
+    <string name="TrackType_timedtext" translatable="false">Timed text</string>
+    <string name="TrackType_metadata" translatable="false">Meta data</string>
+    <string name="TrackType_unknown" translatable="false">Unknown</string>
+
+    <string name="VideoView_error_text_invalid_progressive_playback" translatable="false">Invalid progressive playback</string>
+    <string name="VideoView_error_text_unknown" translatable="false">Unknown</string>
+    <string name="VideoView_error_button" translatable="false">OK</string>
+
+    <string name="VideoView_ar_aspect_fit_parent" translatable="false">Aspect / Fit parent</string>
+    <string name="VideoView_ar_aspect_fill_parent" translatable="false">Aspect / Fill parent</string>
+    <string name="VideoView_ar_aspect_wrap_content" translatable="false">Aspect / Wrap content</string>
+    <string name="VideoView_ar_match_parent" translatable="false">Free / Fill parent</string>
+    <string name="VideoView_ar_16_9_fit_parent" translatable="false">16:9 / Fit parent</string>
+    <string name="VideoView_ar_4_3_fit_parent" translatable="false">4:3 / Fit parent</string>
+
+    <string name="VideoView_render_none" translatable="false">Render: None</string>
+    <string name="VideoView_render_surface_view" translatable="false">Render: SurfaceView</string>
+    <string name="VideoView_render_texture_view" translatable="false">Render: TextureView</string>
+
+    <string name="VideoView_player_none" translatable="false">Player: None</string>
+    <string name="VideoView_player_AndroidMediaPlayer" translatable="false">Player: AndroidMediaPlayer</string>
+    <string name="VideoView_player_IjkMediaPlayer" translatable="false">Player: IjkMediaPlayer</string>
+    <string name="VideoView_player_IjkExoMediaPlayer" translatable="false">Player: IjkExoMediaPlayer</string>
+
+    <!-- -->
+    <string name="pref_title_general" translatable="false">General</string>
+
+    <string name="pref_key_enable_background_play" translatable="false">pref.enable_background_play</string>
+    <string name="pref_title_enable_background_play" translatable="false">Enable background play</string>
+    <string name="pref_summary_enable_background_play" translatable="false">need Android 4.0+</string>
+
+    <string name="pref_key_using_android_player" translatable="false">pref.using_android_player</string>
+    <string name="pref_title_using_android_player" translatable="false">Using system player</string>
+    <string name="pref_summary_using_android_player" translatable="false"></string>
+
+    <string name="pref_key_player" translatable="false">pref.player</string>
+    <string name="pref_title_player" translatable="false">Choose Player</string>
+    <string-array name="pref_entries_player" translatable="false">
+        <item>Auto Select</item>
+        <item>AndroidMediaPlayer</item>
+        <item>IjkMediaPlayer</item>
+        <item>IjkExoMediaPlayer</item>
+    </string-array>
+    <string-array name="pref_entry_values_player" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string-array name="pref_entry_summaries_player" translatable="false">
+        <item>Auto Select</item>
+        <item>AndroidMediaPlayer</item>
+        <item>IjkMediaPlayer</item>
+        <item>IjkExoMediaPlayer</item>
+    </string-array>
+
+    <!-- -->
+    <string name="pref_title_ijkplayer_video" translatable="false">Video: ijkplayer</string>
+
+    <string name="pref_key_using_media_codec" translatable="false">pref.using_media_codec</string>
+    <string name="pref_title_using_media_codec" translatable="false">Using MediaCodec</string>
+    <string name="pref_summary_using_media_codec" translatable="false"></string>
+
+    <string name="pref_key_using_media_codec_auto_rotate" translatable="false">pref.using_media_codec_auto_rotate</string>
+    <string name="pref_title_using_media_codec_auto_rotate" translatable="false">Using MediaCodec auto rotate</string>
+    <string name="pref_summary_using_media_codec_auto_rotate" translatable="false"></string>
+
+    <string name="pref_key_media_codec_handle_resolution_change" translatable="false">pref.media_codec_handle_resolution_change</string>
+    <string name="pref_title_media_codec_handle_resolution_change" translatable="false">MediaCodec handle resolution change</string>
+    <string name="pref_summary_media_codec_handle_resolution_change" translatable="false"></string>
+
+    <string name="pref_key_pixel_format" translatable="false">pref.pixel_format</string>
+    <string name="pref_title_pixel_format" translatable="false">Pixel Format</string>
+    <string-array name="pref_entries_pixel_format" translatable="false">
+        <item>Auto Select</item>
+        <item>RGB 565</item>
+        <item>RGB 888</item>
+        <item>RGBX 8888</item>
+        <item>YV12</item>
+        <item>OpenGL ES2</item>
+    </string-array>
+    <string-array name="pref_entry_values_pixel_format" translatable="false">
+        <item></item>
+        <item>fcc-rv16</item>
+        <item>fcc-rv24</item>
+        <item>fcc-rv32</item>
+        <item>fcc-yv12</item>
+        <item>fcc-_es2</item>
+    </string-array>
+    <string-array name="pref_entry_summaries_pixel_format" translatable="false">
+        <item>Auto Select</item>
+        <item>RGB 565</item>
+        <item>RGB 888</item>
+        <item>RGBX 8888</item>
+        <item>YV12</item>
+        <item>OpenGL ES2</item>
+    </string-array>
+
+    <!-- -->
+    <string name="pref_title_ijkplayer_audio" translatable="false">Audio: ijkplayer</string>
+
+    <string name="pref_key_using_opensl_es" translatable="false">pref.using_opensl_es</string>
+    <string name="pref_title_using_opensl_es" translatable="false">Using OpenSL ES</string>
+    <string name="pref_summary_using_opensl_es" translatable="false"></string>
+
+    <!-- -->
+    <string name="pref_title_render_view" translatable="false">RenderView</string>
+
+    <string name="pref_key_enable_no_view" translatable="false">pref.enable_no_view</string>
+    <string name="pref_title_enable_no_view" translatable="false">Enable NoView</string>
+    <string name="pref_summary_enable_no_view" translatable="false"></string>
+
+    <string name="pref_key_enable_surface_view" translatable="false">pref.enable_surface_view</string>
+    <string name="pref_title_enable_surface_view" translatable="false">Enable SurfaceView</string>
+    <string name="pref_summary_enable_surface_view" translatable="false"></string>
+
+    <string name="pref_key_enable_texture_view" translatable="false">pref.enable_texture_view</string>
+    <string name="pref_title_enable_texture_view" translatable="false">Enable TextureView</string>
+    <string name="pref_summary_enable_texture_view" translatable="false"></string>
+
+    <string name="pref_key_enable_detached_surface_texture" translatable="false">pref.enable_detached_surface_texture</string>
+    <string name="pref_title_enable_detached_surface_texture" translatable="false">Enable detached SurfaceTexture</string>
+    <string name="pref_summary_enable_detached_surface_texture" translatable="false"></string>
+
+    <!-- -->
+    <string name="pref_title_misc" translatable="false">Misc</string>
+    <string name="pref_key_using_mediadatasource" translatable="false">pref.using_mediadatasource</string>
+    <string name="pref_title_using_mediadatasource" translatable="false">Using MediaDataSource</string>
+    <string name="pref_summary_using_mediadatasource" translatable="false"></string>
+
+    <!-- -->
+    <string name="pref_key_last_directory" translatable="false"></string>
+
+</resources>

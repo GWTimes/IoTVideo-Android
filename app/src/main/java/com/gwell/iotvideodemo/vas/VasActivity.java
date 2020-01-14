@@ -20,7 +20,8 @@ import com.gwell.iotvideo.vas.vas;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceList;
 import com.gwell.iotvideodemo.base.BaseActivity;
-import com.gwell.iotvideodemo.videoplayer.CommonPlayerActivity;
+import com.gwell.iotvideodemo.videoplayer.ExoPlayerActivity;
+import com.gwell.iotvideodemo.videoplayer.IjkPlayerActivity;
 import com.gwell.iotvideodemo.widget.RecycleViewDivider;
 import com.gwell.iotvideodemo.widget.SimpleRecyclerViewAdapter;
 
@@ -218,7 +219,7 @@ public class VasActivity extends BaseActivity implements View.OnClickListener, S
     }
 
     private void startPlayActivity(String url) {
-        Intent intent = new Intent(this, CommonPlayerActivity.class);
+        Intent intent = new Intent(this, IjkPlayerActivity.class);
         intent.putExtra("URI", url);
         startActivity(intent);
     }

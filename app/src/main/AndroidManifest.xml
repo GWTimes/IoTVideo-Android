@@ -27,7 +27,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".videoplayer.CommonPlayerActivity"></activity>
+        <activity android:name=".videoplayer.IjkPlayerActivity"></activity>
+        <activity android:name=".videoplayer.ExoPlayerActivity" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.gwell.iotvideodemo.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
         <activity
             android:name=".WelcomeActivity"
             android:theme="@style/LauncherActivity">

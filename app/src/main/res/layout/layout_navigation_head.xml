@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <ImageView
@@ -11,12 +12,59 @@
         android:layout_margin="16dp"
         android:background="@mipmap/ic_launcher_round" />
 
-    <TextView
-        android:id="@+id/user_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_gravity="center" />
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TableRow>
+            <TextView
+                android:text="accessId : "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"/>
+            <TextView
+                android:id="@+id/user_id"
+                android:maxWidth="165dp"
+                android:textIsSelectable="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"/>
+        </TableRow>
+        <TableRow
+            android:id="@+id/iv_token_row"
+            android:visibility="gone"
+            tools:visibility="visible">
+            <TextView
+                android:text="ivToken : "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"/>
+            <TextView
+                android:id="@+id/iv_token"
+                android:textIsSelectable="true"
+                android:maxWidth="165dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/switch_server_row"
+            android:visibility="gone"
+            tools:visibility="visible">
+            <TextView
+                android:text="打开测试服 : "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"/>
+            <Switch
+                android:id="@+id/switch_server"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="" />
+
+        </TableRow>
+    </TableLayout>
 
     <Button
         android:id="@+id/logout"

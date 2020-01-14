@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +18,9 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.gwell.http.SubscriberListener;
+import com.gwell.http.UrlHelper;
+import com.gwell.http.utils.HttpUtils;
+import com.gwell.http.utils.SPUtils;
 import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
 import com.gwell.iotvideo.messagemgr.EventMessage;
@@ -59,6 +64,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private View mNavigationHead;
     private DrawerLayout mDrawer;
     private TextView mTvAppVersion;
+
+    private TextView mTvIvToken;
+    private Switch mSwitchServer;
+
     private long mFirstTimeClickBack;
 
     @Override
@@ -83,6 +92,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.start_net_config_activity).setOnClickListener(this);
         findViewById(R.id.start_device_manager_activity).setOnClickListener(this);
         mNavigationHead.findViewById(R.id.logout).setOnClickListener(this);
+
+        mTvIvToken = mNavigationHead.findViewById(R.id.iv_token);
+
+        if (com.gwell.iotvideo.BuildConfig.DEBUG) {
+            mNavigationHead.findViewById(R.id.iv_token_row).setVisibility(View.VISIBLE);
+            mNavigationHead.findViewById(R.id.switch_server_row).setVisibility(View.VISIBLE);
+        }
+
+        mSwitchServer = mNavigationHead.findViewById(R.id.switch_server);
+        mSwitchServer.setChecked(UrlHelper.getInstance().getServerType() == UrlHelper.SERVER_DEV);
+        mSwitchServer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                boolean isDebugServer = (UrlHelper.getInstance().getServerType() == UrlHelper.SERVER_DEV);
+                if(isDebugServer != isChecked){
+                    SPUtils.getInstance().putInteger(MainActivity.this, SPUtils.VALIDITY_TIMESTAMP, 0);
+                }
+                UrlHelper.getInstance().setDevelopSwitch(isChecked);
+                Toast.makeText(getApplicationContext(), "重启应用后生效", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        String realToken = HttpUtils.getAccessToken(this, false);
+        String secretKey = SPUtils.getInstance().getString(this, SPUtils.SECRET_KEY, "");
+        mTvIvToken.setText(realToken + secretKey);
 
         //设置log
         applyForStoragePerMission();

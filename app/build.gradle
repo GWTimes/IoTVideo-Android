@@ -97,6 +97,11 @@ dependencies {
 
     //ExoPlayer
     implementation 'com.ycjiang:VideoPlayModule:2.3.50'
+    //ijk
+    implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.8'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-arm64:0.8.8'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-exo:0.8.8'
 
     implementation(name: "accountmgr-release", ext: 'aar')
     implementation(name: "vas-release", ext: 'aar')

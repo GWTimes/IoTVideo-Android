@@ -1,6 +1,9 @@
 package com.gwell.iotvideodemo.videoplayer;
 
 import android.Manifest;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -9,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.content.FileProvider;
 
 import com.gwell.iotvideo.iotvideoplayer.IErrorListener;
 import com.gwell.iotvideo.iotvideoplayer.IPreparedListener;
@@ -95,6 +100,30 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         });
         mResultTxt = findViewById(R.id.output_txt);
         mResultTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
+
+        findViewById(R.id.tv_browse).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String path = MyApp.APP_PIC_PATH;
+                File subDir = new File(path);
+                if (!subDir.exists()) {
+                    subDir.mkdirs();
+                }
+
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                //判断是否是AndroidN以及更高的版本
+                if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.N) {
+                    Uri contentUri = FileProvider.getUriForFile(VideoPlayerActivity.this,"com.gwell.iotvideodemo.fileProvider", subDir.getParentFile());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    intent.setDataAndType(contentUri,"file/*");
+                }else{
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setDataAndType(Uri.fromFile(subDir.getParentFile()),"file/*");
+                }
+                VideoPlayerActivity.this.startActivity(intent);
+            }
+        });
 
         if (getIntent() != null) {
             String did = getIntent().getStringExtra("deviceID");
