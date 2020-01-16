@@ -13,7 +13,10 @@ import com.google.gson.JsonObject;
 import com.gwell.http.HttpCode;
 import com.gwell.http.SubscriberListener;
 import com.gwell.http.utils.HttpUtils;
+import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
+import com.gwell.iotvideo.messagemgr.IResultListener;
+import com.gwell.iotvideo.messagemgr.ModelMessage;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.accountmgr.deviceshare.DeviceShareActivity;
@@ -146,6 +149,7 @@ public class DeviceManagerActivity extends BaseActivity {
                 DeviceList deviceList = HttpUtils.JsonToEntity(response.toString(), DeviceList.class);
                 if (deviceList.getCode() == HttpCode.ERROR_0 && deviceList.getData() != null) {
                     mDeviceInfoList = deviceList.getData();
+                    updateDeviceModel();
                     if (mDeviceInfoList.size() != 0) {
                         mAdapter.notifyDataSetChanged();
                     } else {
@@ -196,6 +200,31 @@ public class DeviceManagerActivity extends BaseActivity {
             tvDeviceName = view.findViewById(R.id.device_name);
             tvOperator = view.findViewById(R.id.operate_device);
             tvOnline = view.findViewById(R.id.tv_online);
+        }
+    }
+
+    private void updateDeviceModel(){
+        if(mDeviceInfoList != null && mDeviceInfoList.size() > 0){
+            for (DeviceList.Device device : mDeviceInfoList){
+                IoTVideoSdk.getMessageMgr().getData(Long.parseLong (device.getDid()), "", new IResultListener<ModelMessage>(){
+
+                    @Override
+                    public void onStart() {
+
+                    }
+
+                    @Override
+                    public void onSuccess(ModelMessage msg) {
+                        DeviceModelManager.getInstance().onNotify(msg);
+                        mAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onError(int errorCode, String errorMsg) {
+
+                    }
+                });
+            }
         }
     }
 }

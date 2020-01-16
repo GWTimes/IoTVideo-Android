@@ -20,7 +20,7 @@ public class MyApp extends Application {
         APP_VIDEO_PATH = getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath();
         APP_PIC_PATH = getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
         APP_DOC_PATH = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath();
-        IoTVideoSdk.init(getApplicationContext(), 103, "440234147841");
+        IoTVideoSdk.init(getApplicationContext(), 103, "440234147841", null);
         IoTVideoSdk.setLogPath(MyApp.APP_DOC_PATH + File.separator + "xLog");
         if(BuildConfig.DEBUG){
             FloatLogWindows.getInstance().init(this);

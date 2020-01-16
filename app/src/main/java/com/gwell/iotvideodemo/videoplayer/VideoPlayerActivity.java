@@ -104,22 +104,24 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         findViewById(R.id.tv_browse).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String path = MyApp.APP_PIC_PATH;
-                File subDir = new File(path);
-                if (!subDir.exists()) {
-                    subDir.mkdirs();
-                }
-
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
                 //判断是否是AndroidN以及更高的版本
                 if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.N) {
-                    Uri contentUri = FileProvider.getUriForFile(VideoPlayerActivity.this,"com.gwell.iotvideodemo.fileProvider", subDir.getParentFile());
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    intent.setDataAndType(contentUri,"file/*");
+                    try {
+                        Uri contentUri = FileProvider.getUriForFile(VideoPlayerActivity.this,"com.gwell.iotvideodemo.fileProvider",
+                                new File(MyApp.APP_PIC_PATH));
+                        LogUtils.i(TAG, contentUri.toString());
+                        intent.setData(contentUri);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    }catch (Exception e){
+                        LogUtils.e(TAG, e.getMessage());
+                    }
                 }else{
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setDataAndType(Uri.fromFile(subDir.getParentFile()),"file/*");
+                    intent.setDataAndType(Uri.fromFile(VideoPlayerActivity.this.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES).getParentFile()),"*/*");
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
                 }
                 VideoPlayerActivity.this.startActivity(intent);
             }
@@ -303,6 +305,11 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         if (mVideoView != null) {
             mVideoView.onPause();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
         if(mMonitorPlayer != null){
             mMonitorPlayer.stop();
         }
