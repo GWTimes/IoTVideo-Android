@@ -1,7 +1,7 @@
 package com.gwell.iotvideodemo.accountmgr.deviceshare;
 
 import com.google.gson.JsonObject;
-import com.gwell.http.SubscriberListener;
+import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceList;

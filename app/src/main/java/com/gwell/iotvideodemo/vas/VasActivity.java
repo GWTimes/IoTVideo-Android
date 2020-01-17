@@ -6,21 +6,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
-import com.gwell.http.SubscriberListener;
-import com.gwell.http.utils.HttpUtils;
+import com.gwell.iotvideo.accountmgr.AccountMgr;
+import com.gwell.iotvideo.utils.JSONUtils;
 import com.gwell.iotvideo.utils.LogUtils;
+import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
 import com.gwell.iotvideo.vas.VasService;
 import com.gwell.iotvideo.vas.vas;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceList;
 import com.gwell.iotvideodemo.base.BaseActivity;
-import com.gwell.iotvideodemo.videoplayer.ExoPlayerActivity;
 import com.gwell.iotvideodemo.videoplayer.IjkPlayerActivity;
 import com.gwell.iotvideodemo.widget.RecycleViewDivider;
 import com.gwell.iotvideodemo.widget.SimpleRecyclerViewAdapter;
@@ -36,7 +35,6 @@ import androidx.recyclerview.widget.RecyclerView;
 public class VasActivity extends BaseActivity implements View.OnClickListener, SimpleRecyclerViewAdapter.OnItemClickListener {
     private static final String TAG = "VasActivity";
 
-    private RadioGroup mRGChannel;
     private TextView mTvBuyStartTime, mTvBuyEndTime, mTvPlaybackStartTime, mTvPlaybackEndTime;
     private RecyclerView mRVPlaybackList;
     private SimpleRecyclerViewAdapter<String> mAdapter;
@@ -53,19 +51,6 @@ public class VasActivity extends BaseActivity implements View.OnClickListener, S
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vas);
-        mRGChannel = findViewById(R.id.rg_group);
-        mRGChannel.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                LogUtils.i(TAG, "onCheckedChanged i = " + i);
-                if (i == R.id.rb_p2p) {
-                    mVasService = vas.getVasService(vas.VIA_P2P);
-                } else if (i == R.id.rb_http) {
-                    mVasService = vas.getVasService(vas.VIA_HTTP);
-                }
-            }
-        });
-        findViewById(R.id.test).setOnClickListener(this);
         mTvBuyStartTime = findViewById(R.id.buy_start_time);
         mTvBuyStartTime.setOnClickListener(this);
         mTvBuyEndTime = findViewById(R.id.buy_end_time);
@@ -92,9 +77,7 @@ public class VasActivity extends BaseActivity implements View.OnClickListener, S
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.test) {
-
-        } else if (view.getId() == R.id.buy_start_time) {
+        if (view.getId() == R.id.buy_start_time) {
             showDatePickerDialog(new DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
@@ -125,7 +108,7 @@ public class VasActivity extends BaseActivity implements View.OnClickListener, S
                 }
             });
         } else if (view.getId() == R.id.buy) {
-            mVasService.cloudStorageCreate(mDevice.getDevId(), mBuyStartTime, mBuyEndTime, new SubscriberListener() {
+            AccountMgr.getInstance().cloudStorageCreate(mDevice.getDevId(), mBuyStartTime, mBuyEndTime, new SubscriberListener() {
                 @Override
                 public void onStart() {
 
@@ -142,7 +125,7 @@ public class VasActivity extends BaseActivity implements View.OnClickListener, S
                 }
             });
         } else if (view.getId() == R.id.playback) {
-            mVasService.cloudStoragePlayback(mDevice.getDevId(), 28800, mPlaybackStartTime, mPlaybackEndTime, new SubscriberListener() {
+            AccountMgr.getInstance().cloudStoragePlayback(mDevice.getDevId(), 28800, mPlaybackStartTime, mPlaybackEndTime, new SubscriberListener() {
                 @Override
                 public void onStart() {
 
@@ -150,7 +133,7 @@ public class VasActivity extends BaseActivity implements View.OnClickListener, S
 
                 @Override
                 public void onSuccess(JsonObject response) {
-                    PlaybackList playbackList = HttpUtils.JsonToEntity(response.toString(), PlaybackList.class);
+                    PlaybackList playbackList = JSONUtils.JsonToEntity(response.toString(), PlaybackList.class);
                     if (playbackList == null) {
                         Snackbar.make(mRVPlaybackList, "invalid data", Snackbar.LENGTH_LONG).show();
                         return;

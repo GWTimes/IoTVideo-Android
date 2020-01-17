@@ -2,9 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_menu_player"
+        android:id="@+id/action_menu_monitor_player"
         android:orderInCategory="1"
         android:title="@string/player"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_menu_playback_player"
+        android:orderInCategory="1"
+        android:title="@string/local_playback"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_menu_model"

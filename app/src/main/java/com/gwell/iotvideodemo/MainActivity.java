@@ -17,10 +17,6 @@ import android.widget.Toast;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
-import com.gwell.http.SubscriberListener;
-import com.gwell.http.UrlHelper;
-import com.gwell.http.utils.HttpUtils;
-import com.gwell.http.utils.SPUtils;
 import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
 import com.gwell.iotvideo.messagemgr.EventMessage;
@@ -28,21 +24,28 @@ import com.gwell.iotvideo.messagemgr.IEventListener;
 import com.gwell.iotvideo.messagemgr.IModelListener;
 import com.gwell.iotvideo.messagemgr.ModelMessage;
 import com.gwell.iotvideo.utils.LogUtils;
+import com.gwell.iotvideo.utils.UrlHelper;
 import com.gwell.iotvideo.utils.qrcode.QRCode;
 import com.gwell.iotvideo.utils.qrcode.QRCodeHelper;
+import com.gwell.iotvideo.vas.VasService;
+import com.gwell.iotvideo.vas.vas;
+import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
+import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
 import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceManagerActivity;
 import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceModelManager;
 import com.gwell.iotvideodemo.accountmgr.login.LoginActivity;
-import com.gwell.iotvideodemo.test.TestWebApiActivity;
 import com.gwell.iotvideodemo.base.BaseActivity;
 import com.gwell.iotvideodemo.netconfig.PrepareNetConfigActivity;
 import com.gwell.iotvideodemo.test.TestQRCodeActivity;
+import com.gwell.iotvideodemo.test.TestWebApiActivity;
+import com.gwell.iotvideodemo.test.preview.CameraActivity;
+import com.gwell.iotvideodemo.utils.AppSPUtils;
 import com.gwell.iotvideodemo.vas.VasActivity;
 import com.gwell.iotvideodemo.videoplayer.CustomCaptureActivity;
-import com.gwell.iotvideodemo.videoplayer.VideoPlayerActivity;
-import com.gwell.iotvideodemo.test.preview.CameraActivity;
+import com.gwell.iotvideodemo.videoplayer.MonitorPlayerActivity;
 import com.gwell.zxing.CaptureActivity;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
@@ -50,8 +53,6 @@ import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.drawerlayout.widget.DrawerLayout;
-
-import org.json.JSONObject;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
@@ -84,8 +85,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.start_preview).setOnClickListener(this);
         findViewById(R.id.start_record).setOnClickListener(this);
         findViewById(R.id.start_web_api_activity).setOnClickListener(this);
+        findViewById(R.id.test_http_via_p2p).setOnClickListener(this);
         if (BuildConfig.DEBUG) {
             findViewById(R.id.start_web_api_activity).setVisibility(View.VISIBLE);
+            findViewById(R.id.test_http_via_p2p).setVisibility(View.VISIBLE);
         }
         findViewById(R.id.start_qrcode_activity).setOnClickListener(this);
         findViewById(R.id.start_player_activity).setOnClickListener(this);
@@ -102,20 +105,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         mSwitchServer = mNavigationHead.findViewById(R.id.switch_server);
         mSwitchServer.setChecked(UrlHelper.getInstance().getServerType() == UrlHelper.SERVER_DEV);
-        mSwitchServer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+        mSwitchServer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 boolean isDebugServer = (UrlHelper.getInstance().getServerType() == UrlHelper.SERVER_DEV);
-                if(isDebugServer != isChecked){
-                    SPUtils.getInstance().putInteger(MainActivity.this, SPUtils.VALIDITY_TIMESTAMP, 0);
+                if (isDebugServer != isChecked) {
+                    AccountSPUtils.getInstance().putInteger(MainActivity.this, AccountSPUtils.VALIDITY_TIMESTAMP, 0);
+                    AppSPUtils.getInstance().putBoolean(MainActivity.this, AppSPUtils.NEED_SWITCH_SERVER_TYPE, true);
+                    AppSPUtils.getInstance().putInteger(MainActivity.this, AppSPUtils.SERVER_TYPE,
+                            isChecked ? UrlHelper.SERVER_DEV : UrlHelper.SERVER_RELEASE);
+                    Toast.makeText(getApplicationContext(), "重启应用后生效", Toast.LENGTH_LONG).show();
                 }
-                UrlHelper.getInstance().setDevelopSwitch(isChecked);
-                Toast.makeText(getApplicationContext(), "重启应用后生效", Toast.LENGTH_LONG).show();
             }
         });
 
-        String realToken = HttpUtils.getAccessToken(this, false);
-        String secretKey = SPUtils.getInstance().getString(this, SPUtils.SECRET_KEY, "");
+        String realToken = AccountSPUtils.getInstance().getString(this, AccountSPUtils.IV_TOKEN, "");
+        String secretKey = AccountSPUtils.getInstance().getString(this, AccountSPUtils.SECRET_KEY, "");
         mTvIvToken.setText(realToken + secretKey);
 
         //设置log
@@ -128,7 +133,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
         TextView tvUserId = mNavigationHead.findViewById(R.id.user_id);
-        tvUserId.setText(AccountMgr.getInstance().getUserId(this));
+        tvUserId.setText(AccountSPUtils.getInstance().getUserId(this));
     }
 
     @Override
@@ -158,6 +163,32 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             case R.id.start_device_manager_activity:
                 startDeviceManagerActivity();
                 break;
+            case R.id.test_http_via_p2p:
+                VasService vasService = vas.getVasService();
+                Map<String, Object> publicParams = new HashMap<>();
+                publicParams.put("tencentCid", "20aea48e985f519539679487802ba59f");
+                vas.updatePublicParams(publicParams);
+                String userId = AccountSPUtils.getInstance().getString(this, AccountSPUtils.ACCESS_ID, "");
+                vasService.register(userId, new SubscriberListener() {
+                    @Override
+                    public void onStart() {
+                        LogUtils.i(TAG, "cloudStorageCreate start");
+                        Snackbar.make(mProgressBar, "发起请求", Snackbar.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onSuccess(JsonObject response) {
+                        LogUtils.i(TAG, "cloudStorageCreate onSuccess " + response.toString());
+                        Snackbar.make(mProgressBar, response.toString(), Snackbar.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onFail(Throwable e) {
+                        LogUtils.i(TAG, "cloudStorageCreate onFail " + e.getMessage());
+                        Snackbar.make(mProgressBar, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                    }
+                });
+                break;
         }
     }
 
@@ -184,7 +215,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void startPlayerActivity() {
-        Intent intent = new Intent(this, VideoPlayerActivity.class);
+        Intent intent = new Intent(this, MonitorPlayerActivity.class);
         startActivity(intent);
     }
 
@@ -214,6 +245,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onSuccess(JsonObject response) {
                 showProgress(false);
+                AccountSPUtils.getInstance().clear(MainActivity.this);
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
             }
 
@@ -334,7 +366,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    private void registerNotify(){
+    private void registerNotify() {
         IoTVideoSdk.getMessageMgr().addEventListener(new IEventListener() {
             @Override
             public void onNotify(EventMessage data) {

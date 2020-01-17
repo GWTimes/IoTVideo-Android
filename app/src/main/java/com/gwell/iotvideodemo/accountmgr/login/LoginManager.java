@@ -1,8 +1,15 @@
 package com.gwell.iotvideodemo.accountmgr.login;
 
+import android.content.Context;
+
 import com.google.gson.JsonObject;
-import com.gwell.http.SubscriberListener;
+import com.gwell.iotvideo.http.HttpCode;
+import com.gwell.iotvideo.utils.JSONUtils;
+import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
+import com.gwell.iotvideo.utils.LogUtils;
+import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
+import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,9 +22,13 @@ import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_VCODE
 import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_VCODE_SUCCESS;
 
 class LoginManager {
-    private LoginViewModel mLoginViewModel;
+    private static final String TAG = "LoginManager";
 
-    LoginManager(LoginViewModel loginViewModel) {
+    private LoginViewModel mLoginViewModel;
+    private Context mContext;
+
+    LoginManager(Context context, LoginViewModel loginViewModel) {
+        mContext = context;
         mLoginViewModel = loginViewModel;
     }
 
@@ -70,6 +81,15 @@ class LoginManager {
             @Override
             public void onSuccess(JsonObject response) {
                 mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_SUCCESS, response.toString(), null));
+                LoginInfo loginInfo = JSONUtils.JsonToEntity(response.toString(), LoginInfo.class);
+                if (loginInfo != null && loginInfo.getCode() == HttpCode.ERROR_0) {
+                    LogUtils.i(TAG, "login success : " + loginInfo.toString());
+                    if (loginInfo.getData() != null) {
+                        String token = loginInfo.getData().getIvToken();
+                        int validityTime = loginInfo.getData().getExpireTime();
+                        saveLoginInfo(loginInfo.getData().getAccessId(), token, validityTime);
+                    }
+                }
             }
 
             @Override
@@ -130,5 +150,17 @@ class LoginManager {
         } else {
             AccountMgr.getInstance().mobileResetPwd("86", account, pwd, vcode, subscriberListener);
         }
+    }
+
+    private void saveLoginInfo(String accessId, String token, int validityTime) {
+        String realToken = token.substring(0, 96);
+        String secretKey = token.substring(96, 128);
+        AccountMgr.getInstance().setSecretInfo(accessId, secretKey, realToken);
+        IoTVideoSdk.register(Long.valueOf(accessId), token);
+
+        AccountSPUtils.getInstance().putString(mContext, AccountSPUtils.ACCESS_ID, accessId);
+        AccountSPUtils.getInstance().putString(mContext, AccountSPUtils.SECRET_KEY, secretKey);
+        AccountSPUtils.getInstance().putString(mContext, AccountSPUtils.IV_TOKEN, realToken);
+        AccountSPUtils.getInstance().putInteger(mContext, AccountSPUtils.VALIDITY_TIMESTAMP, validityTime);
     }
 }

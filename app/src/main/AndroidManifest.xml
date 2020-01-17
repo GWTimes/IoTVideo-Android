@@ -27,7 +27,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".videoplayer.IjkPlayerActivity"></activity>
+        <activity android:name=".videoplayer.PlaybackPlayerActivity"></activity>
+        <activity android:name=".videoplayer.IjkPlayerActivity" />
         <activity android:name=".videoplayer.ExoPlayerActivity" />
 
         <provider
@@ -65,7 +66,7 @@
             android:name=".test.TestQRCodeActivity"
             android:label="@string/qrcode" />
         <activity
-            android:name=".videoplayer.VideoPlayerActivity"
+            android:name=".videoplayer.MonitorPlayerActivity"
             android:label="@string/player" />
         <activity
             android:name=".videoplayer.CustomCaptureActivity"

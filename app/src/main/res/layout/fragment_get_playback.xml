@@ -15,14 +15,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/et_path"
+        android:id="@+id/et_page_index"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="32dp"
         android:ems="10"
         android:gravity="start|top"
-        android:inputType="textMultiLine"
+        android:inputType="number"
         app:layout_constraintBottom_toBottomOf="@+id/tv_title1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -40,14 +40,14 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_title1" />
 
     <EditText
-        android:id="@+id/et_data"
+        android:id="@+id/et_page_per_count"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="32dp"
         android:ems="10"
         android:gravity="start|top"
-        android:inputType="textMultiLine"
+        android:inputType="number"
         app:layout_constraintBottom_toBottomOf="@+id/tv_title2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_title2"
@@ -57,7 +57,7 @@
         android:id="@+id/tv_run"
         android:layout_width="120dp"
         android:layout_height="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:background="#009688"
         android:elevation="1dp"
@@ -66,7 +66,7 @@
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_data" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_title2" />
 
     <TextView
         android:id="@+id/result_txt"

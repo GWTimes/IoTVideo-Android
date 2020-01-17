@@ -1,5 +1,7 @@
 package com.gwell.iotvideodemo.accountmgr.login;
 
+import android.content.Context;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -18,15 +20,17 @@ class LoginViewModel extends ViewModel {
     static final int STATE_ERROR = 5;
 
     private LoginManager mLoginManager;
+    private Context mContext;
 
     private MutableLiveData<Integer> mOperator;
     private MutableLiveData<LoginState> mLoginState;
 
-    LoginViewModel() {
-        mLoginManager = new LoginManager(this);
+    LoginViewModel(Context context) {
         mLoginState = new MutableLiveData<>();
         mOperator = new MutableLiveData<>();
         mOperator.setValue(OPERATE_LOGIN);
+        mContext = context;
+        mLoginManager = new LoginManager(mContext, this);
     }
 
     MutableLiveData<Integer> getOperator() {

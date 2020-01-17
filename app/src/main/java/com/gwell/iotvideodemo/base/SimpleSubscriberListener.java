@@ -1,7 +1,7 @@
 package com.gwell.iotvideodemo.base;
 
 import com.google.gson.JsonObject;
-import com.gwell.http.SubscriberListener;
+import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
 
 import androidx.lifecycle.MutableLiveData;
 

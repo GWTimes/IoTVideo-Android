@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.gwell.http.utils.HttpUtils;
+import com.gwell.iotvideo.utils.JSONUtils;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseFragment;
 import com.gwell.iotvideodemo.base.HttpRequestState;
@@ -64,7 +64,7 @@ public class AccountShareFragment extends BaseFragment implements View.OnClickLi
                         mUserList.clear();
                         break;
                     case SUCCESS:
-                        UserList userList = HttpUtils.JsonToEntity(httpRequestState.getJsonObject().toString(), UserList.class);
+                        UserList userList = JSONUtils.JsonToEntity(httpRequestState.getJsonObject().toString(), UserList.class);
                         if (userList.getData() != null) {
                             mUserList.add(userList.getData());
                             mAdapter.notifyDataSetChanged();

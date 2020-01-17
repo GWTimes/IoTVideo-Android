@@ -2,9 +2,16 @@ package com.gwell.iotvideodemo;
 
 import android.app.Application;
 import android.os.Environment;
+import android.text.TextUtils;
+
 import com.gwell.iotvideo.IoTVideoSdk;
+import com.gwell.iotvideo.accountmgr.AccountMgr;
+import com.gwell.iotvideo.utils.UrlHelper;
+import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
+import com.gwell.iotvideodemo.utils.AppSPUtils;
 import com.gwell.iotvideodemo.utils.CrashHandler;
 import com.gwell.iotvideodemo.utils.FloatLogWindows;
+import com.gwell.iotvideodemo.utils.Utils;
 
 import java.io.File;
 
@@ -20,10 +27,34 @@ public class MyApp extends Application {
         APP_VIDEO_PATH = getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath();
         APP_PIC_PATH = getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
         APP_DOC_PATH = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath();
-        IoTVideoSdk.init(getApplicationContext(), 103, "440234147841");
+
+        if (!AppSPUtils.getInstance().getBoolean(this, AppSPUtils.NEED_SWITCH_SERVER_TYPE, false)) {
+            UrlHelper.getInstance().setServerType(BuildConfig.DEBUG ? UrlHelper.SERVER_DEV : UrlHelper.SERVER_RELEASE);
+        } else {
+            UrlHelper.getInstance().setServerType(
+                    AppSPUtils.getInstance().getInteger(this, AppSPUtils.SERVER_TYPE, UrlHelper.SERVER_RELEASE));
+        }
+
+        IoTVideoSdk.init(getApplicationContext(), null);
+        AccountMgr.getInstance().init(Utils.getPhoneUuid(this), 103, "440234147841");
+        checkAndAutoLogin();
         IoTVideoSdk.setLogPath(MyApp.APP_DOC_PATH + File.separator + "xLog");
         if(BuildConfig.DEBUG){
             FloatLogWindows.getInstance().init(this);
+        }
+    }
+
+    private void checkAndAutoLogin() {
+        int validityTime = AccountSPUtils.getInstance().getInteger(this, AccountSPUtils.VALIDITY_TIMESTAMP, 0);
+        boolean isLogin = validityTime > (System.currentTimeMillis() / 1000);
+        if (isLogin) {
+            String realToken = AccountSPUtils.getInstance().getString(this, AccountSPUtils.IV_TOKEN, "");
+            String secretKey = AccountSPUtils.getInstance().getString(this, AccountSPUtils.SECRET_KEY, "");
+            String accessId = AccountSPUtils.getInstance().getString(this, AccountSPUtils.ACCESS_ID, "");
+            if (!TextUtils.isEmpty(realToken) && !TextUtils.isEmpty(secretKey) && !TextUtils.isEmpty(accessId)) {
+                IoTVideoSdk.register(Long.valueOf(accessId), realToken + secretKey);
+                AccountMgr.getInstance().setSecretInfo(accessId, secretKey, realToken);
+            }
         }
     }
 }

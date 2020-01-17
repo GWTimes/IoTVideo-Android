@@ -15,7 +15,7 @@ import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseFragment;
 import com.gwell.iotvideodemo.netconfig.NetConfigViewModel;
 import com.gwell.iotvideodemo.netconfig.NetConfigViewModelFactory;
-import com.gwell.iotvideodemo.videoplayer.VideoPlayerActivity;
+import com.gwell.iotvideodemo.videoplayer.MonitorPlayerActivity;
 import com.gwell.iotvideodemo.widget.RecycleViewDivider;
 
 import java.util.ArrayList;
@@ -75,7 +75,7 @@ public class WiredNetConfigFragment extends BaseFragment {
                 holder.tvMonitor.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent playIntent = new Intent(WiredNetConfigFragment.this.getContext(), VideoPlayerActivity.class);
+                        Intent playIntent = new Intent(WiredNetConfigFragment.this.getContext(), MonitorPlayerActivity.class);
                         playIntent.putExtra("deviceID", String.valueOf(deviceInfo.deviceID));
                         startActivity(playIntent);
                     }

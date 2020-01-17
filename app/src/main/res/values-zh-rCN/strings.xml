@@ -14,7 +14,7 @@
     <string name="create_qrcode">创建二维码</string>
     <string name="scan_qrcode">扫描二维</string>
     <string name="accept_the_permissions">请在设置中同意权限</string>
-    <string name="player">播放器</string>
+    <string name="player">监控</string>
     <string name="confirm">确认</string>
     <string name="cancel">取消</string>
     <string name="design_your_view">design your view</string>
@@ -75,4 +75,5 @@
     <string name="fresh_list">刷新列表</string>
     <string name="flip_to_delete">滑动删除</string>
     <string name="vas">增值服务</string>
+    <string name="local_playback">本地回放</string>
 </resources>

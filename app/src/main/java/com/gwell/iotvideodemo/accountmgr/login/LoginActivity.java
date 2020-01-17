@@ -52,7 +52,7 @@ public class LoginActivity extends BaseActivity {
         mRetrievePasswordFragment = new RetrievePasswordFragment();
         showFragment(mLoginFragment);
         setTitle(R.string.title_activity_login);
-        mLoginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory()).get(LoginViewModel.class);
+        mLoginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory(this)).get(LoginViewModel.class);
         mLoginViewModel.getOperator().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer operator) {

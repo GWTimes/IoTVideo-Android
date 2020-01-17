@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.gwell.iotvideo.accountmgr.AccountMgr;
+import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
 import com.gwell.iotvideodemo.accountmgr.login.LoginActivity;
 import com.gwell.iotvideodemo.base.BaseActivity;
 
@@ -14,7 +15,7 @@ public class WelcomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
-        boolean isLogin = AccountMgr.getInstance().isLogin(this);
+        boolean isLogin = AccountSPUtils.getInstance().isLogin(this);
         if (!isLogin) {
             startActivity(new Intent(this, LoginActivity.class));
         } else {

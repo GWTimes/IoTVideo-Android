@@ -9,13 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.gwell.http.utils.HttpUtils;
 import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.messagemgr.DataMessage;
 import com.gwell.iotvideo.messagemgr.IResultListener;
 import com.gwell.iotvideo.messagemgr.Message;
 import com.gwell.iotvideo.netconfig.NetConfigInfo;
 import com.gwell.iotvideo.netconfig.data.NetMatchTokenResult;
+import com.gwell.iotvideo.utils.JSONUtils;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideo.utils.qrcode.QRCode;
 import com.gwell.iotvideodemo.R;
@@ -63,7 +63,7 @@ public class QRCodeNetConfigFragment extends BaseFragment {
                             byte[] token = ((DataMessage) msg).data;
                             if (token != null) {
                                 String tokenStr = new String(token);
-                                NetMatchTokenResult result = HttpUtils.JsonToEntity(tokenStr, NetMatchTokenResult.class);
+                                NetMatchTokenResult result = JSONUtils.JsonToEntity(tokenStr, NetMatchTokenResult.class);
                                 createQRCodeAndDisplay(result.getToken());
                             }
                         }

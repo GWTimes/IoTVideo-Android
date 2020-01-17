@@ -1,7 +1,6 @@
 package com.gwell.iotvideodemo.test;
 
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -18,12 +17,14 @@ import android.widget.TextView;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.gwell.http.HttpSender;
-import com.gwell.http.SubscriberListener;
-import com.gwell.http.utils.HttpUtils;
+import com.gwell.iotvideo.accountmgr.HttpSender;
+import com.gwell.iotvideo.utils.JSONUtils;
+import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideodemo.R;
+import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
 import com.gwell.iotvideodemo.base.BaseActivity;
+import com.gwell.iotvideodemo.utils.Utils;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -178,7 +179,7 @@ public class TestWebApiActivity extends BaseActivity {
                 JsonElement dataElement = jsonObject.get("data");
                 if (dataElement.isJsonObject()) {
                     JsonObject dataJson = dataElement.getAsJsonObject();
-                    WebInfo webInfo = HttpUtils.JsonToEntity(dataJson.toString(), WebInfo.class);
+                    WebInfo webInfo = JSONUtils.JsonToEntity(dataJson.toString(), WebInfo.class);
                     if (webInfo != null) {
                         mWebInfo.copyFrom(webInfo);
                     }
@@ -348,8 +349,8 @@ public class TestWebApiActivity extends BaseActivity {
             pwd = "qwe123";
             oldPwd = "qwe123";
             vcode = "123456";
-            uniqueId = HttpUtils.getPhoneUuid(TestWebApiActivity.this);
-            ivToken = HttpUtils.getAccessToken(TestWebApiActivity.this, false);
+            uniqueId = Utils.getPhoneUuid(TestWebApiActivity.this);
+            ivToken = AccountSPUtils.getInstance().getString(TestWebApiActivity.this, AccountSPUtils.IV_TOKEN, "");
             feedbackId = "feedbackId";
             noticeId = "noticeId";
             did = "did";

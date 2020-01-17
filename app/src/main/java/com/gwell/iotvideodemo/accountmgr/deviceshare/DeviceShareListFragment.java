@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.gwell.http.utils.HttpUtils;
+import com.gwell.iotvideo.utils.JSONUtils;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseFragment;
@@ -61,7 +61,7 @@ public class DeviceShareListFragment extends BaseFragment implements View.OnClic
             @Override
             public void onChanged(HttpRequestState httpRequestState) {
                 if (httpRequestState.getStatus() == HttpRequestState.Status.SUCCESS) {
-                    ShareList shareList = HttpUtils.JsonToEntity(httpRequestState.getJsonObject().toString(), ShareList.class);
+                    ShareList shareList = JSONUtils.JsonToEntity(httpRequestState.getJsonObject().toString(), ShareList.class);
                     if (shareList != null && shareList.getData() != null) {
                         mShareList = shareList.getData().getUsers();
                         mAdapter.notifyDataSetChanged();

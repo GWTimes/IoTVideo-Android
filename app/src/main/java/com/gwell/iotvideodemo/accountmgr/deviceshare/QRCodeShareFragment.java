@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.gwell.http.utils.HttpUtils;
+import com.gwell.iotvideo.utils.JSONUtils;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideo.utils.qrcode.QRCode;
 import com.gwell.iotvideodemo.R;
@@ -54,7 +54,7 @@ public class QRCodeShareFragment extends BaseFragment implements View.OnClickLis
                         Snackbar.make(mQRCodeImage, httpRequestState.getStatusTip(), Snackbar.LENGTH_LONG).show();
                         break;
                     case SUCCESS:
-                        GenShareQRCodeResult result = HttpUtils.JsonToEntity(httpRequestState.getJsonObject().toString(), GenShareQRCodeResult.class);
+                        GenShareQRCodeResult result = JSONUtils.JsonToEntity(httpRequestState.getJsonObject().toString(), GenShareQRCodeResult.class);
                         QRCode qrCode = new QRCode(QRCode.FUNCTION_SHARE_DEVICE);
                         qrCode.shareToken = String.valueOf(result.getData().getQrcodeToken());
                         createQRCodeAndDisplay(qrCode.toQRContent());

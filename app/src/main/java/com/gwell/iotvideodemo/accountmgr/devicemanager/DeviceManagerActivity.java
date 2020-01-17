@@ -10,17 +10,21 @@ import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
-import com.gwell.http.HttpCode;
-import com.gwell.http.SubscriberListener;
-import com.gwell.http.utils.HttpUtils;
+import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
+import com.gwell.iotvideo.http.HttpCode;
+import com.gwell.iotvideo.messagemgr.IResultListener;
+import com.gwell.iotvideo.messagemgr.ModelMessage;
+import com.gwell.iotvideo.utils.JSONUtils;
 import com.gwell.iotvideo.utils.LogUtils;
+import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.accountmgr.deviceshare.DeviceShareActivity;
 import com.gwell.iotvideodemo.base.BaseActivity;
 import com.gwell.iotvideodemo.messagemgr.DeviceMessageActivity;
 import com.gwell.iotvideodemo.vas.VasActivity;
-import com.gwell.iotvideodemo.videoplayer.VideoPlayerActivity;
+import com.gwell.iotvideodemo.videoplayer.MonitorPlayerActivity;
+import com.gwell.iotvideodemo.videoplayer.PlaybackPlayerActivity;
 import com.gwell.iotvideodemo.widget.RecycleViewDivider;
 
 import java.util.ArrayList;
@@ -91,10 +95,15 @@ public class DeviceManagerActivity extends BaseActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.action_menu_player:
-                        Intent playIntent = new Intent(DeviceManagerActivity.this, VideoPlayerActivity.class);
-                        playIntent.putExtra("deviceID", device.getDid());
-                        startActivity(playIntent);
+                    case R.id.action_menu_monitor_player:
+                        Intent monitorIntent = new Intent(DeviceManagerActivity.this, MonitorPlayerActivity.class);
+                        monitorIntent.putExtra("deviceID", device.getDid());
+                        startActivity(monitorIntent);
+                        break;
+                    case R.id.action_menu_playback_player:
+                        Intent playbackIntent = new Intent(DeviceManagerActivity.this, PlaybackPlayerActivity.class);
+                        playbackIntent.putExtra("deviceID", device.getDid());
+                        startActivity(playbackIntent);
                         break;
                     case R.id.action_menu_model:
                         Intent messageIntent = new Intent(DeviceManagerActivity.this, DeviceMessageActivity.class);
@@ -143,9 +152,10 @@ public class DeviceManagerActivity extends BaseActivity {
             @Override
             public void onSuccess(JsonObject response) {
                 LogUtils.i(TAG, "queryDeviceList = " + response.toString());
-                DeviceList deviceList = HttpUtils.JsonToEntity(response.toString(), DeviceList.class);
+                DeviceList deviceList = JSONUtils.JsonToEntity(response.toString(), DeviceList.class);
                 if (deviceList.getCode() == HttpCode.ERROR_0 && deviceList.getData() != null) {
                     mDeviceInfoList = deviceList.getData();
+                    updateDeviceModel();
                     if (mDeviceInfoList.size() != 0) {
                         mAdapter.notifyDataSetChanged();
                     } else {
@@ -196,6 +206,31 @@ public class DeviceManagerActivity extends BaseActivity {
             tvDeviceName = view.findViewById(R.id.device_name);
             tvOperator = view.findViewById(R.id.operate_device);
             tvOnline = view.findViewById(R.id.tv_online);
+        }
+    }
+
+    private void updateDeviceModel(){
+        if(mDeviceInfoList != null && mDeviceInfoList.size() > 0){
+            for (DeviceList.Device device : mDeviceInfoList){
+                IoTVideoSdk.getMessageMgr().getData(Long.parseLong (device.getDid()), "", new IResultListener<ModelMessage>(){
+
+                    @Override
+                    public void onStart() {
+
+                    }
+
+                    @Override
+                    public void onSuccess(ModelMessage msg) {
+                        DeviceModelManager.getInstance().onNotify(msg);
+                        mAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onError(int errorCode, String errorMsg) {
+
+                    }
+                });
+            }
         }
     }
 }
