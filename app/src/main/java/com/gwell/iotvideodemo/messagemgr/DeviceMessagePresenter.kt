@@ -1,8 +1,7 @@
 package com.gwell.iotvideodemo.messagemgr
 
 import com.gwell.iotvideo.IoTVideoSdk
-import com.gwell.iotvideo.messagemgr.IResultListener
-import com.gwell.iotvideo.messagemgr.Message
+import com.gwell.iotvideo.utils.rxjava.IResultListener
 import com.gwell.iotvideo.messagemgr.ModelMessage
 import com.gwell.iotvideo.utils.LogUtils
 import com.gwell.iotvideodemo.kt.base.BasePresenter

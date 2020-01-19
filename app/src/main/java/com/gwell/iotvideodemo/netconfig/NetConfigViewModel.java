@@ -1,7 +1,7 @@
 package com.gwell.iotvideodemo.netconfig;
 
-import com.gwell.iotvideo.IoTVideoSdk;
-import com.gwell.iotvideo.messagemgr.IResultListener;
+import com.gwell.iotvideo.messagemgr.DataMessage;
+import com.gwell.iotvideo.utils.rxjava.IResultListener;
 import com.gwell.iotvideo.netconfig.DeviceInfo;
 import com.gwell.iotvideo.netconfig.NetConfigInfo;
 import com.gwell.iotvideodemo.base.HttpRequestState;
@@ -55,7 +55,7 @@ public class NetConfigViewModel extends ViewModel {
         mNetConfigHelper.bindDevice(did, mNetConfigStateData);
     }
 
-    public void getNetConfigToken(IResultListener listener) {
+    public void getNetConfigToken(IResultListener<DataMessage> listener) {
         mNetConfigHelper.getNetConfigToken(listener);
     }
 }

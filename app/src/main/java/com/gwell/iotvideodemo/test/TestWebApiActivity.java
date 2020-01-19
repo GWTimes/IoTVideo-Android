@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.gwell.iotvideo.accountmgr.HttpSender;
+import com.gwell.iotvideo.http.annotation.HttpApi;
 import com.gwell.iotvideo.utils.JSONUtils;
 import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
 import com.gwell.iotvideo.utils.LogUtils;
@@ -27,6 +28,7 @@ import com.gwell.iotvideodemo.base.BaseActivity;
 import com.gwell.iotvideodemo.utils.Utils;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -152,7 +154,7 @@ public class TestWebApiActivity extends BaseActivity {
 
     private void initData() {
         mHttpFunctionMap = new TreeMap<>();
-        HttpSender.getInstance().getAllHttpFunction(mHttpFunctionMap);
+        getAllHttpFunction(mHttpFunctionMap);
         mHttpFunctionList = new ArrayList<>();
         mHttpFunctionList.addAll(mHttpFunctionMap.keySet());
         mSpinnerAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, mHttpFunctionList);
@@ -160,6 +162,72 @@ public class TestWebApiActivity extends BaseActivity {
         mWebInfo = new WebInfo();
         mWebInfo.initDefaultValue();
         mInputInfoList = new ArrayList<>();
+    }
+
+    /**
+     * 获取所有的Http接口
+     */
+    private void getAllHttpFunction(Map<String, String> functions) {
+        if (functions == null || functions.size() > 0) {
+            return;
+        }
+        Method[] methods = HttpSender.getInstance().getClass().getMethods();
+        for (Method method : methods) {
+            Annotation[] methodAnnotations = method.getAnnotations();
+            for (Annotation annotation : methodAnnotations) {
+                if (annotation instanceof HttpApi) {
+                    functions.put(((HttpApi) annotation).value(), method.getName());
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * 根据方法名获取方法
+     *
+     * @return 方法
+     */
+    public Method getHttpMethod(String methodName) {
+        Method[] methods = HttpSender.getInstance().getClass().getMethods();
+        for (Method method : methods) {
+            if (method.getName().equals(methodName)) {
+                return method;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取相应方法的参数名称列表
+     *
+     * @param methodName 方法名
+     */
+    public void getHttpMethodParams(String methodName, Map<String, Class> params) {
+        LogUtils.i(TAG, "getHttpMethodParams methodName = " + methodName);
+        if (params == null || params.size() > 0) {
+            return;
+        }
+        Method[] methods = HttpSender.getInstance().getClass().getMethods();
+        Method targetMethod = null;
+        for (Method method : methods) {
+            if (method.getName().equals(methodName)) {
+                targetMethod = method;
+                break;
+            }
+        }
+        if (targetMethod != null) {
+            Annotation[][] annotationsArray = targetMethod.getParameterAnnotations();
+            for (Annotation[] annotations : annotationsArray) {
+                for (Annotation annotation : annotations) {
+                    if (annotation instanceof com.gwell.iotvideo.http.annotation.Field) {
+                        params.put(((com.gwell.iotvideo.http.annotation.Field) annotation).value(), ((com.gwell.iotvideo.http.annotation.Field) annotation).type());
+                    }
+                }
+            }
+        } else {
+            LogUtils.i(TAG, "can not find target method");
+        }
     }
 
     private SubscriberListener mSubscriberListener = new SubscriberListener() {
@@ -197,7 +265,7 @@ public class TestWebApiActivity extends BaseActivity {
 
     private void webApiTemplate(String methodName) {
         Map<String, Class> params = new LinkedHashMap<>();
-        HttpSender.getInstance().getParams(methodName, params);
+        getHttpMethodParams(methodName, params);
         LogUtils.i(TAG, "webApiTemplate = " + params);
         mInputInfoList.clear();
         for (String key : params.keySet()) {
@@ -212,7 +280,7 @@ public class TestWebApiActivity extends BaseActivity {
 
     private void startConnect() {
         LogUtils.i(TAG, "startConnect params = " + mInputInfoList);
-        Method method = HttpSender.getInstance().getMethod(mCurrentHttpWebApi);
+        Method method = getHttpMethod(mCurrentHttpWebApi);
         if (method == null) {
             LogUtils.e(TAG, "not has such method");
             return;

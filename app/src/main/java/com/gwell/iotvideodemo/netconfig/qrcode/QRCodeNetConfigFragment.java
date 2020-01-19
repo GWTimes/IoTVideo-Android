@@ -11,8 +11,7 @@ import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
 import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.messagemgr.DataMessage;
-import com.gwell.iotvideo.messagemgr.IResultListener;
-import com.gwell.iotvideo.messagemgr.Message;
+import com.gwell.iotvideo.utils.rxjava.IResultListener;
 import com.gwell.iotvideo.netconfig.NetConfigInfo;
 import com.gwell.iotvideo.netconfig.data.NetMatchTokenResult;
 import com.gwell.iotvideo.utils.JSONUtils;
@@ -50,22 +49,20 @@ public class QRCodeNetConfigFragment extends BaseFragment {
         view.findViewById(R.id.create_qrcode).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mNetConfigInfoViewModel.getNetConfigToken(new IResultListener() {
+                mNetConfigInfoViewModel.getNetConfigToken(new IResultListener<DataMessage>() {
                     @Override
                     public void onStart() {
                         LogUtils.i(TAG, "getNetConfigToken start");
                     }
 
                     @Override
-                    public void onSuccess(Message msg) {
+                    public void onSuccess(DataMessage msg) {
                         LogUtils.i(TAG, "getNetConfigToken onSuccess : " + msg);
-                        if (msg instanceof DataMessage) {
-                            byte[] token = ((DataMessage) msg).data;
-                            if (token != null) {
-                                String tokenStr = new String(token);
-                                NetMatchTokenResult result = JSONUtils.JsonToEntity(tokenStr, NetMatchTokenResult.class);
-                                createQRCodeAndDisplay(result.getToken());
-                            }
+                        byte[] token = msg.data;
+                        if (token != null) {
+                            String tokenStr = new String(token);
+                            NetMatchTokenResult result = JSONUtils.JsonToEntity(tokenStr, NetMatchTokenResult.class);
+                            createQRCodeAndDisplay(result.getToken());
                         }
                     }
 

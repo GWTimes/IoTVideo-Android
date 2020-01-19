@@ -15,8 +15,8 @@ import com.gwell.iotvideo.accountmgr.AccountMgr;
 import com.gwell.iotvideo.utils.JSONUtils;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
+import com.gwell.iotvideo.vas.VasMgr;
 import com.gwell.iotvideo.vas.VasService;
-import com.gwell.iotvideo.vas.vas;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceList;
 import com.gwell.iotvideodemo.base.BaseActivity;
@@ -66,7 +66,7 @@ public class VasActivity extends BaseActivity implements View.OnClickListener, S
         mRVPlaybackList.addItemDecoration(new RecycleViewDivider(this, RecycleViewDivider.VERTICAL));
         mRVPlaybackList.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(this);
-        mVasService = vas.getVasService();
+        mVasService = VasMgr.getVasService();
         findViewById(R.id.buy).setOnClickListener(this);
         findViewById(R.id.playback).setOnClickListener(this);
         if (getIntent() != null) {
@@ -108,7 +108,8 @@ public class VasActivity extends BaseActivity implements View.OnClickListener, S
                 }
             });
         } else if (view.getId() == R.id.buy) {
-            AccountMgr.getInstance().cloudStorageCreate(mDevice.getDevId(), mBuyStartTime, mBuyEndTime, new SubscriberListener() {
+            AccountMgr.getHttpService().cloudStorageCreate(103, mDevice.getDevId(), "yc1m3d", 1,
+                    mBuyStartTime, mBuyEndTime, 3 * 24 * 3600, new SubscriberListener() {
                 @Override
                 public void onStart() {
 
@@ -125,7 +126,7 @@ public class VasActivity extends BaseActivity implements View.OnClickListener, S
                 }
             });
         } else if (view.getId() == R.id.playback) {
-            AccountMgr.getInstance().cloudStoragePlayback(mDevice.getDevId(), 28800, mPlaybackStartTime, mPlaybackEndTime, new SubscriberListener() {
+            AccountMgr.getHttpService().cloudStoragePlayback(mDevice.getDevId(), 28800, mPlaybackStartTime, mPlaybackEndTime, new SubscriberListener() {
                 @Override
                 public void onStart() {
 

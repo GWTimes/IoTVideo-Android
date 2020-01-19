@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import com.gwell.iotvideo.IoTVideoSdk
 import com.gwell.iotvideo.messagemgr.DataMessage
-import com.gwell.iotvideo.messagemgr.IResultListener
+import com.gwell.iotvideo.utils.rxjava.IResultListener
 import com.gwell.iotvideo.utils.LogUtils
 import com.gwell.iotvideodemo.R
 import com.gwell.iotvideodemo.kt.base.BaseFragment

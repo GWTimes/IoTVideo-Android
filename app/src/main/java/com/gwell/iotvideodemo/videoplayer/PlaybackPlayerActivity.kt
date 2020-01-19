@@ -4,7 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gwell.iotvideo.iotvideoplayer.player.PlaybackPlayer
-import com.gwell.iotvideo.messagemgr.IResultListener
+import com.gwell.iotvideo.utils.rxjava.IResultListener
 import com.gwell.iotvideo.messagemgr.PlaybackMessage
 import com.gwell.iotvideo.utils.LogUtils
 import com.gwell.iotvideodemo.R

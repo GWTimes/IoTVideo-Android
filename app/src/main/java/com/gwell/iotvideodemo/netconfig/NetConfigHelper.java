@@ -2,7 +2,8 @@ package com.gwell.iotvideodemo.netconfig;
 
 import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
-import com.gwell.iotvideo.messagemgr.IResultListener;
+import com.gwell.iotvideo.messagemgr.DataMessage;
+import com.gwell.iotvideo.utils.rxjava.IResultListener;
 import com.gwell.iotvideo.netconfig.DeviceInfo;
 import com.gwell.iotvideo.netconfig.wired.WiredNetConfig;
 import com.gwell.iotvideo.utils.LogUtils;
@@ -21,7 +22,7 @@ class NetConfigHelper {
     }
 
     void bindDevice(String did, MutableLiveData<HttpRequestState> httpRequestStateMutableLiveData) {
-        AccountMgr.getInstance().deviceBind(did, true, new SimpleSubscriberListener(httpRequestStateMutableLiveData));
+        AccountMgr.getHttpService().deviceBind(did, true, new SimpleSubscriberListener(httpRequestStateMutableLiveData));
     }
 
     void findDevices() {
@@ -38,7 +39,7 @@ class NetConfigHelper {
         });
     }
 
-    void getNetConfigToken(IResultListener listener) {
+    void getNetConfigToken(IResultListener<DataMessage> listener) {
         IoTVideoSdk.getNetConfig().getNetConfigToken(listener);
     }
 }

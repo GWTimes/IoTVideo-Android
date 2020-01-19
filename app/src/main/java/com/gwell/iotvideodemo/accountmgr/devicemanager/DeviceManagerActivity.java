@@ -13,7 +13,7 @@ import com.google.gson.JsonObject;
 import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
 import com.gwell.iotvideo.http.HttpCode;
-import com.gwell.iotvideo.messagemgr.IResultListener;
+import com.gwell.iotvideo.utils.rxjava.IResultListener;
 import com.gwell.iotvideo.messagemgr.ModelMessage;
 import com.gwell.iotvideo.utils.JSONUtils;
 import com.gwell.iotvideo.utils.LogUtils;
@@ -143,7 +143,7 @@ public class DeviceManagerActivity extends BaseActivity {
     }
 
     private void queryDeviceList() {
-        AccountMgr.getInstance().deviceList(new SubscriberListener() {
+        AccountMgr.getHttpService().deviceList(new SubscriberListener() {
             @Override
             public void onStart() {
 
@@ -174,7 +174,7 @@ public class DeviceManagerActivity extends BaseActivity {
     }
 
     private void unbindDevice(final DeviceList.Device device) {
-        AccountMgr.getInstance().deviceUnbind(device.getDevId(), new SubscriberListener() {
+        AccountMgr.getHttpService().deviceUnbind(device.getDevId(), new SubscriberListener() {
             @Override
             public void onStart() {
 

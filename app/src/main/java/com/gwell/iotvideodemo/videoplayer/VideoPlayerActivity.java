@@ -184,7 +184,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
 
     private IUserDataListener mUserDataListener = new IUserDataListener() {
         @Override
-        public void onReceive(ByteBuffer data) {
+        public void onReceive(byte[]  data) {
             LogUtils.d(TAG, "onReceive ----");
             appendToOutput( "收到数据：" + data);
         }

@@ -3,14 +3,13 @@ package com.gwell.iotvideodemo.messagemgr
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import com.gwell.iotvideo.iotvideoplayer.player.PlaybackPlayer
-import com.gwell.iotvideo.messagemgr.IResultListener
+import com.gwell.iotvideo.utils.rxjava.IResultListener
 import com.gwell.iotvideo.messagemgr.PlaybackMessage
 import com.gwell.iotvideo.utils.LogUtils
 import com.gwell.iotvideodemo.R
 import com.gwell.iotvideodemo.kt.base.BaseFragment
 import com.gwell.iotvideodemo.kt.function.click
 import kotlinx.android.synthetic.main.fragment_get_playback.*
-import kotlinx.android.synthetic.main.fragment_send_data_to_device.*
 import kotlinx.android.synthetic.main.fragment_send_data_to_device.result_txt
 import kotlinx.android.synthetic.main.fragment_send_data_to_device.tv_run
 
@@ -26,10 +25,10 @@ class GetPlaybackFragment : BaseFragment<DeviceMessagePresenter>() {
         tv_run.click {
 
             var pageIndex = if(et_page_index.text.toString().isEmpty()) 0 else et_page_index.text.toString().toInt()
-            var pagePerCount = if(et_page_per_count.text.toString().isEmpty()) 0 else et_page_per_count.text.toString().toInt()
+            var pagePerCount = if(et_page_per_count.text.toString().isEmpty()) 50 else et_page_per_count.text.toString().toInt()
 
             PlaybackPlayer.getPlaybackList(mBasePresenter.deviceId, 0, System.currentTimeMillis() / 1000,
-                    pageIndex , pagePerCount, object : IResultListener<PlaybackMessage>{
+                    pageIndex , pagePerCount, object : IResultListener<PlaybackMessage> {
                 override fun onStart() {
                     result_txt.text = "请求中...."
                 }

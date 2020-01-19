@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.gwell.iotvideodemo.MainActivity;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseFragment;
+import com.gwell.iotvideodemo.utils.Utils;
 
 import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_SUCCESS;
 
@@ -95,7 +96,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
         mLoginViewModel.getOperator().setValue(LoginViewModel.OPERATE_LOGIN);
         String userName = mUserNameView.getText().toString();
         String password = mPasswordView.getText().toString();
-        mLoginViewModel.login(userName, password);
+        mLoginViewModel.login(userName, password, Utils.getPhoneUuid(getContext()));
     }
 
     private void registerClicked() {

@@ -27,8 +27,8 @@ import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideo.utils.UrlHelper;
 import com.gwell.iotvideo.utils.qrcode.QRCode;
 import com.gwell.iotvideo.utils.qrcode.QRCodeHelper;
+import com.gwell.iotvideo.vas.VasMgr;
 import com.gwell.iotvideo.vas.VasService;
-import com.gwell.iotvideo.vas.vas;
 import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
 import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
 import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceManagerActivity;
@@ -164,10 +164,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 startDeviceManagerActivity();
                 break;
             case R.id.test_http_via_p2p:
-                VasService vasService = vas.getVasService();
+                VasService vasService = VasMgr.getVasService();
                 Map<String, Object> publicParams = new HashMap<>();
                 publicParams.put("tencentCid", "20aea48e985f519539679487802ba59f");
-                vas.updatePublicParams(publicParams);
+                VasMgr.updatePublicParams(publicParams);
                 String userId = AccountSPUtils.getInstance().getString(this, AccountSPUtils.ACCESS_ID, "");
                 vasService.register(userId, new SubscriberListener() {
                     @Override
@@ -235,7 +235,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void logout() {
-        AccountMgr.getInstance().logout(new SubscriberListener() {
+        AccountMgr.getHttpService().logout(new SubscriberListener() {
             @Override
             public void onStart() {
                 showProgress(true);

@@ -57,8 +57,8 @@ class LoginViewModel extends ViewModel {
         mLoginManager.checkCode(account, flag);
     }
 
-    void login(String account, String password) {
-        mLoginManager.login(account, password);
+    void login(String account, String password, String uuid) {
+        mLoginManager.login(account, password, uuid);
     }
 
     void register(String account, String password, String vcode) {

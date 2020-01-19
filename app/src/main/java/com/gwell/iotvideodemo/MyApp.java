@@ -7,11 +7,11 @@ import android.text.TextUtils;
 import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
 import com.gwell.iotvideo.utils.UrlHelper;
+import com.gwell.iotvideo.vas.VasMgr;
 import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
 import com.gwell.iotvideodemo.utils.AppSPUtils;
 import com.gwell.iotvideodemo.utils.CrashHandler;
 import com.gwell.iotvideodemo.utils.FloatLogWindows;
-import com.gwell.iotvideodemo.utils.Utils;
 
 import java.io.File;
 
@@ -19,6 +19,9 @@ public class MyApp extends Application {
     public static String APP_VIDEO_PATH;
     public static String APP_PIC_PATH;
     public static String APP_DOC_PATH;
+
+    public final static int CID = 103;
+    public final static String PRODUCT_ID = "440234147841";
 
     @Override
     public void onCreate() {
@@ -36,9 +39,10 @@ public class MyApp extends Application {
         }
 
         IoTVideoSdk.init(getApplicationContext(), null);
-        AccountMgr.getInstance().init(Utils.getPhoneUuid(this), 103, "440234147841");
-        checkAndAutoLogin();
         IoTVideoSdk.setLogPath(MyApp.APP_DOC_PATH + File.separator + "xLog");
+        AccountMgr.init(CID, PRODUCT_ID);
+        checkAndAutoLogin();
+        VasMgr.init();
         if(BuildConfig.DEBUG){
             FloatLogWindows.getInstance().init(this);
         }
@@ -53,7 +57,7 @@ public class MyApp extends Application {
             String accessId = AccountSPUtils.getInstance().getString(this, AccountSPUtils.ACCESS_ID, "");
             if (!TextUtils.isEmpty(realToken) && !TextUtils.isEmpty(secretKey) && !TextUtils.isEmpty(accessId)) {
                 IoTVideoSdk.register(Long.valueOf(accessId), realToken + secretKey);
-                AccountMgr.getInstance().setSecretInfo(accessId, secretKey, realToken);
+                AccountMgr.setSecretInfo(accessId, secretKey, realToken);
             }
         }
     }

@@ -9,7 +9,9 @@ import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
+import com.gwell.iotvideodemo.MyApp;
 import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
+import com.gwell.iotvideodemo.utils.Utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,14 +66,15 @@ class LoginManager {
             }
         };
         if (isEmailValid(account)) {
-            AccountMgr.getInstance().emailCheckCode(account, flag, subscriberListener);
+            AccountMgr.getHttpService().emailCheckCode(account, flag, subscriberListener);
         } else {
-            AccountMgr.getInstance().mobileCheckCode("86", account, flag, subscriberListener);
+            AccountMgr.getHttpService().mobileCheckCode("86", account, flag, subscriberListener);
         }
     }
 
     void login(String account,
-               String password) {
+               String password,
+               String uuid) {
         SubscriberListener subscriberListener = new SubscriberListener() {
             @Override
             public void onStart() {
@@ -97,7 +100,7 @@ class LoginManager {
                 mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_ERROR, null, e));
             }
         };
-        AccountMgr.getInstance().accountLogin(account, password, subscriberListener);
+        AccountMgr.getHttpService().accountLogin(account, password, uuid, subscriberListener);
     }
 
     void register(String account,
@@ -120,9 +123,9 @@ class LoginManager {
             }
         };
         if (isEmailValid(account)) {
-            AccountMgr.getInstance().emailRegister(account, pwd, vcode, subscriberListener);
+            AccountMgr.getHttpService().emailRegister(MyApp.CID, account, pwd, vcode, subscriberListener);
         } else {
-            AccountMgr.getInstance().mobileRegister("86", account, pwd, vcode, subscriberListener);
+            AccountMgr.getHttpService().mobileRegister(MyApp.CID, "86", account, pwd, vcode, subscriberListener);
         }
     }
 
@@ -146,16 +149,16 @@ class LoginManager {
             }
         };
         if (isEmailValid(account)) {
-            AccountMgr.getInstance().emailResetPwd(account, pwd, vcode, subscriberListener);
+            AccountMgr.getHttpService().emailResetPwd(account, pwd, vcode, subscriberListener);
         } else {
-            AccountMgr.getInstance().mobileResetPwd("86", account, pwd, vcode, subscriberListener);
+            AccountMgr.getHttpService().mobileResetPwd("86", account, pwd, vcode, subscriberListener);
         }
     }
 
     private void saveLoginInfo(String accessId, String token, int validityTime) {
         String realToken = token.substring(0, 96);
         String secretKey = token.substring(96, 128);
-        AccountMgr.getInstance().setSecretInfo(accessId, secretKey, realToken);
+        AccountMgr.setSecretInfo(accessId, secretKey, realToken);
         IoTVideoSdk.register(Long.valueOf(accessId), token);
 
         AccountSPUtils.getInstance().putString(mContext, AccountSPUtils.ACCESS_ID, accessId);

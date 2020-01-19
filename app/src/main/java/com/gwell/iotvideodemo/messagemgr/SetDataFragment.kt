@@ -6,8 +6,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gwell.iotvideo.IoTVideoSdk
-import com.gwell.iotvideo.messagemgr.IResultListener
-import com.gwell.iotvideo.messagemgr.Message
+import com.gwell.iotvideo.utils.rxjava.IResultListener
 import com.gwell.iotvideo.messagemgr.ModelMessage
 import com.gwell.iotvideo.utils.LogUtils
 import com.gwell.iotvideodemo.R
@@ -18,7 +17,6 @@ import com.gwell.iotvideodemo.kt.ui.adapter.SimpleAdapter
 import com.gwell.iotvideodemo.kt.ui.adapter.onClick
 import com.gwell.iotvideodemo.kt.ui.adapter.setText
 import com.gwell.iotvideodemo.kt.utils.ViewUtils
-import com.gwell.iotvideodemo.kt.widget.dialog.CommonDialogFragment
 import com.gwell.iotvideodemo.kt.widget.dialog.CommonEditDialogFragment
 import kotlinx.android.synthetic.main.item_device_model_function.view.*
 import kotlinx.android.synthetic.main.item_device_model_type.view.*
