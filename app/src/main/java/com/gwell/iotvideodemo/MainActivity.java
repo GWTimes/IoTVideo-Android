@@ -27,9 +27,9 @@ import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideo.utils.UrlHelper;
 import com.gwell.iotvideo.utils.qrcode.QRCode;
 import com.gwell.iotvideo.utils.qrcode.QRCodeHelper;
+import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
 import com.gwell.iotvideo.vas.VasMgr;
 import com.gwell.iotvideo.vas.VasService;
-import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
 import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
 import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceManagerActivity;
 import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceModelManager;
@@ -121,7 +121,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         String realToken = AccountSPUtils.getInstance().getString(this, AccountSPUtils.IV_TOKEN, "");
         String secretKey = AccountSPUtils.getInstance().getString(this, AccountSPUtils.SECRET_KEY, "");
-        mTvIvToken.setText(realToken + secretKey);
+        mTvIvToken.setText(String.format("%s%s", realToken, secretKey));
 
         //设置log
         applyForStoragePerMission();
@@ -177,13 +177,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     }
 
                     @Override
-                    public void onSuccess(JsonObject response) {
+                    public void onSuccess(@NonNull JsonObject response) {
                         LogUtils.i(TAG, "cloudStorageCreate onSuccess " + response.toString());
                         Snackbar.make(mProgressBar, response.toString(), Snackbar.LENGTH_LONG).show();
                     }
 
                     @Override
-                    public void onFail(Throwable e) {
+                    public void onFail(@NonNull Throwable e) {
                         LogUtils.i(TAG, "cloudStorageCreate onFail " + e.getMessage());
                         Snackbar.make(mProgressBar, e.getMessage(), Snackbar.LENGTH_LONG).show();
                     }
@@ -243,14 +243,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
 
             @Override
-            public void onSuccess(JsonObject response) {
+            public void onSuccess(@NonNull JsonObject response) {
                 showProgress(false);
                 AccountSPUtils.getInstance().clear(MainActivity.this);
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
             }
 
             @Override
-            public void onFail(Throwable e) {
+            public void onFail(@NonNull Throwable e) {
                 showProgress(false);
                 Snackbar.make(mLlFunctions, e.getMessage(), Snackbar.LENGTH_LONG).show();
             }
@@ -353,12 +353,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     }
 
                     @Override
-                    public void onSuccess(JsonObject response) {
+                    public void onSuccess(@NonNull JsonObject response) {
                         Snackbar.make(mLlFunctions, R.string.success, Snackbar.LENGTH_LONG).show();
                     }
 
                     @Override
-                    public void onFail(Throwable e) {
+                    public void onFail(@NonNull Throwable e) {
                         Snackbar.make(mLlFunctions, e.getMessage(), Snackbar.LENGTH_LONG).show();
                     }
                 });

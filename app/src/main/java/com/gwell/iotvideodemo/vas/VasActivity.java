@@ -24,6 +24,8 @@ import com.gwell.iotvideodemo.videoplayer.IjkPlayerActivity;
 import com.gwell.iotvideodemo.widget.RecycleViewDivider;
 import com.gwell.iotvideodemo.widget.SimpleRecyclerViewAdapter;
 
+import androidx.annotation.NonNull;
+
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -116,12 +118,12 @@ public class VasActivity extends BaseActivity implements View.OnClickListener, S
                 }
 
                 @Override
-                public void onSuccess(JsonObject response) {
+                public void onSuccess(@NonNull JsonObject response) {
                     Snackbar.make(mTvBuyStartTime, response.toString(), Snackbar.LENGTH_LONG).show();
                 }
 
                 @Override
-                public void onFail(Throwable e) {
+                public void onFail(@NonNull Throwable e) {
                     Snackbar.make(mTvBuyStartTime, e.getMessage(), Snackbar.LENGTH_LONG).show();
                 }
             });
@@ -133,7 +135,7 @@ public class VasActivity extends BaseActivity implements View.OnClickListener, S
                 }
 
                 @Override
-                public void onSuccess(JsonObject response) {
+                public void onSuccess(@NonNull JsonObject response) {
                     PlaybackList playbackList = JSONUtils.JsonToEntity(response.toString(), PlaybackList.class);
                     if (playbackList == null) {
                         Snackbar.make(mRVPlaybackList, "invalid data", Snackbar.LENGTH_LONG).show();
@@ -152,7 +154,7 @@ public class VasActivity extends BaseActivity implements View.OnClickListener, S
                 }
 
                 @Override
-                public void onFail(Throwable e) {
+                public void onFail(@NonNull Throwable e) {
                     Snackbar.make(mRVPlaybackList, e.getMessage(), Snackbar.LENGTH_LONG).show();
                 }
             });

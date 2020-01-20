@@ -11,10 +11,11 @@ import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
 import com.gwell.iotvideodemo.MyApp;
 import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
-import com.gwell.iotvideodemo.utils.Utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import androidx.annotation.NonNull;
 
 import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_ERROR;
 import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_START;
@@ -56,12 +57,12 @@ class LoginManager {
             }
 
             @Override
-            public void onSuccess(JsonObject response) {
+            public void onSuccess(@NonNull JsonObject response) {
                 mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_VCODE_SUCCESS, response.toString(), null));
             }
 
             @Override
-            public void onFail(Throwable e) {
+            public void onFail(@NonNull Throwable e) {
                 mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_VCODE_ERROR, null, e));
             }
         };
@@ -82,7 +83,7 @@ class LoginManager {
             }
 
             @Override
-            public void onSuccess(JsonObject response) {
+            public void onSuccess(@NonNull JsonObject response) {
                 mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_SUCCESS, response.toString(), null));
                 LoginInfo loginInfo = JSONUtils.JsonToEntity(response.toString(), LoginInfo.class);
                 if (loginInfo != null && loginInfo.getCode() == HttpCode.ERROR_0) {
@@ -96,7 +97,7 @@ class LoginManager {
             }
 
             @Override
-            public void onFail(Throwable e) {
+            public void onFail(@NonNull Throwable e) {
                 mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_ERROR, null, e));
             }
         };
@@ -113,12 +114,12 @@ class LoginManager {
             }
 
             @Override
-            public void onSuccess(JsonObject response) {
+            public void onSuccess(@NonNull JsonObject response) {
                 mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_SUCCESS, response.toString(), null));
             }
 
             @Override
-            public void onFail(Throwable e) {
+            public void onFail(@NonNull Throwable e) {
                 mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_ERROR, null, e));
             }
         };
@@ -139,12 +140,12 @@ class LoginManager {
             }
 
             @Override
-            public void onSuccess(JsonObject response) {
+            public void onSuccess(@NonNull JsonObject response) {
                 mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_SUCCESS, response.toString(), null));
             }
 
             @Override
-            public void onFail(Throwable e) {
+            public void onFail(@NonNull Throwable e) {
                 mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_ERROR, null, e));
             }
         };

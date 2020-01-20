@@ -150,7 +150,7 @@ public class DeviceManagerActivity extends BaseActivity {
             }
 
             @Override
-            public void onSuccess(JsonObject response) {
+            public void onSuccess(@NonNull JsonObject response) {
                 LogUtils.i(TAG, "queryDeviceList = " + response.toString());
                 DeviceList deviceList = JSONUtils.JsonToEntity(response.toString(), DeviceList.class);
                 if (deviceList.getCode() == HttpCode.ERROR_0 && deviceList.getData() != null) {
@@ -167,7 +167,7 @@ public class DeviceManagerActivity extends BaseActivity {
             }
 
             @Override
-            public void onFail(Throwable e) {
+            public void onFail(@NonNull Throwable e) {
                 Snackbar.make(mRVDeviceList, e.getMessage(), Snackbar.LENGTH_LONG).show();
             }
         });
@@ -181,14 +181,14 @@ public class DeviceManagerActivity extends BaseActivity {
             }
 
             @Override
-            public void onSuccess(JsonObject response) {
+            public void onSuccess(@NonNull JsonObject response) {
                 mDeviceInfoList.remove(device);
                 mAdapter.notifyDataSetChanged();
                 Snackbar.make(mRVDeviceList, response.toString(), Snackbar.LENGTH_LONG).show();
             }
 
             @Override
-            public void onFail(Throwable e) {
+            public void onFail(@NonNull Throwable e) {
                 Snackbar.make(mRVDeviceList, e.getMessage(), Snackbar.LENGTH_LONG).show();
             }
         });

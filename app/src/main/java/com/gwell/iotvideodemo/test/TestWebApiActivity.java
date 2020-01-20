@@ -17,7 +17,8 @@ import android.widget.TextView;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.gwell.iotvideo.accountmgr.HttpSender;
+import com.gwell.iotvideo.accountmgr.AccountMgr;
+import com.gwell.iotvideo.accountmgr.HttpService;
 import com.gwell.iotvideo.http.annotation.HttpApi;
 import com.gwell.iotvideo.utils.JSONUtils;
 import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
@@ -26,7 +27,6 @@ import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
 import com.gwell.iotvideodemo.base.BaseActivity;
 import com.gwell.iotvideodemo.utils.Utils;
-
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -59,11 +59,13 @@ public class TestWebApiActivity extends BaseActivity {
     private RecyclerView.Adapter<InputItemHolder> mAdapter;
     private Map<String, String> mHttpFunctionMap;
     private List<String> mHttpFunctionList;
+    private HttpService mHttpService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_web_api);
+        mHttpService = AccountMgr.getHttpService();
         initView();
         initData();
     }
@@ -171,7 +173,7 @@ public class TestWebApiActivity extends BaseActivity {
         if (functions == null || functions.size() > 0) {
             return;
         }
-        Method[] methods = HttpSender.getInstance().getClass().getMethods();
+        Method[] methods = mHttpService.getClass().getMethods();
         for (Method method : methods) {
             Annotation[] methodAnnotations = method.getAnnotations();
             for (Annotation annotation : methodAnnotations) {
@@ -189,7 +191,7 @@ public class TestWebApiActivity extends BaseActivity {
      * @return 方法
      */
     public Method getHttpMethod(String methodName) {
-        Method[] methods = HttpSender.getInstance().getClass().getMethods();
+        Method[] methods = mHttpService.getClass().getMethods();
         for (Method method : methods) {
             if (method.getName().equals(methodName)) {
                 return method;
@@ -208,7 +210,7 @@ public class TestWebApiActivity extends BaseActivity {
         if (params == null || params.size() > 0) {
             return;
         }
-        Method[] methods = HttpSender.getInstance().getClass().getMethods();
+        Method[] methods = mHttpService.getClass().getMethods();
         Method targetMethod = null;
         for (Method method : methods) {
             if (method.getName().equals(methodName)) {
@@ -239,7 +241,7 @@ public class TestWebApiActivity extends BaseActivity {
         }
 
         @Override
-        public void onSuccess(JsonObject jsonObject) {
+        public void onSuccess(@NonNull JsonObject jsonObject) {
             if (jsonObject != null) {
                 String logText = "请求成功：\n" + jsonObject.toString();
                 mHttpStateTextView.setText(logText);
@@ -256,7 +258,7 @@ public class TestWebApiActivity extends BaseActivity {
         }
 
         @Override
-        public void onFail(Throwable e) {
+        public void onFail(@NonNull Throwable e) {
             String logText = "请求失败：\n" + e.getMessage();
             mHttpStateTextView.setText(logText);
             LogUtils.i(TAG, "onFail = " + logText);
@@ -288,31 +290,31 @@ public class TestWebApiActivity extends BaseActivity {
         try {
             int paramSize = mInputInfoList.size();
             if (paramSize == 0) {
-                method.invoke(HttpSender.getInstance(), mSubscriberListener);
+                method.invoke(mHttpService, mSubscriberListener);
             } else if (paramSize == 1) {
-                method.invoke(HttpSender.getInstance(),
+                method.invoke(mHttpService,
                         mInputInfoList.get(0).getValue(),
                         mSubscriberListener);
             } else if (paramSize == 2) {
-                method.invoke(HttpSender.getInstance(),
+                method.invoke(mHttpService,
                         mInputInfoList.get(0).getValue(),
                         mInputInfoList.get(1).getValue(),
                         mSubscriberListener);
             } else if (paramSize == 3) {
-                method.invoke(HttpSender.getInstance(),
+                method.invoke(mHttpService,
                         mInputInfoList.get(0).getValue(),
                         mInputInfoList.get(1).getValue(),
                         mInputInfoList.get(2).getValue(),
                         mSubscriberListener);
             } else if (paramSize == 4) {
-                method.invoke(HttpSender.getInstance(),
+                method.invoke(mHttpService,
                         mInputInfoList.get(0).getValue(),
                         mInputInfoList.get(1).getValue(),
                         mInputInfoList.get(2).getValue(),
                         mInputInfoList.get(3).getValue(),
                         mSubscriberListener);
             } else if (paramSize == 5) {
-                method.invoke(HttpSender.getInstance(),
+                method.invoke(mHttpService,
                         mInputInfoList.get(0).getValue(),
                         mInputInfoList.get(1).getValue(),
                         mInputInfoList.get(2).getValue(),
@@ -320,7 +322,7 @@ public class TestWebApiActivity extends BaseActivity {
                         mInputInfoList.get(4).getValue(),
                         mSubscriberListener);
             } else if (paramSize == 6) {
-                method.invoke(HttpSender.getInstance(),
+                method.invoke(mHttpService,
                         mInputInfoList.get(0).getValue(),
                         mInputInfoList.get(1).getValue(),
                         mInputInfoList.get(2).getValue(),
@@ -329,7 +331,7 @@ public class TestWebApiActivity extends BaseActivity {
                         mInputInfoList.get(5).getValue(),
                         mSubscriberListener);
             } else if (paramSize == 7) {
-                method.invoke(HttpSender.getInstance(),
+                method.invoke(mHttpService,
                         mInputInfoList.get(0).getValue(),
                         mInputInfoList.get(1).getValue(),
                         mInputInfoList.get(2).getValue(),
@@ -339,7 +341,7 @@ public class TestWebApiActivity extends BaseActivity {
                         mInputInfoList.get(6).getValue(),
                         mSubscriberListener);
             } else if (paramSize == 8) {
-                method.invoke(HttpSender.getInstance(),
+                method.invoke(mHttpService,
                         mInputInfoList.get(0).getValue(),
                         mInputInfoList.get(1).getValue(),
                         mInputInfoList.get(2).getValue(),

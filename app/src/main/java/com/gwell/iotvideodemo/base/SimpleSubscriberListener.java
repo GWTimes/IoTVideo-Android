@@ -3,6 +3,8 @@ package com.gwell.iotvideodemo.base;
 import com.google.gson.JsonObject;
 import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
 
+import androidx.annotation.NonNull;
+
 import androidx.lifecycle.MutableLiveData;
 
 public class SimpleSubscriberListener implements SubscriberListener {
@@ -20,7 +22,7 @@ public class SimpleSubscriberListener implements SubscriberListener {
     }
 
     @Override
-    public void onSuccess(JsonObject response) {
+    public void onSuccess(@NonNull JsonObject response) {
         HttpRequestState requestState = new HttpRequestState();
         requestState.setStatus(HttpRequestState.Status.SUCCESS);
         requestState.setJsonObject(response);
@@ -28,7 +30,7 @@ public class SimpleSubscriberListener implements SubscriberListener {
     }
 
     @Override
-    public void onFail(Throwable e) {
+    public void onFail(@NonNull Throwable e) {
         HttpRequestState requestState = new HttpRequestState();
         requestState.setStatus(HttpRequestState.Status.ERROR);
         requestState.setE(e);

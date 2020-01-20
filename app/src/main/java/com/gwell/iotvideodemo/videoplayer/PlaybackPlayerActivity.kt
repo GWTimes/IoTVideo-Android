@@ -4,6 +4,8 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gwell.iotvideo.iotvideoplayer.player.PlaybackPlayer
+import com.gwell.iotvideo.messagemgr.DataMessage
+import com.gwell.iotvideo.messagemgr.MessageMgr
 import com.gwell.iotvideo.utils.rxjava.IResultListener
 import com.gwell.iotvideo.messagemgr.PlaybackMessage
 import com.gwell.iotvideo.utils.LogUtils
@@ -82,6 +84,41 @@ class PlaybackPlayerActivity : BaseActivity<BasePresenter>() {
                 }
             })
 
+        }
+
+        tv_start_record.click {
+            val charset = Charsets.UTF_8
+            val byteArray = "record_start".toByteArray(charset)
+            MessageMgr.getInstance().sendDataToDeviceWithoutResponse(mDeviceId, byteArray, object : IResultListener<DataMessage>{
+                override fun onStart() {
+                }
+
+                override fun onSuccess(msg: DataMessage?) {
+                    LogUtils.d(TAG, "start_record success")
+                }
+
+                override fun onError(errorCode: Int, errorMsg: String?) {
+                    LogUtils.d(TAG, "start_record error code $errorCode,  $errorMsg")
+                }
+
+            })
+        }
+
+        tv_stop_record.click {
+            val charset = Charsets.UTF_8
+            val byteArray = "record_stop".toByteArray(charset)
+            MessageMgr.getInstance().sendDataToDeviceWithoutResponse(mDeviceId, byteArray, object : IResultListener<DataMessage>{
+                override fun onStart() {
+                }
+
+                override fun onSuccess(msg: DataMessage?) {
+                    LogUtils.d(TAG, "stop_record success")
+                }
+
+                override fun onError(errorCode: Int, errorMsg: String?) {
+                    LogUtils.d(TAG, "stop_record error code $errorCode,  $errorMsg")
+                }
+            })
         }
 
         initPlaybackPlayer()

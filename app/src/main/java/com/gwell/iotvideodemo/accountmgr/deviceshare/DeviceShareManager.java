@@ -8,6 +8,7 @@ import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceList;
 import com.gwell.iotvideodemo.base.HttpRequestState;
 import com.gwell.iotvideodemo.base.SimpleSubscriberListener;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 class DeviceShareManager {
@@ -46,7 +47,7 @@ class DeviceShareManager {
             }
 
             @Override
-            public void onSuccess(JsonObject response) {
+            public void onSuccess(@NonNull JsonObject response) {
                 DeviceShareViewModel.CancelShare requestState = new DeviceShareViewModel.CancelShare();
                 requestState.httpRequestState.setStatus(HttpRequestState.Status.SUCCESS);
                 requestState.httpRequestState.setJsonObject(response);
@@ -55,7 +56,7 @@ class DeviceShareManager {
             }
 
             @Override
-            public void onFail(Throwable e) {
+            public void onFail(@NonNull Throwable e) {
                 DeviceShareViewModel.CancelShare requestState = new DeviceShareViewModel.CancelShare();
                 requestState.httpRequestState.setStatus(HttpRequestState.Status.ERROR);
                 requestState.httpRequestState.setE(e);
