@@ -13,25 +13,37 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:textSize="16sp"
+            android:layout_marginTop="16dp"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
             android:text="@string/share_to" />
 
-        <EditText
-            android:id="@+id/account_to_share"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:hint="@string/account_hint"/>
+            android:layout_marginTop="16dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/account_to_share"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/account_hint"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/confirm_to_share"
-            android:layout_width="wrap_content"
+            style="?android:textAppearanceMedium"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:layout_gravity="center"
-            android:text="@string/confirm" />
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:padding="16dp"
+            android:text="@string/confirm"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -39,6 +51,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_margin="16dp" />
+        android:padding="16dp" />
 
 </LinearLayout>

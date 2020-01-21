@@ -75,7 +75,7 @@ public class QRCodeShareFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void createQRCodeAndDisplay(String text) {
-        Bitmap bitmap = CodeUtils.createQRCode(text, 500);
+        Bitmap bitmap = CodeUtils.createQRCode(text, 800);
         mQRCodeImage.setImageBitmap(bitmap);
     }
 }

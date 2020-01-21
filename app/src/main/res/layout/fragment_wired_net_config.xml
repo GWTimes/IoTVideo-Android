@@ -11,15 +11,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="16dp"
-        android:text="@string/wired_net_config" />
-
-    <Button
-        android:id="@+id/find_devices"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/find_device"
-        android:layout_gravity="center" />
+        android:lineSpacingExtra="4dp"
+        android:text="@string/wired_net_config"
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/device_list"
@@ -27,5 +21,25 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_margin="16dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center">
+
+        <Button
+            android:id="@+id/find_devices"
+            style="?android:textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/colorPrimary"
+            android:padding="16dp"
+            android:text="@string/find_device"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+    </FrameLayout>
 
 </LinearLayout>

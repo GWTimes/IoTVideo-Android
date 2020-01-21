@@ -2,27 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/qrcode_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp" />
+        android:layout_margin="16dp"
+        android:lineSpacingExtra="4dp"
+        android:textIsSelectable="true"  />
 
-    <Button
-        android:id="@+id/fresh_qrcode"
+    <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:text="@string/fresh_qrcode" />
+        android:layout_margin="16dp"
+        android:padding="24dp">
 
-    <ImageView
-        android:id="@+id/qrcode_image"
-        android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/qrcode_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/fresh_qrcode"
+        style="?android:textAppearanceMedium"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_gravity="center" />
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/colorAccent"
+        android:padding="16dp"
+        android:text="@string/fresh_qrcode"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
 
 </LinearLayout>

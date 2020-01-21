@@ -84,7 +84,7 @@ public class QRCodeNetConfigFragment extends BaseFragment {
         NetConfigInfo netConfigInfo = mNetConfigInfoViewModel.getNetConfigInfo();
         QRCode qrCode = IoTVideoSdk.getNetConfig().newQRCodeNetConfig().createQRCode(netConfigToken,
                 netConfigInfo.getWifiName(), netConfigInfo.getWifiPassword(), netConfigInfo.getEncType());
-        final Bitmap bitmap = qrCode.toBitmap(500);
+        final Bitmap bitmap = qrCode.toBitmap(800);
         if (bitmap != null) {
             mQRCodeImage.setImageBitmap(bitmap);
             mQRCodeImage.setOnClickListener(new View.OnClickListener() {

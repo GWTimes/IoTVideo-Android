@@ -25,10 +25,12 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class DeviceShareListFragment extends BaseFragment implements View.OnClickListener {
+public class DeviceShareListFragment extends BaseFragment {
     private static final String TAG = "DeviceShareListFragment";
 
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRVShareList;
     private MyAdapter mAdapter;
     private List<ShareList.DataBean.User> mShareList;
@@ -44,8 +46,15 @@ public class DeviceShareListFragment extends BaseFragment implements View.OnClic
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mShareList = new ArrayList<>();
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mDeviceShareViewModel.listSharedUsers();
+            }
+        });
         mRVShareList = view.findViewById(R.id.share_list);
-        view.findViewById(R.id.btn_fresh_list).setOnClickListener(this);
         mAdapter = new MyAdapter();
         mRVShareList.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         mRVShareList.setAdapter(mAdapter);
@@ -68,8 +77,10 @@ public class DeviceShareListFragment extends BaseFragment implements View.OnClic
                     } else {
                         Snackbar.make(mRVShareList, httpRequestState.getStatusTip(), Snackbar.LENGTH_LONG).show();
                     }
-                } else {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                } else if (httpRequestState.getStatus() == HttpRequestState.Status.ERROR) {
                     Snackbar.make(mRVShareList, httpRequestState.getStatusTip(), Snackbar.LENGTH_LONG).show();
+                    mSwipeRefreshLayout.setRefreshing(false);
                 }
             }
         });
@@ -90,13 +101,6 @@ public class DeviceShareListFragment extends BaseFragment implements View.OnClic
             }
         });
         mDeviceShareViewModel.listSharedUsers();
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.btn_fresh_list) {
-            mDeviceShareViewModel.listSharedUsers();
-        }
     }
 
     private static class ItemHolder extends RecyclerView.ViewHolder {
