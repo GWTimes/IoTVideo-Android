@@ -25,11 +25,14 @@
     <string name="title_activity_login">Login</string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_retrieve_password">Retrieve password</string>
+    <string name="input_account">input account</string>
     <string name="logout">Logout</string>
     <string name="login_user_name_hint">phone or email</string>
     <string name="login_user_name_password">password</string>
     <string name="login_old_password">old password</string>
     <string name="login_new_password">new password</string>
+    <string name="confirm_password">confirm password</string>
+    <string name="compare_password">password is not same</string>
     <string name="action_sign_in">Login</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="register">Register</string>
@@ -46,6 +49,7 @@
     <string name="register_success">register success</string>
     <string name="input_vcode">please input verification code</string>
     <string name="get_vcode">get verification code</string>
+    <string name="vcode_was_sent">verification code was sent</string>
     <string name="select_wifi">select a wifi</string>
     <string name="location_permission_tip">need location permission before scanning wifi list</string>
     <string name="net_config">Net config</string>

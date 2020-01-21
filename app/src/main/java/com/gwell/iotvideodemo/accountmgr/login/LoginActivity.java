@@ -3,6 +3,7 @@ package com.gwell.iotvideodemo.accountmgr.login;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,16 +17,13 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.gwell.iotvideo.utils.LogUtils;
+import com.gwell.iotvideodemo.MainActivity;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseActivity;
+import com.gwell.iotvideodemo.base.HttpRequestState;
 
-import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.OPERATE_LOGIN;
-import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_ERROR;
-import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_START;
-import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_SUCCESS;
-import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_VCODE_ERROR;
-import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_VCODE_START;
-import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_VCODE_SUCCESS;
+import java.util.Stack;
 
 public class LoginActivity extends BaseActivity {
     private static final String TAG = "LoginActivity";
@@ -33,14 +31,17 @@ public class LoginActivity extends BaseActivity {
     private View mProgressView;
     private FragmentManager mFragmentManager;
     private LoginFragment mLoginFragment;
-    private RetrievePasswordFragment mRetrievePasswordFragment;
-    private RegisterFragment mRegisterFragment;
+    private InputAccountFragment mInputAccountFragment;
+    private InputPasswordFragment mInputPasswordFragment;
+    private Stack<Fragment> mFragmentStack;
+    private Fragment mCurrentFragment;
     private LoginViewModel mLoginViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        mFragmentStack = new Stack<>();
         initView();
     }
 
@@ -48,54 +49,107 @@ public class LoginActivity extends BaseActivity {
         mProgressView = findViewById(R.id.progress_login);
         mFragmentManager = getSupportFragmentManager();
         mLoginFragment = new LoginFragment();
-        mRegisterFragment = new RegisterFragment();
-        mRetrievePasswordFragment = new RetrievePasswordFragment();
-        showFragment(mLoginFragment);
-        setTitle(R.string.title_activity_login);
+        mInputAccountFragment = new InputAccountFragment();
+        mInputPasswordFragment = new InputPasswordFragment();
         mLoginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory(this)).get(LoginViewModel.class);
-        mLoginViewModel.getOperator().observe(this, new Observer<Integer>() {
+        mLoginViewModel.getFragmentData().observe(this, new Observer<LoginViewModel.Fragment>() {
             @Override
-            public void onChanged(Integer operator) {
-                if (operator == LoginViewModel.OPERATE_LOGIN) {
-                    showFragment(mLoginFragment);
-                    setTitle(R.string.title_activity_login);
-                } else if (operator == LoginViewModel.OPERATE_REGISTER) {
-                    showFragment(mRegisterFragment);
-                    setTitle(R.string.title_activity_register);
-                } else if (operator == LoginViewModel.OPERATE_RETRIEVE_PASSWORD) {
-                    showFragment(mRetrievePasswordFragment);
-                    setTitle(R.string.title_activity_retrieve_password);
+            public void onChanged(LoginViewModel.Fragment fragment) {
+                LogUtils.i(TAG, "fragment = " + fragment);
+                switch (fragment) {
+                    case Login:
+                        startFragment(mLoginFragment);
+                        break;
+                    case InputAccount:
+                        startFragment(mInputAccountFragment);
+                        break;
+                    case InputPassword:
+                        startFragment(mInputPasswordFragment);
+                        break;
                 }
             }
         });
-        mLoginViewModel.getLoginState().observe(this, new Observer<LoginViewModel.LoginState>() {
+        mLoginViewModel.getFragmentData().setValue(LoginViewModel.Fragment.Login);
+        mLoginViewModel.getLoginState().observe(this, new Observer<HttpRequestState>() {
             @Override
-            public void onChanged(LoginViewModel.LoginState loginState) {
-                switch (loginState.state) {
-                    case STATE_START:
-                    case STATE_VCODE_START:
+            public void onChanged(HttpRequestState loginState) {
+                switch (loginState.getStatus()) {
+                    case START:
                         showProgress(true);
                         break;
-                    case STATE_VCODE_SUCCESS:
+                    case SUCCESS:
                         showProgress(false);
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
                         break;
-                    case STATE_SUCCESS:
+                    case ERROR:
                         showProgress(false);
-                        if (mLoginViewModel.getOperateType() == OPERATE_LOGIN) {
-                            finish();
-                        }
+                        Snackbar.make(mProgressView, loginState.getStatusTip(), Snackbar.LENGTH_LONG).show();
                         break;
-                    case STATE_ERROR:
-                    case STATE_VCODE_ERROR:
+                }
+            }
+        });
+        mLoginViewModel.getVCodeState().observe(this, new Observer<HttpRequestState>() {
+            @Override
+            public void onChanged(HttpRequestState httpRequestState) {
+                switch (httpRequestState.getStatus()) {
+                    case START:
+                        showProgress(true);
+                        break;
+                    case SUCCESS:
                         showProgress(false);
-                        Snackbar.make(mProgressView, loginState.e.getMessage(), Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(mProgressView, R.string.vcode_was_sent, Snackbar.LENGTH_LONG).show();
+                        mLoginViewModel.getFragmentData().setValue(LoginViewModel.Fragment.InputPassword);
+                        break;
+                    case ERROR:
+                        showProgress(false);
+                        Snackbar.make(mProgressView, httpRequestState.getStatusTip(), Snackbar.LENGTH_LONG).show();
+                        break;
+                }
+            }
+        });
+        mLoginViewModel.getOperateData().observe(this, new Observer<LoginViewModel.OperateType>() {
+            @Override
+            public void onChanged(LoginViewModel.OperateType operateType) {
+                switch (operateType) {
+                    case Login:
+                    case Nothing:
+                        setTitle(R.string.title_activity_login);
+                        break;
+                    case Register:
+                        setTitle(R.string.register);
+                        break;
+                    case ResetPwd:
+                        setTitle(R.string.title_activity_retrieve_password);
                         break;
                 }
             }
         });
     }
 
+    private void startFragment(Fragment fragment) {
+        if (mCurrentFragment == fragment) {
+            return;
+        }
+        if (mCurrentFragment != null) {
+            mFragmentStack.push(mCurrentFragment);
+            LogUtils.i(TAG, "fragment stack push " + mCurrentFragment.getClass().getSimpleName());
+        }
+        showFragment(fragment);
+    }
+
+    private void backFragment() {
+        if (!mFragmentStack.isEmpty()) {
+            Fragment fragment = mFragmentStack.pop();
+            LogUtils.i(TAG, "fragment stack pop " + fragment.getClass().getSimpleName());
+            showFragment(fragment);
+        }
+    }
+
     private void showFragment(Fragment fragment) {
+        mCurrentFragment = fragment;
+        LogUtils.i(TAG, "showFragment = " + mCurrentFragment.getClass().getSimpleName());
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment, fragment);
         fragmentTransaction.commit();
@@ -116,8 +170,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            showFragment(mLoginFragment);
-            setTitle(R.string.title_activity_login);
+            backFragment();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -125,8 +178,7 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        showFragment(mLoginFragment);
-        setTitle(R.string.title_activity_login);
+        backFragment();
     }
 
     public void hideSoftKeyboard() {

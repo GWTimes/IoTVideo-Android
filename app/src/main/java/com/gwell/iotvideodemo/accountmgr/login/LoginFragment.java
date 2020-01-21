@@ -1,6 +1,5 @@
 package com.gwell.iotvideodemo.accountmgr.login;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -12,17 +11,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
-import com.gwell.iotvideodemo.MainActivity;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseFragment;
 import com.gwell.iotvideodemo.utils.Utils;
 
-import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_SUCCESS;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProviders;
 
 public class LoginFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = "LoginFragment";
@@ -59,17 +54,18 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
         forgot_password.setOnClickListener(this);
         Button register = view.findViewById(R.id.btn_forgot_register);
         register.setOnClickListener(this);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mLoginViewModel = ViewModelProviders.of(getActivity()).get(LoginViewModel.class);
-        mLoginViewModel.getLoginState().observe(getActivity(), new Observer<LoginViewModel.LoginState>() {
-            @Override
-            public void onChanged(LoginViewModel.LoginState loginState) {
-                if (mLoginViewModel.getOperateType() == LoginViewModel.OPERATE_LOGIN) {
-                    if (loginState.state == STATE_SUCCESS) {
-                        startMainActivity();
-                    }
-                }
-            }
-        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mLoginViewModel.getOperateData().setValue(LoginViewModel.OperateType.Login);
     }
 
     @Override
@@ -93,22 +89,19 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
     }
 
     private void loginClicked() {
-        mLoginViewModel.getOperator().setValue(LoginViewModel.OPERATE_LOGIN);
+        mLoginViewModel.getOperateData().setValue(LoginViewModel.OperateType.Login);
         String userName = mUserNameView.getText().toString();
         String password = mPasswordView.getText().toString();
         mLoginViewModel.login(userName, password, Utils.getPhoneUuid(getContext()));
     }
 
     private void registerClicked() {
-        mLoginViewModel.getOperator().setValue(LoginViewModel.OPERATE_REGISTER);
+        mLoginViewModel.getFragmentData().setValue(LoginViewModel.Fragment.InputAccount);
+        mLoginViewModel.getOperateData().setValue(LoginViewModel.OperateType.Register);
     }
 
     private void retrievePasswordClicked() {
-        mLoginViewModel.getOperator().setValue(LoginViewModel.OPERATE_RETRIEVE_PASSWORD);
-    }
-
-    private void startMainActivity() {
-        Intent intent = new Intent(getActivity(), MainActivity.class);
-        startActivity(intent);
+        mLoginViewModel.getFragmentData().setValue(LoginViewModel.Fragment.InputAccount);
+        mLoginViewModel.getOperateData().setValue(LoginViewModel.OperateType.ResetPwd);
     }
 }

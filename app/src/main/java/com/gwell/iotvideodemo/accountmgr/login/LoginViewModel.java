@@ -2,82 +2,80 @@ package com.gwell.iotvideodemo.accountmgr.login;
 
 import android.content.Context;
 
+import com.gwell.iotvideodemo.base.HttpRequestState;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 class LoginViewModel extends ViewModel {
     private static final String TAG = "LoginViewModel";
 
-    static final int OPERATE_LOGIN = 0;
-    static final int OPERATE_REGISTER = 1;
-    static final int OPERATE_RETRIEVE_PASSWORD = 2;
+    enum OperateType {
+        Nothing, Login, Register, ResetPwd
+    }
 
-    static final int STATE_VCODE_START = 0;
-    static final int STATE_VCODE_SUCCESS = 1;
-    static final int STATE_VCODE_ERROR = 2;
-    static final int STATE_START = 3;
-    static final int STATE_SUCCESS = 4;
-    static final int STATE_ERROR = 5;
+    enum Fragment {
+        Login, InputAccount, InputPassword
+    }
 
     private LoginManager mLoginManager;
-    private Context mContext;
 
-    private MutableLiveData<Integer> mOperator;
-    private MutableLiveData<LoginState> mLoginState;
+    private MutableLiveData<HttpRequestState> mLoginRequest;
+    private MutableLiveData<HttpRequestState> mGetVCodeRequest;
+    private MutableLiveData<HttpRequestState> mResetPwdRequest;
+    private MutableLiveData<HttpRequestState> mRegisterRequest;
+
+    private MutableLiveData<OperateType> mOperateData;
+    private MutableLiveData<Fragment> mFragmentData;
 
     LoginViewModel(Context context) {
-        mLoginState = new MutableLiveData<>();
-        mOperator = new MutableLiveData<>();
-        mOperator.setValue(OPERATE_LOGIN);
-        mContext = context;
-        mLoginManager = new LoginManager(mContext, this);
+        mLoginRequest = new MutableLiveData<>();
+        mGetVCodeRequest = new MutableLiveData<>();
+        mResetPwdRequest = new MutableLiveData<>();
+        mRegisterRequest = new MutableLiveData<>();
+        mOperateData = new MutableLiveData<>();
+        mOperateData.setValue(OperateType.Nothing);
+        mFragmentData = new MutableLiveData<>();
+        mLoginManager = new LoginManager(context, this);
     }
 
-    MutableLiveData<Integer> getOperator() {
-        return mOperator;
+    MutableLiveData<OperateType> getOperateData() {
+        return mOperateData;
     }
 
-    MutableLiveData<LoginState> getLoginState() {
-        return mLoginState;
+    MutableLiveData<Fragment> getFragmentData() {
+        return mFragmentData;
     }
 
-    int getOperateType() {
-        int type = OPERATE_LOGIN;
-        if (mOperator.getValue() != null) {
-            type = mOperator.getValue();
-        }
-        return type;
+    MutableLiveData<HttpRequestState> getLoginState() {
+        return mLoginRequest;
     }
 
-    void checkCode(String account) {
-        if (mOperator.getValue() == null) {
-            return;
-        }
-        int flag = mOperator.getValue();
-        mLoginManager.checkCode(account, flag);
+    MutableLiveData<HttpRequestState> getVCodeState() {
+        return mGetVCodeRequest;
+    }
+
+    MutableLiveData<HttpRequestState> getResetPwdState() {
+        return mResetPwdRequest;
+    }
+
+    MutableLiveData<HttpRequestState> getRegisterState() {
+        return mRegisterRequest;
+    }
+
+    void checkCode(String account, int flag) {
+        mLoginManager.checkCode(account, flag, mGetVCodeRequest);
     }
 
     void login(String account, String password, String uuid) {
-        mLoginManager.login(account, password, uuid);
+        mLoginManager.login(account, password, uuid, mLoginRequest);
     }
 
-    void register(String account, String password, String vcode) {
-        mLoginManager.register(account, password, vcode);
+    void register(String password, String vcode) {
+        mLoginManager.register(password, vcode, mRegisterRequest);
     }
 
-    void retrieve(String account, String password, String vcode) {
-        mLoginManager.retrieve(account, password, vcode);
-    }
-
-    static class LoginState {
-        int state;
-        String json;
-        Throwable e;
-
-        LoginState(int state, String json, Throwable e) {
-            this.state = state;
-            this.json = json;
-            this.e = e;
-        }
+    void retrieve(String password, String vcode) {
+        mLoginManager.retrieve(password, vcode, mResetPwdRequest);
     }
 }

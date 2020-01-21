@@ -8,27 +8,23 @@ import com.gwell.iotvideo.utils.JSONUtils;
 import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
 import com.gwell.iotvideo.utils.LogUtils;
-import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
 import com.gwell.iotvideodemo.MyApp;
 import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
+import com.gwell.iotvideodemo.base.HttpRequestState;
+import com.gwell.iotvideodemo.base.SimpleSubscriberListener;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
-
-import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_ERROR;
-import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_START;
-import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_SUCCESS;
-import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_VCODE_ERROR;
-import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_VCODE_START;
-import static com.gwell.iotvideodemo.accountmgr.login.LoginViewModel.STATE_VCODE_SUCCESS;
+import androidx.lifecycle.MutableLiveData;
 
 class LoginManager {
     private static final String TAG = "LoginManager";
 
     private LoginViewModel mLoginViewModel;
     private Context mContext;
+    private String mCurrentAccount;
 
     LoginManager(Context context, LoginViewModel loginViewModel) {
         mContext = context;
@@ -49,42 +45,20 @@ class LoginManager {
         return password.length() >= 4 && password.length() <= 20;
     }
 
-    void checkCode(String account, int flag) {
-        SubscriberListener subscriberListener = new SubscriberListener() {
-            @Override
-            public void onStart() {
-                mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_VCODE_START, null, null));
-            }
-
-            @Override
-            public void onSuccess(@NonNull JsonObject response) {
-                mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_VCODE_SUCCESS, response.toString(), null));
-            }
-
-            @Override
-            public void onFail(@NonNull Throwable e) {
-                mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_VCODE_ERROR, null, e));
-            }
-        };
+    void checkCode(String account, int flag, MutableLiveData<HttpRequestState> request) {
+        mCurrentAccount = account;
         if (isEmailValid(account)) {
-            AccountMgr.getHttpService().emailCheckCode(account, flag, subscriberListener);
+            AccountMgr.getHttpService().emailCheckCode(account, flag, new SimpleSubscriberListener(request));
         } else {
-            AccountMgr.getHttpService().mobileCheckCode("86", account, flag, subscriberListener);
+            AccountMgr.getHttpService().mobileCheckCode("86", account, flag, new SimpleSubscriberListener(request));
         }
     }
 
-    void login(String account,
-               String password,
-               String uuid) {
-        SubscriberListener subscriberListener = new SubscriberListener() {
-            @Override
-            public void onStart() {
-                mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_START, null, null));
-            }
-
+    void login(String account, String password, String uuid, MutableLiveData<HttpRequestState> request) {
+        SimpleSubscriberListener subscriberListener = new SimpleSubscriberListener(request) {
             @Override
             public void onSuccess(@NonNull JsonObject response) {
-                mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_SUCCESS, response.toString(), null));
+                super.onSuccess(response);
                 LoginInfo loginInfo = JSONUtils.JsonToEntity(response.toString(), LoginInfo.class);
                 if (loginInfo != null && loginInfo.getCode() == HttpCode.ERROR_0) {
                     LogUtils.i(TAG, "login success : " + loginInfo.toString());
@@ -95,64 +69,23 @@ class LoginManager {
                     }
                 }
             }
-
-            @Override
-            public void onFail(@NonNull Throwable e) {
-                mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_ERROR, null, e));
-            }
         };
         AccountMgr.getHttpService().accountLogin(account, password, uuid, subscriberListener);
     }
 
-    void register(String account,
-                  String pwd,
-                  String vcode) {
-        SubscriberListener subscriberListener = new SubscriberListener() {
-            @Override
-            public void onStart() {
-                mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_START, null, null));
-            }
-
-            @Override
-            public void onSuccess(@NonNull JsonObject response) {
-                mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_SUCCESS, response.toString(), null));
-            }
-
-            @Override
-            public void onFail(@NonNull Throwable e) {
-                mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_ERROR, null, e));
-            }
-        };
-        if (isEmailValid(account)) {
-            AccountMgr.getHttpService().emailRegister(MyApp.CID, account, pwd, vcode, subscriberListener);
+    void register(String pwd, String vcode, MutableLiveData<HttpRequestState> request) {
+        if (isEmailValid(mCurrentAccount)) {
+            AccountMgr.getHttpService().emailRegister(MyApp.CID, mCurrentAccount, pwd, vcode, new SimpleSubscriberListener(request));
         } else {
-            AccountMgr.getHttpService().mobileRegister(MyApp.CID, "86", account, pwd, vcode, subscriberListener);
+            AccountMgr.getHttpService().mobileRegister(MyApp.CID, "86", mCurrentAccount, pwd, vcode, new SimpleSubscriberListener(request));
         }
     }
 
-    void retrieve(String account,
-                  String pwd,
-                  String vcode) {
-        SubscriberListener subscriberListener = new SubscriberListener() {
-            @Override
-            public void onStart() {
-                mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_START, null, null));
-            }
-
-            @Override
-            public void onSuccess(@NonNull JsonObject response) {
-                mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_SUCCESS, response.toString(), null));
-            }
-
-            @Override
-            public void onFail(@NonNull Throwable e) {
-                mLoginViewModel.getLoginState().setValue(new LoginViewModel.LoginState(STATE_ERROR, null, e));
-            }
-        };
-        if (isEmailValid(account)) {
-            AccountMgr.getHttpService().emailResetPwd(account, pwd, vcode, subscriberListener);
+    void retrieve(String pwd, String vcode, MutableLiveData<HttpRequestState> request) {
+        if (isEmailValid(mCurrentAccount)) {
+            AccountMgr.getHttpService().emailResetPwd(mCurrentAccount, pwd, vcode, new SimpleSubscriberListener(request));
         } else {
-            AccountMgr.getHttpService().mobileResetPwd("86", account, pwd, vcode, subscriberListener);
+            AccountMgr.getHttpService().mobileResetPwd("86", mCurrentAccount, pwd, vcode, new SimpleSubscriberListener(request));
         }
     }
 
