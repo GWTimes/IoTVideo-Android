@@ -27,7 +27,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".videoplayer.PlaybackPlayerActivity"></activity>
+        <activity android:name=".videoplayer.PlaybackPlayerActivity" />
         <activity android:name=".videoplayer.IjkPlayerActivity" />
         <activity android:name=".videoplayer.ExoPlayerActivity" />
 
@@ -95,6 +95,9 @@
         <activity
             android:name=".vas.VasActivity"
             android:label="@string/vas" />
+        <activity
+            android:name=".test.TestActivity"
+            android:label="Test" />
     </application>
 
 </manifest>

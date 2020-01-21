@@ -1,124 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/functions"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/github"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="2dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:layout_margin="16dp"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:drawableStart="@drawable/github"
+            android:drawablePadding="16dp"
+            android:text="源代码 (GitHub)" />
+    </androidx.cardview.widget.CardView>
 
-            <Button
-                android:id="@+id/start_preview"
-                android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/device_manager"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginTop="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:foreground="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:backgroundTint="#F44336"
-                android:gravity="center_horizontal"
-                android:padding="20dp"
-                android:text="@string/start_preview"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                android:visibility="gone" />
+                android:textColor="@android:color/black"
+                android:textSize="24sp"
+                android:layout_gravity="center"
+                android:text="@string/device_manager" />
+        </androidx.cardview.widget.CardView>
 
-            <Button
-                android:id="@+id/start_record"
-                android:layout_width="match_parent"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/net_config"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:foreground="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:backgroundTint="#E91E63"
-                android:gravity="center_horizontal"
-                android:padding="20dp"
-                android:text="@string/start_record"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                android:visibility="gone" />
+                android:textColor="@android:color/holo_green_dark"
+                android:textSize="24sp"
+                android:layout_gravity="center"
+                android:text="@string/net_config" />
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
 
-            <Button
-                android:id="@+id/start_web_api_activity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:backgroundTint="#9C27B0"
-                android:gravity="center_horizontal"
-                android:padding="20dp"
-                android:text="@string/start_web_api_activity"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                android:visibility="gone"/>
-
-            <Button
-                android:id="@+id/start_net_config_activity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:backgroundTint="#009688"
-                android:gravity="center_horizontal"
-                android:padding="20dp"
-                android:text="@string/net_config"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
-
-            <Button
-                android:id="@+id/start_player_activity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:backgroundTint="#2196F3"
-                android:gravity="center_horizontal"
-                android:padding="20dp"
-                android:text="@string/player"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                android:visibility="gone"/>
-
-            <Button
-                android:id="@+id/start_qrcode_activity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:backgroundTint="#3F51B5"
-                android:gravity="center_horizontal"
-                android:padding="20dp"
-                android:text="@string/qrcode"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                android:visibility="gone"/>
-
-            <Button
-                android:id="@+id/start_device_manager_activity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:backgroundTint="#FF9800"
-                android:gravity="center_horizontal"
-                android:padding="20dp"
-                android:text="@string/device_manager"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
-
-            <Button
-                android:id="@+id/test_http_via_p2p"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:backgroundTint="#F32500"
-                android:gravity="center_horizontal"
-                android:padding="20dp"
-                android:text="http via p2p"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                android:visibility="gone"/>
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    <Button
+        android:id="@+id/start_test_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_gravity="bottom|end"
+        android:backgroundTint="@color/colorPrimary"
+        android:padding="20dp"
+        android:text="Test"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"/>
 
     <ProgressBar
         android:id="@+id/progress_logout"

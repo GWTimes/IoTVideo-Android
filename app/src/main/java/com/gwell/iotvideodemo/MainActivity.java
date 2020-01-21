@@ -28,38 +28,31 @@ import com.gwell.iotvideo.utils.UrlHelper;
 import com.gwell.iotvideo.utils.qrcode.QRCode;
 import com.gwell.iotvideo.utils.qrcode.QRCodeHelper;
 import com.gwell.iotvideo.utils.rxjava.SubscriberListener;
-import com.gwell.iotvideo.vas.VasMgr;
-import com.gwell.iotvideo.vas.VasService;
 import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
 import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceManagerActivity;
 import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceModelManager;
 import com.gwell.iotvideodemo.accountmgr.login.LoginActivity;
 import com.gwell.iotvideodemo.base.BaseActivity;
 import com.gwell.iotvideodemo.netconfig.PrepareNetConfigActivity;
-import com.gwell.iotvideodemo.test.TestQRCodeActivity;
-import com.gwell.iotvideodemo.test.TestWebApiActivity;
-import com.gwell.iotvideodemo.test.preview.CameraActivity;
+import com.gwell.iotvideodemo.test.TestActivity;
 import com.gwell.iotvideodemo.utils.AppSPUtils;
-import com.gwell.iotvideodemo.vas.VasActivity;
 import com.gwell.iotvideodemo.videoplayer.CustomCaptureActivity;
-import com.gwell.iotvideodemo.videoplayer.MonitorPlayerActivity;
 import com.gwell.zxing.CaptureActivity;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
-import androidx.core.widget.NestedScrollView;
 import androidx.drawerlayout.widget.DrawerLayout;
+
+import android.net.Uri;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
 
     private static final int CAPTURE_REQUEST_CODE = 1;
 
-    private NestedScrollView mLlFunctions;
     private ProgressBar mProgressBar;
     private NavigationView mNavigationView;
     private View mNavigationHead;
@@ -75,25 +68,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mLlFunctions = findViewById(R.id.functions);
         mProgressBar = findViewById(R.id.progress_logout);
         mNavigationView = findViewById(R.id.nav_view);
         mDrawer = findViewById(R.id.drawer_layout);
         mNavigationHead = mNavigationView.getHeaderView(0);
         mTvAppVersion = mNavigationHead.findViewById(R.id.tv_app_version);
         mTvAppVersion.setText(BuildConfig.VERSION_NAME);
-        findViewById(R.id.start_preview).setOnClickListener(this);
-        findViewById(R.id.start_record).setOnClickListener(this);
-        findViewById(R.id.start_web_api_activity).setOnClickListener(this);
-        findViewById(R.id.test_http_via_p2p).setOnClickListener(this);
         if (BuildConfig.DEBUG) {
-            findViewById(R.id.start_web_api_activity).setVisibility(View.VISIBLE);
-            findViewById(R.id.test_http_via_p2p).setVisibility(View.VISIBLE);
+            findViewById(R.id.start_test_activity).setVisibility(View.VISIBLE);
         }
-        findViewById(R.id.start_qrcode_activity).setOnClickListener(this);
-        findViewById(R.id.start_player_activity).setOnClickListener(this);
-        findViewById(R.id.start_net_config_activity).setOnClickListener(this);
-        findViewById(R.id.start_device_manager_activity).setOnClickListener(this);
+        findViewById(R.id.device_manager).setOnClickListener(this);
+        findViewById(R.id.net_config).setOnClickListener(this);
+        findViewById(R.id.start_test_activity).setOnClickListener(this);
+        findViewById(R.id.github).setOnClickListener(this);
         mNavigationHead.findViewById(R.id.logout).setOnClickListener(this);
 
         mTvIvToken = mNavigationHead.findViewById(R.id.iv_token);
@@ -139,88 +126,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.start_preview:
-                startPreview();
-                break;
-            case R.id.start_record:
-                startRecord();
-                break;
-            case R.id.start_web_api_activity:
-                startWebApiActivity();
-                break;
-            case R.id.start_qrcode_activity:
-                startQRCodeActivity();
-                break;
-            case R.id.start_player_activity:
-                startPlayerActivity();
-                break;
-            case R.id.start_net_config_activity:
+            case R.id.net_config:
                 startNetMatchActivity();
                 break;
             case R.id.logout:
                 logout();
                 break;
-            case R.id.start_device_manager_activity:
+            case R.id.device_manager:
                 startDeviceManagerActivity();
                 break;
-            case R.id.test_http_via_p2p:
-                VasService vasService = VasMgr.getVasService();
-                Map<String, Object> publicParams = new HashMap<>();
-                publicParams.put("tencentCid", "20aea48e985f519539679487802ba59f");
-                VasMgr.updatePublicParams(publicParams);
-                String userId = AccountSPUtils.getInstance().getString(this, AccountSPUtils.ACCESS_ID, "");
-                vasService.register(userId, new SubscriberListener() {
-                    @Override
-                    public void onStart() {
-                        LogUtils.i(TAG, "cloudStorageCreate start");
-                        Snackbar.make(mProgressBar, "发起请求", Snackbar.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onSuccess(@NonNull JsonObject response) {
-                        LogUtils.i(TAG, "cloudStorageCreate onSuccess " + response.toString());
-                        Snackbar.make(mProgressBar, response.toString(), Snackbar.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onFail(@NonNull Throwable e) {
-                        LogUtils.i(TAG, "cloudStorageCreate onFail " + e.getMessage());
-                        Snackbar.make(mProgressBar, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                    }
-                });
+            case R.id.start_test_activity:
+                startTestActivity();
+                break;
+            case R.id.github:
+                Intent intent = new Intent();
+                intent.setData(Uri.parse("https://github.com/GWTimes/IoTVideo-Android"));
+                intent.setAction(Intent.ACTION_VIEW);
+                startActivity(intent);
                 break;
         }
     }
 
-    private void startPreview() {
-        Intent intent = new Intent(this, CameraActivity.class);
-        intent.putExtra(CameraActivity.OPERATE_TYPE, CameraActivity.OPERATE_PREVIEW);
-        startActivity(intent);
-    }
-
-    private void startRecord() {
-        Intent intent = new Intent(this, CameraActivity.class);
-        intent.putExtra(CameraActivity.OPERATE_TYPE, CameraActivity.OPERATE_RECORD);
-        startActivity(intent);
-    }
-
-    private void startWebApiActivity() {
-        Intent intent = new Intent(this, TestWebApiActivity.class);
-        startActivity(intent);
-    }
-
     private void startNetMatchActivity() {
         Intent intent = new Intent(this, PrepareNetConfigActivity.class);
-        startActivity(intent);
-    }
-
-    private void startPlayerActivity() {
-        Intent intent = new Intent(this, MonitorPlayerActivity.class);
-        startActivity(intent);
-    }
-
-    private void startQRCodeActivity() {
-        Intent intent = new Intent(this, TestQRCodeActivity.class);
         startActivity(intent);
     }
 
@@ -229,8 +157,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         startActivity(intent);
     }
 
-    private void startVasActivity() {
-        Intent intent = new Intent(this, VasActivity.class);
+    private void startTestActivity() {
+        Intent intent = new Intent(this, TestActivity.class);
         startActivity(intent);
     }
 
@@ -252,21 +180,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onFail(@NonNull Throwable e) {
                 showProgress(false);
-                Snackbar.make(mLlFunctions, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mProgressBar, e.getMessage(), Snackbar.LENGTH_LONG).show();
             }
         });
     }
 
     private void showProgress(final boolean show) {
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-        mLlFunctions.setVisibility(show ? View.GONE : View.VISIBLE);
-        mLlFunctions.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mLlFunctions.setVisibility(show ? View.GONE : View.VISIBLE);
-            }
-        });
 
         mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
         mProgressBar.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
@@ -354,12 +274,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                     @Override
                     public void onSuccess(@NonNull JsonObject response) {
-                        Snackbar.make(mLlFunctions, R.string.success, Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(mProgressBar, R.string.success, Snackbar.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onFail(@NonNull Throwable e) {
-                        Snackbar.make(mLlFunctions, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(mProgressBar, e.getMessage(), Snackbar.LENGTH_LONG).show();
                     }
                 });
             }
