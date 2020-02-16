@@ -40,8 +40,8 @@ public class DeviceModelManager implements IModelListener {
         boolean online = false;
         DeviceModel model = mDeviceModelMap.get(deviceId);
         try {
-            if (model.model.has("ST") && model.model.getJSONObject("ST").has("_online")) {
-                online = model.model.getJSONObject("ST").getJSONObject("_online").getInt("stVal") == 1 ? true : false;
+            if (model.model.has("ProReadonly") && model.model.getJSONObject("ProReadonly").has("_online")) {
+                online = model.model.getJSONObject("ProReadonly").getJSONObject("_online").getInt("stVal") == 1 ? true : false;
             }
         } catch (Exception e) {
 
