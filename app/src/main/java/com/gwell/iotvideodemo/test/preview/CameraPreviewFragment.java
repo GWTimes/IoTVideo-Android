@@ -57,6 +57,8 @@ import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideodemo.MyApp;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseFragment;
+import com.gwell.iotvideodemo.utils.StorageManager;
+import com.gwell.iotvideodemo.videoplayer.VideoPlayerActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -615,7 +617,11 @@ public class CameraPreviewFragment extends BaseFragment
     }
 
     private String getVideoFilePath() {
-        final File dir = new File(MyApp.APP_VIDEO_PATH + File.separator + "CameraPreview");
+        if (!StorageManager.isVideoPathAvailable()) {
+            Toast.makeText(getContext(), "storage is not available", Toast.LENGTH_LONG).show();
+            return null;
+        }
+        final File dir = new File(StorageManager.getVideoPath() + File.separator + "CameraPreview");
         if (!dir.exists() && !dir.mkdirs()) {
             return null;
         }

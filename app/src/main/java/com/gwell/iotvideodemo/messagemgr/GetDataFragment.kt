@@ -78,14 +78,14 @@ class GetDataFragment : BaseFragment<DeviceMessagePresenter>(), IDeviceModelView
             path += it.name
         }
 
-        LogUtils.d(TAG, "getData path is $path")
+        LogUtils.d(TAG, "readProperty path is $path")
 
-        IoTVideoSdk.getMessageMgr().getData(mBasePresenter.deviceId, path, object : IResultListener<ModelMessage> {
+        IoTVideoSdk.getMessageMgr().readProperty(mBasePresenter.deviceId, path, object : IResultListener<ModelMessage> {
             override fun onStart() {
             }
 
             override fun onSuccess(p0: ModelMessage?) {
-                LogUtils.d(TAG, "getData" + p0!!.data)
+                LogUtils.d(TAG, "readProperty" + p0!!.data)
                 CommonDialogFragment.newDialog()
                         .title(path)
                         .tips(p0.data)
@@ -95,7 +95,7 @@ class GetDataFragment : BaseFragment<DeviceMessagePresenter>(), IDeviceModelView
             }
 
             override fun onError(p0: Int, p1: String?) {
-                LogUtils.d(TAG, "getData error code $p0, content $p1")
+                LogUtils.d(TAG, "readProperty error code $p0, content $p1")
                 Toast.makeText(this@GetDataFragment.context, "获取${path}失败", Toast.LENGTH_LONG).show()
             }
         })

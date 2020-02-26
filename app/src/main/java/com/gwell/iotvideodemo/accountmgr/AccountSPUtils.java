@@ -8,7 +8,7 @@ public class AccountSPUtils {
 
     public static final String ACCESS_ID = "ACCESS_ID";
     public static final String SECRET_KEY = "SECRET_KEY";
-    public static final String IV_TOKEN = "IV_TOKEN";
+    public static final String TOKEN = "TOKEN";
     public static final String VALIDITY_TIMESTAMP = "VALIDITY_TIMESTAMP";
 
     private static class SPHolder {

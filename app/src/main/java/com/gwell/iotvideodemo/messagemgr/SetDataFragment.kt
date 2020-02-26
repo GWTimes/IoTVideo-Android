@@ -87,17 +87,17 @@ class SetDataFragment : BaseFragment<DeviceMessagePresenter>(), IDeviceModelView
                 .tips(jsondata)
                 .outSideFinish(false)
                 .callback(ok = {
-                    LogUtils.d(TAG, "setData path is $path, data is $it")
-                    IoTVideoSdk.getMessageMgr().setData(mBasePresenter.deviceId, path, it, object : IResultListener<ModelMessage> {
+                    LogUtils.d(TAG, "writeProperty path is $path, data is $it")
+                    IoTVideoSdk.getMessageMgr().writeProperty(mBasePresenter.deviceId, path, it, object : IResultListener<ModelMessage> {
                         override fun onSuccess(p0: ModelMessage?) {
-                            LogUtils.d(TAG, "setData" + p0!!.data)
+                            LogUtils.d(TAG, "writeProperty" + p0!!.data)
                             Toast.makeText(this@SetDataFragment.context, "设置${path}成功", Toast.LENGTH_LONG).show()
 
                             mBasePresenter.initModelData(mBasePresenter.deviceId)
                         }
 
                         override fun onError(p0: Int, p1: String?) {
-                            LogUtils.d(TAG, "setData error code $p0, content $p1")
+                            LogUtils.d(TAG, "writeProperty error code $p0, content $p1")
                             Toast.makeText(this@SetDataFragment.context, "设置${path}失败, error:${p0}", Toast.LENGTH_LONG).show()
                         }
 
