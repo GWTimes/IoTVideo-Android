@@ -9,7 +9,7 @@ apply plugin: 'kotlin-kapt'
 
 def BUILD_TIME = new Date().format("MMddHHmm")
 def VERSION_PRE = "0.1"
-def SVN_VERSION = 16
+def SVN_VERSION = 14
 
 android {
     compileSdkVersion 29
@@ -88,23 +88,6 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
-    //IoTVideo core
-    implementation(name: "iotvideo-release", ext: 'aar')
-    implementation 'com.google.zxing:core:3.3.0'
-    implementation 'com.clj.fastble:FastBleLib:2.3.4'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.12'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    implementation 'com.google.code.gson:gson:2.8.5'
-
-    //IoTVideo accountmgr vas
-    implementation(name: "accountmgr-release", ext: 'aar')
-    implementation(name: "vas-release", ext: 'aar')
-    implementation 'com.squareup.okhttp3:okhttp:4.3.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.0'
-
     //third party software
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     implementation 'com.airbnb.android:lottie:2.7.0'
@@ -120,9 +103,19 @@ dependencies {
     implementation 'tv.danmaku.ijk.media:ijkplayer-arm64:0.8.8'
     implementation 'tv.danmaku.ijk.media:ijkplayer-exo:0.8.8'
 
+    implementation(name: "accountmgr-release", ext: 'aar')
+    implementation(name: "vas-release", ext: 'aar')
 
-
-
-
-
+    //IoTVideo core
+    implementation(name: "iotvideo-release", ext: 'aar')
+    implementation 'com.google.zxing:core:3.3.0'
+    implementation 'com.clj.fastble:FastBleLib:2.3.4'
+    implementation 'com.squareup.okhttp3:okhttp:4.3.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.12'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.0'
 }

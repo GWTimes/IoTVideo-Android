@@ -98,7 +98,7 @@ class SetDataFragment : BaseFragment<DeviceMessagePresenter>(), IDeviceModelView
 
                         override fun onError(p0: Int, p1: String?) {
                             LogUtils.d(TAG, "setData error code $p0, content $p1")
-                            Toast.makeText(this@SetDataFragment.context, "设置${path}失败, error:${p0}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@SetDataFragment.context, "设置${path}失败", Toast.LENGTH_LONG).show()
                         }
 
                         override fun onStart() {
