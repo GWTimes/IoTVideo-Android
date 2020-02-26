@@ -31,10 +31,9 @@
         </TableRow>
         <TableRow
             android:id="@+id/iv_token_row"
-            android:visibility="gone"
             tools:visibility="visible">
             <TextView
-                android:text="ivToken : "
+                android:text="accessToken : "
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"/>

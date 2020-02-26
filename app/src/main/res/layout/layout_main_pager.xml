@@ -83,7 +83,8 @@
         android:padding="20dp"
         android:text="Test"
         android:textColor="@android:color/white"
-        android:textSize="14sp"/>
+        android:textSize="14sp"
+        android:visibility="gone"/>
 
     <ProgressBar
         android:id="@+id/progress_logout"

@@ -1,10 +1,12 @@
 package com.gwell.iotvideodemo.accountmgr.login;
 
+import android.text.TextUtils;
+
 public class LoginInfo {
 
     /**
      * code : 0
-     * data : {"accessId":"-9223371598768111606","headUrl":"","ivToken":"01019EA75798737E07BE991E660000004B6409F68B76C13255ED879387FA2561958530D7FAB8652642D087D2AE87E3F2FB2E8216E9561E91CC1262437F87BEBF","nick":""}
+     * data : {"accessId":"-9223371598768111606","headUrl":"","accessToken":"01019EA75798737E07BE991E660000004B6409F68B76C13255ED879387FA2561958530D7FAB8652642D087D2AE87E3F2FB2E8216E9561E91CC1262437F87BEBF","nick":""}
      * msg : Success
      * requestId : eeca8585-1d4d-4607-a901-609c662b9c73
      */
@@ -50,13 +52,13 @@ public class LoginInfo {
         /**
          * accessId : -9223371598768111606
          * headUrl :
-         * ivToken : 01019EA75798737E07BE991E660000004B6409F68B76C13255ED879387FA2561958530D7FAB8652642D087D2AE87E3F2FB2E8216E9561E91CC1262437F87BEBF
+         * accessToken : 01019EA75798737E07BE991E660000004B6409F68B76C13255ED879387FA2561958530D7FAB8652642D087D2AE87E3F2FB2E8216E9561E91CC1262437F87BEBF
          * nick :
          */
 
         private String accessId;
         private String headUrl;
-        private String ivToken;
+        private String accessToken;
         private String nick;
         private int expireTime;
 
@@ -76,12 +78,12 @@ public class LoginInfo {
             this.headUrl = headUrl;
         }
 
-        public String getIvToken() {
-            return ivToken;
+        public String getAccessToken() {
+            return accessToken;
         }
 
-        public void setIvToken(String ivToken) {
-            this.ivToken = ivToken;
+        public void setAccessToken(String accessToken) {
+            this.accessToken = accessToken;
         }
 
         public String getNick() {
@@ -100,14 +102,24 @@ public class LoginInfo {
             this.expireTime = expireTime;
         }
 
+        public boolean isLoginDataValid() {
+            if (TextUtils.isEmpty(accessToken) || accessToken.length() != 128) {
+                return false;
+            } else if (System.currentTimeMillis() >= expireTime * 1000L) {
+                return false;
+            }
+
+            return true;
+        }
+
         @Override
         public String toString() {
-            return "DataBean{" +
+            return "LoginData{" +
                     "accessId='" + accessId + '\'' +
-                    ", headUrl='" + headUrl + '\'' +
-                    ", ivToken='" + ivToken + '\'' +
-                    ", nick='" + nick + '\'' +
+                    ", accessToken='" + accessToken + '\'' +
                     ", expireTime=" + expireTime +
+                    ", headUrl='" + headUrl + '\'' +
+                    ", nick='" + nick + '\'' +
                     '}';
         }
     }
