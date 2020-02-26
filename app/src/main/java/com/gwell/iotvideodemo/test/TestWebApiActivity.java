@@ -386,7 +386,7 @@ public class TestWebApiActivity extends BaseActivity {
         String oldPwd;
         String vcode;
         String uniqueId;
-        String accessToken;
+        String ivToken;
         String feedbackId;
         String noticeId;
         String did;
@@ -420,7 +420,7 @@ public class TestWebApiActivity extends BaseActivity {
             oldPwd = "qwe123";
             vcode = "123456";
             uniqueId = Utils.getPhoneUuid(TestWebApiActivity.this);
-            accessToken = AccountSPUtils.getInstance().getString(TestWebApiActivity.this, AccountSPUtils.TOKEN, "");
+            ivToken = AccountSPUtils.getInstance().getString(TestWebApiActivity.this, AccountSPUtils.IV_TOKEN, "");
             feedbackId = "feedbackId";
             noticeId = "noticeId";
             did = "did";
@@ -501,7 +501,7 @@ public class TestWebApiActivity extends BaseActivity {
                     return "验证码";
                 case "uniqueId":
                     return "终端设备的唯一标识(自动填写)";
-                case "accessToken":
+                case "ivToken":
                     return "终端用户token(自动填写)";
                 case "feedbackId":
                     return "反馈id(自动填写)";
@@ -551,7 +551,7 @@ public class TestWebApiActivity extends BaseActivity {
                     ", oldPwd='" + oldPwd + '\'' +
                     ", vcode='" + vcode + '\'' +
                     ", uniqueId='" + uniqueId + '\'' +
-                    ", accessToken='" + accessToken + '\'' +
+                    ", ivToken='" + ivToken + '\'' +
                     ", feedbackId='" + feedbackId + '\'' +
                     ", noticeId='" + noticeId + '\'' +
                     ", did='" + did + '\'' +

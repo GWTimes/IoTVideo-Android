@@ -212,7 +212,7 @@ public class DeviceManagerActivity extends BaseActivity {
     private void updateDeviceModel(){
         if(mDeviceInfoList != null && mDeviceInfoList.size() > 0){
             for (DeviceList.Device device : mDeviceInfoList){
-                IoTVideoSdk.getMessageMgr().readProperty(Long.parseLong (device.getDid()), "", new IResultListener<ModelMessage>(){
+                IoTVideoSdk.getMessageMgr().getData(Long.parseLong (device.getDid()), "", new IResultListener<ModelMessage>(){
 
                     @Override
                     public void onStart() {

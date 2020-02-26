@@ -15,18 +15,18 @@ class DeviceMessagePresenter(var mDeviceModelView: IDeviceModelView) : BasePrese
 
     fun initModelData(deviceId: Long){
         //获取所有的物模型
-        IoTVideoSdk.getMessageMgr().readProperty(deviceId, "", object : IResultListener<ModelMessage> {
+        IoTVideoSdk.getMessageMgr().getData(deviceId, "", object : IResultListener<ModelMessage> {
             override fun onStart() {
-                LogUtils.d(TAG, "readProperty start")
+                LogUtils.d(TAG, "getData start")
             }
             override fun onSuccess(p0: ModelMessage?) {
-                LogUtils.d(TAG, "readProperty" + p0!!.data)
+                LogUtils.d(TAG, "getData" + p0!!.data)
                 modeData = JSONObject(p0.data)
                 updateModelData()
             }
 
             override fun onError(p0: Int, p1: String?) {
-                LogUtils.e(TAG, "readProperty error code $p0, content $p1")
+                LogUtils.e(TAG, "getData error code $p0, content $p1")
             }
         })
     }

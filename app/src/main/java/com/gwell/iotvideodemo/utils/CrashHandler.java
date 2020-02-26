@@ -5,8 +5,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Looper;
-import android.widget.Toast;
 
 import com.gwell.iotvideo.BuildConfig;
 import com.gwell.iotvideo.utils.LogUtils;
@@ -28,7 +26,8 @@ import androidx.annotation.NonNull;
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
     private static final String TAG = "CrashHandler";
 
-    private static String mCrashPath;
+    private static final String CRASH_PATH = MyApp.APP_DOC_PATH +
+            File.separator + "IoTVideo" + File.separator + "errorLog";
 
     // 系统默认的UncaughtException处理类
     private Thread.UncaughtExceptionHandler mDefaultHandler;
@@ -60,9 +59,8 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
      *
      * @param context
      */
-    public void init(Context context, String path) {
+    public void init(Context context) {
         mContext = context;
-        mCrashPath = path;
         // 获取系统默认的UncaughtException处理器
         mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         // 设置该CrashHandler为程序的默认处理器
@@ -96,15 +94,6 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         if (ex == null) {
             return false;
         }
-        // 使用Toast来显示异常信息
-        new Thread() {
-            @Override
-            public void run() {
-                Looper.prepare();
-                Toast.makeText(mContext, "app error " + ex.toString(), Toast.LENGTH_LONG).show();
-                Looper.loop();
-            }
-        }.start();
         // 收集设备参数信息
         collectDeviceInfo(mContext);
         // 保存日志文件
@@ -175,12 +164,12 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             String time = formatter.format(new Date());
             String fileName = versionName + "-crash-" + time + ".log";
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                File dir = new File(mCrashPath);
+                File dir = new File(CRASH_PATH);
                 if (!dir.exists() && !dir.mkdirs()) {
                     LogUtils.e(TAG, "fail to create log file");
                     return;
                 }
-                FileOutputStream fos = new FileOutputStream(mCrashPath + File.separator + fileName);
+                FileOutputStream fos = new FileOutputStream(CRASH_PATH + File.separator + fileName);
                 fos.write(sb.toString().getBytes());
                 fos.close();
             }

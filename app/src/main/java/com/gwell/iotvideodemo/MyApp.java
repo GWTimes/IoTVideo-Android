@@ -12,11 +12,13 @@ import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
 import com.gwell.iotvideodemo.utils.AppSPUtils;
 import com.gwell.iotvideodemo.utils.CrashHandler;
 import com.gwell.iotvideodemo.utils.FloatLogWindows;
-import com.gwell.iotvideodemo.utils.StorageManager;
 
 import java.io.File;
 
 public class MyApp extends Application {
+    public static String APP_VIDEO_PATH;
+    public static String APP_PIC_PATH;
+    public static String APP_DOC_PATH;
 
     public final static int CID = 103;
     public final static String PRODUCT_ID = "440234147841";
@@ -24,11 +26,10 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        StorageManager.init(this);
-        if (StorageManager.isDocPathAvailable()) {
-            CrashHandler.getInstance().init(getApplicationContext(),
-                    StorageManager.getDocPath() + File.separator + "IoTVideo" + File.separator + "errorLog");
-        }
+        CrashHandler.getInstance().init(getApplicationContext());
+        APP_VIDEO_PATH = getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath();
+        APP_PIC_PATH = getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
+        APP_DOC_PATH = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath();
 
         if (!AppSPUtils.getInstance().getBoolean(this, AppSPUtils.NEED_SWITCH_SERVER_TYPE, false)) {
             UrlHelper.getInstance().setServerType(BuildConfig.DEBUG ? UrlHelper.SERVER_DEV : UrlHelper.SERVER_RELEASE);
@@ -38,9 +39,7 @@ public class MyApp extends Application {
         }
 
         IoTVideoSdk.init(getApplicationContext(), null);
-        if (StorageManager.isDocPathAvailable()) {
-            IoTVideoSdk.setLogPath(StorageManager.getDocPath() + File.separator + "xLog");
-        }
+        IoTVideoSdk.setLogPath(MyApp.APP_DOC_PATH + File.separator + "xLog");
         AccountMgr.init(CID, PRODUCT_ID);
         checkAndAutoLogin();
         VasMgr.init();
@@ -53,7 +52,7 @@ public class MyApp extends Application {
         int validityTime = AccountSPUtils.getInstance().getInteger(this, AccountSPUtils.VALIDITY_TIMESTAMP, 0);
         boolean isLogin = validityTime > (System.currentTimeMillis() / 1000);
         if (isLogin) {
-            String realToken = AccountSPUtils.getInstance().getString(this, AccountSPUtils.TOKEN, "");
+            String realToken = AccountSPUtils.getInstance().getString(this, AccountSPUtils.IV_TOKEN, "");
             String secretKey = AccountSPUtils.getInstance().getString(this, AccountSPUtils.SECRET_KEY, "");
             String accessId = AccountSPUtils.getInstance().getString(this, AccountSPUtils.ACCESS_ID, "");
             if (!TextUtils.isEmpty(realToken) && !TextUtils.isEmpty(secretKey) && !TextUtils.isEmpty(accessId)) {

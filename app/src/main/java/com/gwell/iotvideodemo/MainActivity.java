@@ -36,7 +36,6 @@ import com.gwell.iotvideodemo.base.BaseActivity;
 import com.gwell.iotvideodemo.netconfig.PrepareNetConfigActivity;
 import com.gwell.iotvideodemo.test.TestActivity;
 import com.gwell.iotvideodemo.utils.AppSPUtils;
-import com.gwell.iotvideodemo.utils.Utils;
 import com.gwell.iotvideodemo.videoplayer.CustomCaptureActivity;
 import com.gwell.zxing.CaptureActivity;
 
@@ -85,9 +84,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mNavigationHead.findViewById(R.id.logout).setOnClickListener(this);
 
         mTvIvToken = mNavigationHead.findViewById(R.id.iv_token);
-        mTvIvToken.setOnClickListener(this);
 
         if (com.gwell.iotvideo.BuildConfig.DEBUG) {
+            mNavigationHead.findViewById(R.id.iv_token_row).setVisibility(View.VISIBLE);
             mNavigationHead.findViewById(R.id.switch_server_row).setVisibility(View.VISIBLE);
         }
 
@@ -107,7 +106,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         });
 
-        String realToken = AccountSPUtils.getInstance().getString(this, AccountSPUtils.TOKEN, "");
+        String realToken = AccountSPUtils.getInstance().getString(this, AccountSPUtils.IV_TOKEN, "");
         String secretKey = AccountSPUtils.getInstance().getString(this, AccountSPUtils.SECRET_KEY, "");
         mTvIvToken.setText(String.format("%s%s", realToken, secretKey));
 
@@ -144,10 +143,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 intent.setData(Uri.parse("https://github.com/GWTimes/IoTVideo-Android"));
                 intent.setAction(Intent.ACTION_VIEW);
                 startActivity(intent);
-                break;
-            case R.id.iv_token:
-                Utils.setClipboard(this, mTvIvToken.getText().toString());
-                Snackbar.make(view, R.string.copy_to_clipboard, Snackbar.LENGTH_LONG).show();
                 break;
         }
     }

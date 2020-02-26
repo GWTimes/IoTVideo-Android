@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">IoTVideo</string>
-    <string name="start_preview">相机预览</string>
+    <string name="start_preview">开始预览</string>
     <string name="stop_preview">停止预览</string>
     <string name="start_torch">开启灯光</string>
     <string name="stop_torch">关闭灯光</string>
-    <string name="start_record">相机录像</string>
+    <string name="start_record">开始录像</string>
     <string name="start_web_api_activity">web api</string>
     <string name="record">录像</string>
     <string name="stop">停止</string>
@@ -80,5 +80,4 @@
     <string name="flip_to_delete">滑动删除</string>
     <string name="vas">增值服务</string>
     <string name="local_playback">本地回放</string>
-    <string name="copy_to_clipboard">已复制</string>
 </resources>

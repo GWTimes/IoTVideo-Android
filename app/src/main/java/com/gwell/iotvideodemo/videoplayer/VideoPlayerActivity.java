@@ -36,7 +36,6 @@ import java.util.Date;
 import java.util.Map;
 
 import com.gwell.iotvideo.iotvideoplayer.PlayerStateEnum;
-import com.gwell.iotvideodemo.utils.StorageManager;
 
 public class VideoPlayerActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "VideoPlayerActivity";
@@ -105,16 +104,12 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         findViewById(R.id.tv_browse).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!StorageManager.isPicPathAvailable()) {
-                    Toast.makeText(VideoPlayerActivity.this, "storage is not available", Toast.LENGTH_LONG).show();
-                    return;
-                }
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 //判断是否是AndroidN以及更高的版本
                 if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.N) {
                     try {
                         Uri contentUri = FileProvider.getUriForFile(VideoPlayerActivity.this,"com.gwell.iotvideodemo.fileProvider",
-                                new File(StorageManager.getPicPath()));
+                                new File(MyApp.APP_PIC_PATH));
                         LogUtils.i(TAG, contentUri.toString());
                         intent.setData(contentUri);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -205,13 +200,9 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 mMonitorPlayer.stop();
                 break;
             case R.id.snap_btn:
-                if (!StorageManager.isPicPathAvailable()) {
-                    Toast.makeText(this, "storage is not available", Toast.LENGTH_LONG).show();
-                    break;
-                }
                 Date date = new Date();
                 String dateStringParse = mSimpleDateFormat.format(date);
-                mMonitorPlayer.snapShot(new File(StorageManager.getPicPath(), dateStringParse + ".jpeg").getAbsolutePath(),
+                mMonitorPlayer.snapShot(new File(MyApp.APP_PIC_PATH, dateStringParse + ".jpeg").getAbsolutePath(),
                         new ISnapShotListener() {
                             @Override
                             public void onResult(int code, String path) {
@@ -221,10 +212,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                         });
                 break;
             case R.id.record_btn:
-                if (!StorageManager.isVideoPathAvailable()) {
-                    Toast.makeText(this, "storage is not available", Toast.LENGTH_LONG).show();
-                    break;
-                }
                 if (mMonitorPlayer.isRecording()) {
                     mRecordBtn.setText("开始录像");
                     appendToOutput("停止录像");
@@ -234,7 +221,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                     appendToOutput("开始录像");
                     Date tdate = new Date();
                     String tdateStringParse = mSimpleDateFormat.format(tdate);
-                    mMonitorPlayer.startRecord(new File(StorageManager.getVideoPath(), tdateStringParse + ".mp4").getAbsolutePath(),
+                    mMonitorPlayer.startRecord(new File(MyApp.APP_VIDEO_PATH, tdateStringParse + ".mp4").getAbsolutePath(),
                             new IRecordListener() {
                                 @Override
                                 public void onResult(int code, String path) {
@@ -288,13 +275,13 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
             Boolean readStorage = permissionResult.get(Manifest.permission.READ_EXTERNAL_STORAGE);
             Boolean writeStorage = permissionResult.get(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             if (readStorage != null && writeStorage != null && readStorage && writeStorage) {
-//                boolean isFileExist = StorageManager.isFileExists(new File(Environment.getExternalStorageDirectory(), "iotvideo.mp4").getAbsolutePath());
+//                boolean isFileExist = FileUtils.isFileExists(new File(Environment.getExternalStorageDirectory(), "iotvideo.mp4").getAbsolutePath());
 //                if (!isFileExist) {
 //                    Single.create(new SingleOnSubscribe<String>() {
 //
 //                        @Override
 //                        public void subscribe(SingleEmitter<String> emitter) throws Exception {
-//                            StorageManager.copyToSDCard(VideoPlayerActivity.this.getApplicationContext(), "iotvideo.mp4",
+//                            FileUtils.copyToSDCard(VideoPlayerActivity.this.getApplicationContext(), "iotvideo.mp4",
 //                                    new File(Environment.getExternalStorageDirectory(), "iotvideo.mp4").getAbsolutePath());
 //                        }
 //                    }).subscribeOn(Schedulers.io())

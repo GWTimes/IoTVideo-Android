@@ -58,21 +58,14 @@ class LoginManager {
         SimpleSubscriberListener subscriberListener = new SimpleSubscriberListener(request) {
             @Override
             public void onSuccess(@NonNull JsonObject response) {
+                super.onSuccess(response);
                 LoginInfo loginInfo = JSONUtils.JsonToEntity(response.toString(), LoginInfo.class);
                 if (loginInfo != null && loginInfo.getCode() == HttpCode.ERROR_0) {
                     LogUtils.i(TAG, "login success : " + loginInfo.toString());
-                    LoginInfo.DataBean loginData = loginInfo.getData();
-                    if (loginData != null) {
-                        if (loginData.isLoginDataValid()) {
-                            super.onSuccess(response);
-                            String accessToken = loginInfo.getData().getAccessToken();
-                            int validityTime = loginInfo.getData().getExpireTime();
-                            saveLoginInfo(loginInfo.getData().getAccessId(), accessToken, validityTime);
-                        } else {
-                            super.onFail(new Throwable(loginData.toString()));
-                        }
-                    } else {
-                        super.onFail(new Throwable("service feedback data null"));
+                    if (loginInfo.getData() != null) {
+                        String token = loginInfo.getData().getIvToken();
+                        int validityTime = loginInfo.getData().getExpireTime();
+                        saveLoginInfo(loginInfo.getData().getAccessId(), token, validityTime);
                     }
                 }
             }
@@ -96,15 +89,15 @@ class LoginManager {
         }
     }
 
-    private void saveLoginInfo(String accessId, String accessToken, int validityTime) {
-        String realToken = accessToken.substring(0, 96);
-        String secretKey = accessToken.substring(96, 128);
+    private void saveLoginInfo(String accessId, String token, int validityTime) {
+        String realToken = token.substring(0, 96);
+        String secretKey = token.substring(96, 128);
         AccountMgr.setSecretInfo(accessId, secretKey, realToken);
-        IoTVideoSdk.register(Long.valueOf(accessId), accessToken);
+        IoTVideoSdk.register(Long.valueOf(accessId), token);
 
         AccountSPUtils.getInstance().putString(mContext, AccountSPUtils.ACCESS_ID, accessId);
         AccountSPUtils.getInstance().putString(mContext, AccountSPUtils.SECRET_KEY, secretKey);
-        AccountSPUtils.getInstance().putString(mContext, AccountSPUtils.TOKEN, realToken);
+        AccountSPUtils.getInstance().putString(mContext, AccountSPUtils.IV_TOKEN, realToken);
         AccountSPUtils.getInstance().putInteger(mContext, AccountSPUtils.VALIDITY_TIMESTAMP, validityTime);
     }
 }

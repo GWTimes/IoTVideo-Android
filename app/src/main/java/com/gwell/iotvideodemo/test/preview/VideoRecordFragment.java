@@ -19,7 +19,6 @@ package com.gwell.iotvideodemo.test.preview;
 import android.Manifest;
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +26,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.gwell.iotvideo.iotvideoplayer.capture.VideoCapture;
+import com.gwell.iotvideodemo.MyApp;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseFragment;
-import com.gwell.iotvideodemo.utils.StorageManager;
 
 import androidx.core.app.ActivityCompat;
 
@@ -69,16 +68,12 @@ public class VideoRecordFragment extends BaseFragment
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         mButtonVideo = view.findViewById(R.id.video);
         mButtonVideo.setOnClickListener(this);
-        if (StorageManager.isVideoPathAvailable()) {
-            mVideoCapture = new VideoCapture(StorageManager.getVideoPath());
-        } else {
-            Toast.makeText(getContext(), "storage is not available", Toast.LENGTH_LONG).show();
-        }
+        mVideoCapture = new VideoCapture(MyApp.APP_VIDEO_PATH);
     }
 
     @Override
     public void onPause() {
-        if (mVideoCapture != null && mVideoCapture.isCameraOpen()) {
+        if (mVideoCapture.isCameraOpen()) {
             closeCamera();
         }
         super.onPause();
@@ -99,9 +94,6 @@ public class VideoRecordFragment extends BaseFragment
     }
 
     private void openCamera() {
-        if (mVideoCapture == null) {
-            return;
-        }
         requestPermissions(new BaseFragment.OnPermissionsListener() {
             @Override
             public void OnPermissions(boolean granted) {
@@ -119,9 +111,6 @@ public class VideoRecordFragment extends BaseFragment
     }
 
     private void closeCamera() {
-        if (mVideoCapture == null) {
-            return;
-        }
         mVideoCapture.closeCamera();
         mIsRecordingVideo = false;
         mButtonVideo.setText(R.string.record);
