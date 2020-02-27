@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 
 import com.gwell.iotvideo.utils.LogUtils;
+import com.gwell.iotvideo.utils.UrlHelper;
 import com.gwell.iotvideodemo.R;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -44,6 +45,9 @@ public class BaseActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
         }
+        if (!UrlHelper.getInstance().isRelease()) {
+            setTitle(getTitle());
+        }
     }
 
     @Override
@@ -53,6 +57,14 @@ public class BaseActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        if (!UrlHelper.getInstance().isRelease()) {
+            title = title + "(测试环境)";
+        }
+        super.setTitle(title);
     }
 
     /**

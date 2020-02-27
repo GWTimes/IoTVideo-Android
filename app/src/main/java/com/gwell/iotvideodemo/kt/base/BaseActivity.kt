@@ -10,6 +10,7 @@ import android.view.View
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 import androidx.appcompat.app.AppCompatActivity
+import com.gwell.iotvideo.utils.UrlHelper
 import com.gwell.iotvideodemo.R
 import com.gwell.iotvideodemo.kt.utils.StatusBarUtils
 import com.gwell.iotvideodemo.kt.utils.ViewUtils
@@ -47,6 +48,9 @@ abstract class BaseActivity<P : IBasePresenter> : AppCompatActivity(), IBaseView
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true)
             actionBar.setDisplayShowHomeEnabled(true)
+        }
+        if (!UrlHelper.getInstance().isRelease) {
+            title = title
         }
 
         if (activityConfig.isUseStatusBar) {
@@ -104,6 +108,14 @@ abstract class BaseActivity<P : IBasePresenter> : AppCompatActivity(), IBaseView
 
     override fun onPause() {
         super.onPause()
+    }
+
+    override fun setTitle(title: CharSequence?) {
+        if (!UrlHelper.getInstance().isRelease) {
+            super.setTitle("${title}(测试环境)")
+        } else {
+            super.setTitle(title)
+        }
     }
 
     override fun hideLoadingDialog() {

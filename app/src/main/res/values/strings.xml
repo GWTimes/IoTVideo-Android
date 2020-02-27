@@ -80,5 +80,5 @@
     <string name="flip_to_delete">flip to delete</string>
     <string name="vas">vas</string>
     <string name="local_playback">local playback</string>
-    <string name="copy_to_clipboard">ÒÑ¸´ÖÆ</string>
+    <string name="copy_to_clipboard">copied</string>
 </resources>

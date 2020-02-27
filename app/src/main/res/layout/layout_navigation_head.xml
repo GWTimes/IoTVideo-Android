@@ -14,52 +14,49 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
         <TableRow>
             <TextView
                 android:text="accessId : "
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"/>
+                android:layout_height="wrap_content"/>
             <TextView
                 android:id="@+id/user_id"
                 android:maxWidth="165dp"
                 android:textIsSelectable="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"/>
+                android:layout_height="wrap_content"/>
         </TableRow>
         <TableRow
             android:id="@+id/iv_token_row"
-            tools:visibility="visible">
+            tools:visibility="visible"
+            android:layout_marginTop="8dp">
             <TextView
                 android:text="accessToken : "
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"/>
+                android:layout_height="wrap_content"/>
             <TextView
                 android:id="@+id/iv_token"
                 android:textIsSelectable="true"
                 android:maxWidth="165dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp" />
+                android:layout_height="wrap_content" />
         </TableRow>
 
         <TableRow
             android:id="@+id/switch_server_row"
+            android:layout_marginTop="8dp"
             android:visibility="gone"
             tools:visibility="visible">
             <TextView
                 android:text="打开测试服 : "
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"/>
+                android:layout_height="wrap_content"/>
             <Switch
                 android:id="@+id/switch_server"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
                 android:text="" />
 
         </TableRow>
