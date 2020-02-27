@@ -9,7 +9,7 @@ public class ShareList {
     /**
      * code : 0
      * msg : Success
-     * data : {"users":[{"ivUid":"-9223371598768111613","userName":"","nick":"IotVideo","headUrl":""}]}
+     * data : {"users":[{"accessId":"-9223371598768111601","userName":"","nick":"","headUrl":""}]}
      */
 
     private int code;
@@ -53,23 +53,23 @@ public class ShareList {
 
         public static class User {
             /**
-             * ivUid : -9223371598768111613
+             * accessId : -9223371598768111601
              * userName :
-             * nick : IotVideo
+             * nick :
              * headUrl :
              */
 
-            private String ivUid;
+            private String accessId;
             private String userName;
             private String nick;
             private String headUrl;
 
-            public String getIvUid() {
-                return ivUid;
+            public String getAccessId() {
+                return accessId;
             }
 
-            public void setIvUid(String ivUid) {
-                this.ivUid = ivUid;
+            public void setAccessId(String accessId) {
+                this.accessId = accessId;
             }
 
             public String getUserName() {
@@ -101,8 +101,8 @@ public class ShareList {
                     return nick;
                 } else if (!TextUtils.isEmpty(userName)) {
                     return userName;
-                } else if (!TextUtils.isEmpty(ivUid)) {
-                    return ivUid;
+                } else if (!TextUtils.isEmpty(accessId)) {
+                    return accessId;
                 }
 
                 return "unknown";

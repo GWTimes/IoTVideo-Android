@@ -9,7 +9,7 @@ public class UserList {
     /**
      * code : 0
      * msg : Success
-     * data : {"ivUid":"-9223371598768111611","userName":"","nick":"nick","headUrl":"headUrl"}
+     * data : {"accessId":"-9223371598768111601","name":null,"nick":"","mobileArea":null,"mobile":null,"email":null,"headUrl":""}
      */
 
     private int code;
@@ -42,31 +42,37 @@ public class UserList {
 
     public static class User {
         /**
-         * ivUid : -9223371598768111611
-         * userName :
-         * nick : nick
-         * headUrl : headUrl
+         * accessId : -9223371598768111601
+         * name : null
+         * nick :
+         * mobileArea : null
+         * mobile : null
+         * email : null
+         * headUrl :
          */
 
-        private String ivUid;
-        private String userName;
+        private String accessId;
+        private String name;
         private String nick;
+        private String mobileArea;
+        private String mobile;
+        private String email;
         private String headUrl;
 
-        public String getIvUid() {
-            return ivUid;
+        public String getAccessId() {
+            return accessId;
         }
 
-        public void setIvUid(String ivUid) {
-            this.ivUid = ivUid;
+        public void setAccessId(String accessId) {
+            this.accessId = accessId;
         }
 
-        public String getUserName() {
-            return userName;
+        public String getName() {
+            return name;
         }
 
-        public void setUserName(String userName) {
-            this.userName = userName;
+        public void setName(String name) {
+            this.name = name;
         }
 
         public String getNick() {
@@ -75,6 +81,30 @@ public class UserList {
 
         public void setNick(String nick) {
             this.nick = nick;
+        }
+
+        public String getMobileArea() {
+            return mobileArea;
+        }
+
+        public void setMobileArea(String mobileArea) {
+            this.mobileArea = mobileArea;
+        }
+
+        public String getMobile() {
+            return mobile;
+        }
+
+        public void setMobile(String mobile) {
+            this.mobile = mobile;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
         }
 
         public String getHeadUrl() {
@@ -88,10 +118,10 @@ public class UserList {
         public String getDisplayName() {
             if (!TextUtils.isEmpty(nick)) {
                 return nick;
-            } else if (!TextUtils.isEmpty(userName)) {
-                return userName;
-            } else if (!TextUtils.isEmpty(ivUid)) {
-                return ivUid;
+            } else if (!TextUtils.isEmpty(name)) {
+                return name;
+            } else if (!TextUtils.isEmpty(accessId)) {
+                return accessId;
             }
 
             return "unknown";

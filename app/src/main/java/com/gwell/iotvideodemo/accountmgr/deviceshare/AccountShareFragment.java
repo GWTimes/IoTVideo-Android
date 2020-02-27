@@ -68,7 +68,7 @@ public class AccountShareFragment extends BaseFragment implements View.OnClickLi
                         if (userList.getData() != null) {
                             mUserList.add(userList.getData());
                             mAdapter.notifyDataSetChanged();
-                            mDeviceShareViewModel.shareDevice(userList.getData().getIvUid());
+                            mDeviceShareViewModel.shareDevice(userList.getData().getAccessId());
                         } else {
                             Snackbar.make(mRVUserList, "no such user", Snackbar.LENGTH_LONG).show();
                         }
@@ -96,6 +96,6 @@ public class AccountShareFragment extends BaseFragment implements View.OnClickLi
 
     @Override
     public void onRecyclerViewItemClick(int position) {
-        mDeviceShareViewModel.shareDevice(mUserList.get(position).getIvUid());
+        mDeviceShareViewModel.shareDevice(mUserList.get(position).getAccessId());
     }
 }

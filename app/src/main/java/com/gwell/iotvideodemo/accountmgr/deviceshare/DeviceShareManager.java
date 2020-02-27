@@ -38,7 +38,7 @@ class DeviceShareManager {
 
     void cancelShare(ShareList.DataBean.User user, DeviceList.Device device,
                      final MutableLiveData<DeviceShareViewModel.CancelShare> cancelShareMutableLiveData, final int position) {
-        AccountMgr.getHttpService().cancelShare(device.getDevId(), user.getIvUid(), new SubscriberListener() {
+        AccountMgr.getHttpService().cancelShare(device.getDevId(), user.getAccessId(), new SubscriberListener() {
             @Override
             public void onStart() {
                 DeviceShareViewModel.CancelShare requestState = new DeviceShareViewModel.CancelShare();
