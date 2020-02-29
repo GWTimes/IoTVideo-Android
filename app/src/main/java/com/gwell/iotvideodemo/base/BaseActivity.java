@@ -40,6 +40,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LogUtils.i(getClass().getSimpleName(), "OnCreate");
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -48,6 +49,12 @@ public class BaseActivity extends AppCompatActivity {
         if (!UrlHelper.getInstance().isRelease()) {
             setTitle(getTitle());
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogUtils.i(getClass().getSimpleName(), "onDestroy");
     }
 
     @Override

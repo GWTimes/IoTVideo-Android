@@ -10,6 +10,7 @@ import com.gwell.iotvideo.accountmgr.AccountMgr;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideodemo.MyApp;
 import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
+import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceModelManager;
 import com.gwell.iotvideodemo.base.HttpRequestState;
 import com.gwell.iotvideodemo.base.SimpleSubscriberListener;
 
@@ -67,6 +68,7 @@ class LoginManager {
                             super.onSuccess(response);
                             String accessToken = loginInfo.getData().getAccessToken();
                             int validityTime = loginInfo.getData().getExpireTime();
+                            initIoTVideo(loginInfo.getData().getAccessId(), accessToken);
                             saveLoginInfo(loginInfo.getData().getAccessId(), accessToken, validityTime);
                         } else {
                             super.onFail(new Throwable(loginData.toString()));
@@ -96,12 +98,20 @@ class LoginManager {
         }
     }
 
+    private void initIoTVideo(String accessId, String accessToken) {
+        String realToken = accessToken.substring(0, 96);
+        String secretKey = accessToken.substring(96, 128);
+        //注册IoTVideo
+        IoTVideoSdk.register(Long.valueOf(accessId), accessToken);
+        //注册帐号体系
+        AccountMgr.setSecretInfo(accessId, secretKey, realToken);
+        //监听物模型变化
+        IoTVideoSdk.getMessageMgr().addModelListener(DeviceModelManager.getInstance());
+    }
+
     private void saveLoginInfo(String accessId, String accessToken, int validityTime) {
         String realToken = accessToken.substring(0, 96);
         String secretKey = accessToken.substring(96, 128);
-        AccountMgr.setSecretInfo(accessId, secretKey, realToken);
-        IoTVideoSdk.register(Long.valueOf(accessId), accessToken);
-
         AccountSPUtils.getInstance().putString(mContext, AccountSPUtils.ACCESS_ID, accessId);
         AccountSPUtils.getInstance().putString(mContext, AccountSPUtils.SECRET_KEY, secretKey);
         AccountSPUtils.getInstance().putString(mContext, AccountSPUtils.TOKEN, realToken);

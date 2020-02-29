@@ -47,7 +47,6 @@
         <TableRow
             android:id="@+id/switch_server_row"
             android:layout_marginTop="8dp"
-            android:visibility="gone"
             tools:visibility="visible">
             <TextView
                 android:text="打开测试服 : "

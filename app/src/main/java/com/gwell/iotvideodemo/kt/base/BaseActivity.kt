@@ -10,6 +10,7 @@ import android.view.View
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 import androidx.appcompat.app.AppCompatActivity
+import com.gwell.iotvideo.utils.LogUtils
 import com.gwell.iotvideo.utils.UrlHelper
 import com.gwell.iotvideodemo.R
 import com.gwell.iotvideodemo.kt.utils.StatusBarUtils
@@ -33,6 +34,7 @@ abstract class BaseActivity<P : IBasePresenter> : AppCompatActivity(), IBaseView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        LogUtils.i(TAG, "OnCreate")
 
         ViewUtils.application = application
 
@@ -144,6 +146,7 @@ abstract class BaseActivity<P : IBasePresenter> : AppCompatActivity(), IBaseView
 
     override fun onDestroy() {
         super.onDestroy()
+        LogUtils.i(TAG, "onDestroy")
         hideLoadingDialog()
         if (::mBasePresenter.isInitialized) {
             mBasePresenter.dispose()

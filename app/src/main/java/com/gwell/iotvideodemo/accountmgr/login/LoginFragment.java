@@ -6,14 +6,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.gwell.iotvideo.utils.UrlHelper;
 import com.gwell.iotvideodemo.R;
+import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
 import com.gwell.iotvideodemo.base.BaseFragment;
+import com.gwell.iotvideodemo.utils.AppSPUtils;
 import com.gwell.iotvideodemo.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,12 +57,33 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
             }
         });
 
-        final Button login_button = view.findViewById(R.id.btn_login);
-        login_button.setOnClickListener(this);
-        Button forgot_password = view.findViewById(R.id.btn_forgot_password);
-        forgot_password.setOnClickListener(this);
-        Button register = view.findViewById(R.id.btn_forgot_register);
-        register.setOnClickListener(this);
+        view.findViewById(R.id.btn_login).setOnClickListener(this);
+        view.findViewById(R.id.btn_forgot_password).setOnClickListener(this);
+        view.findViewById(R.id.btn_forgot_register).setOnClickListener(this);
+        Spinner spinner = view.findViewById(R.id.spinner_service_list);
+        List<String> serviceList = new ArrayList<>();
+        serviceList.add(getString(R.string.official_server));
+        serviceList.add(getString(R.string.test_server));
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.simple_spinner_item, serviceList);
+        spinner.setAdapter(arrayAdapter);
+        spinner.setSelection(UrlHelper.getInstance().isRelease() ? 0 : 1);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int selectedService = position == 0 ? UrlHelper.SERVER_RELEASE : UrlHelper.SERVER_DEV;
+                if (selectedService != UrlHelper.getInstance().getServerType()) {
+                    AccountSPUtils.getInstance().putInteger(getActivity(), AccountSPUtils.VALIDITY_TIMESTAMP, 0);
+                    AppSPUtils.getInstance().putBoolean(getActivity(), AppSPUtils.NEED_SWITCH_SERVER_TYPE, true);
+                    AppSPUtils.getInstance().putInteger(getActivity(), AppSPUtils.SERVER_TYPE, selectedService);
+                    Toast.makeText(getActivity(), R.string.effective_after_restarting, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @Override
