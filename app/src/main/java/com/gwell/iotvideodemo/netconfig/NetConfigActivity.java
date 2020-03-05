@@ -6,7 +6,9 @@ import android.view.MenuItem;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import com.gwell.iotvideo.netconfig.NetConfig;
 import com.gwell.iotvideo.netconfig.NetConfigInfo;
+import com.gwell.iotvideo.utils.JSONUtils;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseActivity;
 import com.gwell.iotvideodemo.base.HttpRequestState;
@@ -59,6 +61,9 @@ public class NetConfigActivity extends BaseActivity {
                         break;
                     case SUCCESS:
                         dismissProgressDialog();
+                        BindDeviceResult bindDeviceResult = JSONUtils.JsonToEntity(httpRequestState.getJsonObject().toString(),
+                                BindDeviceResult.class);
+                        NetConfig.getInstance().subscribeDevice(bindDeviceResult.getData().getDevToken());
                         Snackbar.make(mViewPager, httpRequestState.getStatusTip(), Snackbar.LENGTH_LONG).show();
                         break;
                     case ERROR:

@@ -10,6 +10,7 @@
         android:id="@+id/rg_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -18,7 +19,6 @@
             android:id="@+id/rb_get_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:checked="true"
             android:text="获取物模型"
             android:textSize="18sp" />
@@ -34,7 +34,6 @@
             android:id="@+id/rb_send_data_device"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:text="发送数据到设备"
             android:textSize="18sp"
             android:visibility="gone" />
@@ -43,7 +42,6 @@
             android:id="@+id/rb_send_data_server"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:text="发送数据到服务器"
             android:textSize="18sp"
             android:visibility="gone" />
@@ -52,7 +50,6 @@
             android:id="@+id/rb_get_playback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:text="获取设备回放列表"
             android:textSize="18sp"
             android:visibility="visible" />

@@ -27,6 +27,9 @@ import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
 import com.gwell.iotvideodemo.base.BaseActivity;
 import com.gwell.iotvideodemo.utils.Utils;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -130,8 +133,8 @@ public class TestWebApiActivity extends BaseActivity {
                 }
                 holder.etValue.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                     @Override
-                    public void onFocusChange(View view, boolean b) {
-                        if (b) {
+                    public void onFocusChange(View view, boolean hasFocus) {
+                        if (hasFocus) {
                             mParamTipTextView.setText(mWebInfo.getParamDepict(inputInfo.displayName));
                         } else {
                             mParamTipTextView.setText(null);
@@ -242,17 +245,15 @@ public class TestWebApiActivity extends BaseActivity {
 
         @Override
         public void onSuccess(@NonNull JsonObject jsonObject) {
-            if (jsonObject != null) {
-                String logText = "请求成功：\n" + jsonObject.toString();
-                mHttpStateTextView.setText(logText);
-                LogUtils.i(TAG, "onSuccess " + logText);
-                JsonElement dataElement = jsonObject.get("data");
-                if (dataElement.isJsonObject()) {
-                    JsonObject dataJson = dataElement.getAsJsonObject();
-                    WebInfo webInfo = JSONUtils.JsonToEntity(dataJson.toString(), WebInfo.class);
-                    if (webInfo != null) {
-                        mWebInfo.copyFrom(webInfo);
-                    }
+            String logText = "请求成功：\n" + jsonObject.toString();
+            mHttpStateTextView.setText(logText);
+            LogUtils.i(TAG, "onSuccess " + logText);
+            JsonElement dataElement = jsonObject.get("data");
+            if (dataElement.isJsonObject()) {
+                JsonObject dataJson = dataElement.getAsJsonObject();
+                WebInfo webInfo = JSONUtils.JsonToEntity(dataJson.toString(), WebInfo.class);
+                if (webInfo != null) {
+                    mWebInfo.copyFrom(webInfo);
                 }
             }
         }
@@ -389,7 +390,7 @@ public class TestWebApiActivity extends BaseActivity {
         String accessToken;
         String feedbackId;
         String noticeId;
-        String did;
+        String devId;
         String ownerId;
         String deviceName;
         String orderId;
@@ -423,7 +424,7 @@ public class TestWebApiActivity extends BaseActivity {
             accessToken = AccountSPUtils.getInstance().getString(TestWebApiActivity.this, AccountSPUtils.TOKEN, "");
             feedbackId = "feedbackId";
             noticeId = "noticeId";
-            did = "did";
+            devId = "devId";
             ownerId = "ownerId";
             deviceName = "deviceName";
             orderId = "orderId";
@@ -507,7 +508,7 @@ public class TestWebApiActivity extends BaseActivity {
                     return "反馈id(自动填写)";
                 case "noticeId":
                     return "公告id(自动填写)";
-                case "did":
+                case "devId":
                     return "设备id(自动填写)";
                 case "ownerId":
                     return "主人的ivUid(自动填写)";
@@ -539,6 +540,7 @@ public class TestWebApiActivity extends BaseActivity {
             return null;
         }
 
+        @NotNull
         @Override
         public String toString() {
             return "WebInfo{" +
@@ -554,7 +556,7 @@ public class TestWebApiActivity extends BaseActivity {
                     ", accessToken='" + accessToken + '\'' +
                     ", feedbackId='" + feedbackId + '\'' +
                     ", noticeId='" + noticeId + '\'' +
-                    ", did='" + did + '\'' +
+                    ", devId='" + devId + '\'' +
                     ", ownerId='" + ownerId + '\'' +
                     ", deviceName='" + deviceName + '\'' +
                     ", orderId='" + orderId + '\'' +
@@ -622,6 +624,7 @@ public class TestWebApiActivity extends BaseActivity {
             return value;
         }
 
+        @NotNull
         @Override
         public String toString() {
             return displayName + "=" + value;

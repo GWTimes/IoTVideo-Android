@@ -26,17 +26,20 @@ class MyApp : Application() {
                     StorageManager.getDocPath() + File.separator + "IoTVideo" + File.separator + "errorLog")
         }
 
-        if (!AppSPUtils.getInstance().getBoolean(this, AppSPUtils.NEED_SWITCH_SERVER_TYPE, false)) {
-            UrlHelper.getInstance().serverType = UrlHelper.SERVER_RELEASE
-        } else {
-            UrlHelper.getInstance().serverType = AppSPUtils.getInstance().getInteger(this, AppSPUtils.SERVER_TYPE, UrlHelper.SERVER_RELEASE)
-        }
+        val needChangeService = AppSPUtils.getInstance().getBoolean(this, AppSPUtils.NEED_SWITCH_SERVER_TYPE, false)
+        UrlHelper.getInstance().serverType = AppSPUtils.getInstance().getInteger(this, AppSPUtils.SERVER_TYPE, UrlHelper.SERVER_RELEASE)
 
         IoTVideoSdk.init(applicationContext, null)
         if (StorageManager.isDocPathAvailable()) {
             IoTVideoSdk.setLogPath(StorageManager.getDocPath() + File.separator + "xLog")
+            IoTVideoSdk.setDebugMode(true, 1)
         }
-        AccountMgr.init(CID, PRODUCT_ID)
+        if (needChangeService) {
+            val productId = AppSPUtils.getInstance().getString(this, AppSPUtils.PRODUCT_ID, PRODUCT_ID)
+            AccountMgr.init(productId)
+        } else {
+            AccountMgr.init(PRODUCT_ID)
+        }
         checkAndAutoLogin()
         VasMgr.init()
         if (BuildConfig.DEBUG) {
@@ -65,8 +68,6 @@ class MyApp : Application() {
     }
 
     companion object {
-
-        const val CID = 103
         const val PRODUCT_ID = "440234147841"
     }
 }

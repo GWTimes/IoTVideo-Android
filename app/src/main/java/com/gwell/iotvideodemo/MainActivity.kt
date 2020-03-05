@@ -53,6 +53,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         mNavigationHead = nav_view.getHeaderView(0)
         mNavigationHead!!.tv_app_version.text = BuildConfig.VERSION_NAME
         mNavigationHead!!.user_id.text = AccountSPUtils.getInstance().getUserId(this)
+        mNavigationHead!!.product_id.text = AccountMgr.getProductId()
         mNavigationHead!!.logout.setOnClickListener(this)
         mNavigationHead!!.iv_token.setOnClickListener(this)
         mNavigationHead!!.switch_server.isChecked = UrlHelper.getInstance().serverType == UrlHelper.SERVER_DEV
@@ -67,9 +68,6 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         val realToken = AccountSPUtils.getInstance().getString(this, AccountSPUtils.TOKEN, "")
         val secretKey = AccountSPUtils.getInstance().getString(this, AccountSPUtils.SECRET_KEY, "")
         mNavigationHead!!.iv_token.text = String.format("%s%s", realToken, secretKey)
-
-        //设置log
-        applyForStoragePerMission()
 
         registerNotify()
     }
@@ -179,17 +177,6 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 startActivityForResult(intent, CAPTURE_REQUEST_CODE)
             }
         }, Manifest.permission.CAMERA)
-    }
-
-    override fun applyForPermissionResult(mark: Int, permissionResult: Map<String, Boolean>, applyResult: Boolean) {
-        super.applyForPermissionResult(mark, permissionResult, applyResult)
-        if (applyResult) {
-            val readStorage = permissionResult[Manifest.permission.READ_EXTERNAL_STORAGE]
-            val writeStorage = permissionResult[Manifest.permission.WRITE_EXTERNAL_STORAGE]
-            if (readStorage != null && writeStorage != null && readStorage && writeStorage) {
-                IoTVideoSdk.setDebugMode(true, 1)
-            }
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

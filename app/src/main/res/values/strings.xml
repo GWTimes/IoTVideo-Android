@@ -81,8 +81,9 @@
     <string name="vas">vas</string>
     <string name="local_playback">local playback</string>
     <string name="copy_to_clipboard">copied</string>
-    <string name="effective_after_restarting">Effective after restarting the application</string>
+    <string name="effective_after_restarting">Switching service effective after restarting the application</string>
     <string name="official_server">Official server</string>
     <string name="test_server">Test server</string>
     <string name="welcome"><u>Welcome</u></string>
+    <string name="more"><u>more</u></string>
 </resources>

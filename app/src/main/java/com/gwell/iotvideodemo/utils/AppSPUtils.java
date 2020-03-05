@@ -8,6 +8,7 @@ public class AppSPUtils {
 
     public static final String UNIQUE_ID = "UNIQUE_ID";
     public static final String SERVER_TYPE = "SERVER_TYPE";
+    public static final String PRODUCT_ID = "PRODUCT_ID";
     public static final String NEED_SWITCH_SERVER_TYPE = "NEED_SWITCH_SERVER_TYPE";
 
     private static class SPHolder {

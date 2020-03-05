@@ -51,8 +51,8 @@ public class NetConfigViewModel extends ViewModel {
         mNetConfigHelper.findDevices();
     }
 
-    public void bindDevice(String did) {
-        mNetConfigHelper.bindDevice(did, mNetConfigStateData);
+    public void bindDevice(String devId) {
+        mNetConfigHelper.bindDevice(devId, mNetConfigStateData);
     }
 
     public void getNetConfigToken(IResultListener<DataMessage> listener) {

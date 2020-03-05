@@ -49,35 +49,14 @@ public class QRCodeNetConfigFragment extends BaseFragment {
         view.findViewById(R.id.create_qrcode).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mNetConfigInfoViewModel.getNetConfigToken(new IResultListener<DataMessage>() {
-                    @Override
-                    public void onStart() {
-                        LogUtils.i(TAG, "getNetConfigToken start");
-                    }
-
-                    @Override
-                    public void onSuccess(DataMessage msg) {
-                        LogUtils.i(TAG, "getNetConfigToken onSuccess : " + msg);
-                        byte[] token = msg.data;
-                        if (token != null) {
-                            String tokenStr = new String(token);
-                            NetMatchTokenResult result = JSONUtils.JsonToEntity(tokenStr, NetMatchTokenResult.class);
-                            createQRCodeAndDisplay(result.getToken());
-                        }
-                    }
-
-                    @Override
-                    public void onError(int errorCode, String errorMsg) {
-                        LogUtils.i(TAG, "getNetConfigToken errorCode : " + errorCode + " " + errorMsg);
-                        Snackbar.make(mQRCodeImage, errorCode + " " + errorMsg, Snackbar.LENGTH_LONG).show();
-                    }
-                });
+                getNetMatchIdAndCreateQRCode();
             }
         });
         mNetConfigInfoViewModel = ViewModelProviders.of(getActivity(), new NetConfigViewModelFactory())
                 .get(NetConfigViewModel.class);
         NetConfigInfo netConfigInfo = mNetConfigInfoViewModel.getNetConfigInfo();
         mTvNetConfigInfo.setText(netConfigInfo.toString());
+        getNetMatchIdAndCreateQRCode();
     }
 
     private void createQRCodeAndDisplay(String netConfigToken) {
@@ -106,5 +85,31 @@ public class QRCodeNetConfigFragment extends BaseFragment {
         } else {
             mBigImageDialog.dismiss();
         }
+    }
+
+    private void getNetMatchIdAndCreateQRCode() {
+        mNetConfigInfoViewModel.getNetConfigToken(new IResultListener<DataMessage>() {
+            @Override
+            public void onStart() {
+                LogUtils.i(TAG, "getNetConfigToken start");
+            }
+
+            @Override
+            public void onSuccess(DataMessage msg) {
+                LogUtils.i(TAG, "getNetConfigToken onSuccess : " + msg);
+                byte[] token = msg.data;
+                if (token != null) {
+                    String tokenStr = new String(token);
+                    NetMatchTokenResult result = JSONUtils.JsonToEntity(tokenStr, NetMatchTokenResult.class);
+                    createQRCodeAndDisplay(result.getToken());
+                }
+            }
+
+            @Override
+            public void onError(int errorCode, String errorMsg) {
+                LogUtils.i(TAG, "getNetConfigToken errorCode : " + errorCode + " " + errorMsg);
+                Snackbar.make(mQRCodeImage, errorCode + " " + errorMsg, Snackbar.LENGTH_LONG).show();
+            }
+        });
     }
 }

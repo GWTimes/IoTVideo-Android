@@ -8,11 +8,11 @@ import com.gwell.iotvideo.utils.JSONUtils;
 import com.gwell.iotvideo.IoTVideoSdk;
 import com.gwell.iotvideo.accountmgr.AccountMgr;
 import com.gwell.iotvideo.utils.LogUtils;
-import com.gwell.iotvideodemo.MyApp;
 import com.gwell.iotvideodemo.accountmgr.AccountSPUtils;
 import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceModelManager;
 import com.gwell.iotvideodemo.base.HttpRequestState;
-import com.gwell.iotvideodemo.base.SimpleSubscriberListener;
+import com.gwell.iotvideodemo.base.MVVMSubscriberListener;
+import com.gwell.iotvideodemo.utils.AppSPUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,14 +49,14 @@ class LoginManager {
     void checkCode(String account, int flag, MutableLiveData<HttpRequestState> request) {
         mCurrentAccount = account;
         if (isEmailValid(account)) {
-            AccountMgr.getHttpService().emailCheckCode(account, flag, new SimpleSubscriberListener(request));
+            AccountMgr.getHttpService().emailCheckCode(account, flag, new MVVMSubscriberListener(request));
         } else {
-            AccountMgr.getHttpService().mobileCheckCode("86", account, flag, new SimpleSubscriberListener(request));
+            AccountMgr.getHttpService().mobileCheckCode("86", account, flag, new MVVMSubscriberListener(request));
         }
     }
 
     void login(String account, String password, String uuid, MutableLiveData<HttpRequestState> request) {
-        SimpleSubscriberListener subscriberListener = new SimpleSubscriberListener(request) {
+        MVVMSubscriberListener subscriberListener = new MVVMSubscriberListener(request) {
             @Override
             public void onSuccess(@NonNull JsonObject response) {
                 LoginInfo loginInfo = JSONUtils.JsonToEntity(response.toString(), LoginInfo.class);
@@ -84,17 +84,17 @@ class LoginManager {
 
     void register(String pwd, String vcode, MutableLiveData<HttpRequestState> request) {
         if (isEmailValid(mCurrentAccount)) {
-            AccountMgr.getHttpService().emailRegister(MyApp.CID, mCurrentAccount, pwd, vcode, new SimpleSubscriberListener(request));
+            AccountMgr.getHttpService().emailRegister(mCurrentAccount, pwd, vcode, new MVVMSubscriberListener(request));
         } else {
-            AccountMgr.getHttpService().mobileRegister(MyApp.CID, "86", mCurrentAccount, pwd, vcode, new SimpleSubscriberListener(request));
+            AccountMgr.getHttpService().mobileRegister("86", mCurrentAccount, pwd, vcode, new MVVMSubscriberListener(request));
         }
     }
 
     void retrieve(String pwd, String vcode, MutableLiveData<HttpRequestState> request) {
         if (isEmailValid(mCurrentAccount)) {
-            AccountMgr.getHttpService().emailResetPwd(mCurrentAccount, pwd, vcode, new SimpleSubscriberListener(request));
+            AccountMgr.getHttpService().emailResetPwd(mCurrentAccount, pwd, vcode, new MVVMSubscriberListener(request));
         } else {
-            AccountMgr.getHttpService().mobileResetPwd("86", mCurrentAccount, pwd, vcode, new SimpleSubscriberListener(request));
+            AccountMgr.getHttpService().mobileResetPwd("86", mCurrentAccount, pwd, vcode, new MVVMSubscriberListener(request));
         }
     }
 

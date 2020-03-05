@@ -13,8 +13,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.core.content.FileProvider;
-
 import com.gwell.iotvideo.iotvideoplayer.IErrorListener;
 import com.gwell.iotvideo.iotvideoplayer.IPreparedListener;
 import com.gwell.iotvideo.iotvideoplayer.IRecordListener;
@@ -23,20 +21,18 @@ import com.gwell.iotvideo.iotvideoplayer.IStatusListener;
 import com.gwell.iotvideo.iotvideoplayer.ITimeListener;
 import com.gwell.iotvideo.iotvideoplayer.IUserDataListener;
 import com.gwell.iotvideo.iotvideoplayer.IoTVideoView;
+import com.gwell.iotvideo.iotvideoplayer.PlayerStateEnum;
 import com.gwell.iotvideo.iotvideoplayer.player.MonitorPlayer;
 import com.gwell.iotvideo.utils.LogUtils;
-import com.gwell.iotvideodemo.MyApp;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseActivity;
+import com.gwell.iotvideodemo.utils.StorageManager;
 
 import java.io.File;
-import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
-import com.gwell.iotvideo.iotvideoplayer.PlayerStateEnum;
-import com.gwell.iotvideodemo.utils.StorageManager;
+import androidx.core.content.FileProvider;
 
 public class MonitorPlayerActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "MonitorPlayerActivity";
@@ -111,21 +107,21 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
                 }
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 //判断是否是AndroidN以及更高的版本
-                if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.N) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     try {
-                        Uri contentUri = FileProvider.getUriForFile(MonitorPlayerActivity.this,"com.gwell.iotvideodemo.fileProvider",
+                        Uri contentUri = FileProvider.getUriForFile(MonitorPlayerActivity.this, "com.gwell.iotvideodemo.fileProvider",
                                 new File(StorageManager.getPicPath()));
                         LogUtils.i(TAG, contentUri.toString());
                         intent.setData(contentUri);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                         intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         LogUtils.e(TAG, e.getMessage());
                     }
-                }else{
+                } else {
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setDataAndType(Uri.fromFile(MonitorPlayerActivity.this.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES).getParentFile()),"*/*");
+                    intent.setDataAndType(Uri.fromFile(MonitorPlayerActivity.this.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES).getParentFile()), "*/*");
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                 }
                 MonitorPlayerActivity.this.startActivity(intent);
@@ -150,10 +146,6 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
         mMonitorPlayer.setTimeListener(mTimeListener);
         mMonitorPlayer.setErrorListener(mErrorListener);
         mMonitorPlayer.setUserDataListener(mUserDataListener);
-
-        //mVideoView.prepare();
-
-        applyForStoragePerMission();
     }
 
     private IPreparedListener mPreparedListener = new IPreparedListener() {
@@ -183,15 +175,15 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
         @Override
         public void onError(int error) {
             LogUtils.d(TAG, "onError error " + error);
-            appendToOutput( "播放错误：" + error);
+            appendToOutput("播放错误：" + error);
         }
     };
 
     private IUserDataListener mUserDataListener = new IUserDataListener() {
         @Override
-        public void onReceive(byte[]  data) {
+        public void onReceive(byte[] data) {
             LogUtils.d(TAG, "onReceive ----");
-            appendToOutput( "收到数据：" + data);
+            appendToOutput("收到数据：" + data);
         }
     };
 
@@ -239,7 +231,7 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
                                 @Override
                                 public void onResult(int code, String path) {
                                     Toast.makeText(MonitorPlayerActivity.this, "code:" + code + " path:" + path, Toast.LENGTH_LONG).show();
-                                    if(code != 0){
+                                    if (code != 0) {
                                         mRecordBtn.setText("开始录像");
                                     }
                                     appendToOutput("录像结果：  返回码 " + code + " 路径 " + path);
@@ -248,7 +240,7 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
                 }
                 break;
             case R.id.start_talk_btn:
-                requestPermissions(new OnPermissionsListener(){
+                requestPermissions(new OnPermissionsListener() {
                     @Override
                     public void OnPermissions(boolean granted) {
                         if (granted) {
@@ -282,29 +274,6 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
     }
 
     @Override
-    protected void applyForPermissionResult(int mark, Map<String, Boolean> permissionResult, boolean applyResult) {
-        super.applyForPermissionResult(mark, permissionResult, applyResult);
-        if (applyResult) {
-            Boolean readStorage = permissionResult.get(Manifest.permission.READ_EXTERNAL_STORAGE);
-            Boolean writeStorage = permissionResult.get(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            if (readStorage != null && writeStorage != null && readStorage && writeStorage) {
-//                boolean isFileExist = StorageManager.isFileExists(new File(Environment.getExternalStorageDirectory(), "iotvideo.mp4").getAbsolutePath());
-//                if (!isFileExist) {
-//                    Single.create(new SingleOnSubscribe<String>() {
-//
-//                        @Override
-//                        public void subscribe(SingleEmitter<String> emitter) throws Exception {
-//                            StorageManager.copyToSDCard(MonitorPlayerActivity.this.getApplicationContext(), "iotvideo.mp4",
-//                                    new File(Environment.getExternalStorageDirectory(), "iotvideo.mp4").getAbsolutePath());
-//                        }
-//                    }).subscribeOn(Schedulers.io())
-//                            .subscribe();
-//                }
-            }
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         if (mVideoView != null) {
@@ -323,7 +292,7 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
     @Override
     protected void onStop() {
         super.onStop();
-        if(mMonitorPlayer != null){
+        if (mMonitorPlayer != null) {
             mMonitorPlayer.stop();
         }
     }
@@ -337,39 +306,40 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-    private void appendToOutput(String text){
+    private void appendToOutput(String text) {
         mResultTxt.append("\n" + text);
-        int offset=mResultTxt.getLineCount()*mResultTxt.getLineHeight();
-        if(offset>mResultTxt.getHeight()){
-            mResultTxt.scrollTo(0,offset-mResultTxt.getHeight());
+        int offset = mResultTxt.getLineCount() * mResultTxt.getLineHeight();
+        if (offset > mResultTxt.getHeight()) {
+            mResultTxt.scrollTo(0, offset - mResultTxt.getHeight());
         }
     }
 
-    private String getPlayStatus(int status){
+    private String getPlayStatus(int status) {
         String playStatus = "";
-        switch (status){
-            case PlayerStateEnum.STATE_IDLE :
+        switch (status) {
+            case PlayerStateEnum.STATE_IDLE:
                 playStatus = "未初始化";
-            break;
-            case PlayerStateEnum.STATE_INITIALIZED :
+                break;
+            case PlayerStateEnum.STATE_INITIALIZED:
                 playStatus = "已初始化";
                 break;
-            case PlayerStateEnum.STATE_PREPARING :
+            case PlayerStateEnum.STATE_PREPARING:
                 playStatus = "准备中...";
                 break;
-            case PlayerStateEnum.STATE_READY :
+            case PlayerStateEnum.STATE_READY:
                 playStatus = "准备完成";
                 break;
-            case PlayerStateEnum.STATE_LOADING :
+            case PlayerStateEnum.STATE_LOADING:
                 playStatus = "加载中";
                 break;
-            case PlayerStateEnum.STATE_PLAY :
+            case PlayerStateEnum.STATE_PLAY:
                 playStatus = "播放中";
                 break;
-            case PlayerStateEnum.STATE_PAUSE : {
+            case PlayerStateEnum.STATE_PAUSE: {
                 playStatus = "暂停";
-            }break;
-            case PlayerStateEnum.STATE_STOP :
+            }
+            break;
+            case PlayerStateEnum.STATE_STOP:
                 playStatus = "停止播放";
                 break;
         }

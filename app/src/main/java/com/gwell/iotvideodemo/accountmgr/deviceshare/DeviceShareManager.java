@@ -6,7 +6,7 @@ import com.gwell.iotvideo.accountmgr.AccountMgr;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideodemo.accountmgr.devicemanager.DeviceList;
 import com.gwell.iotvideodemo.base.HttpRequestState;
-import com.gwell.iotvideodemo.base.SimpleSubscriberListener;
+import com.gwell.iotvideodemo.base.MVVMSubscriberListener;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -20,20 +20,20 @@ class DeviceShareManager {
 
     void listSharedUsers(DeviceList.Device device, MutableLiveData<HttpRequestState> httpRequestState) {
         LogUtils.i(TAG, "listSharedUsers");
-        AccountMgr.getHttpService().listSharedUsers(device.getDevId(), new SimpleSubscriberListener(httpRequestState));
+        AccountMgr.getHttpService().listSharedUsers(device.getDevId(), new MVVMSubscriberListener(httpRequestState));
     }
 
     void genShareQrcode(DeviceList.Device device, MutableLiveData<HttpRequestState> httpRequestState) {
-        AccountMgr.getHttpService().genShareQrcode(device.getDevId(), device.getDeviceName(), device.getDeviceName(), new SimpleSubscriberListener(httpRequestState));
+        AccountMgr.getHttpService().genShareQrcode(device.getDevId(), device.getDeviceName(), device.getDeviceName(), new MVVMSubscriberListener(httpRequestState));
     }
 
     void shareDevice(String shareId, DeviceList.Device device, MutableLiveData<HttpRequestState> httpRequestState) {
-        AccountMgr.getHttpService().accountShare(shareId, device.getDevId(), new SimpleSubscriberListener(httpRequestState));
+        AccountMgr.getHttpService().accountShare(shareId, device.getDevId(), new MVVMSubscriberListener(httpRequestState));
     }
 
     void findUser(String account, MutableLiveData<HttpRequestState> httpRequestState) {
         String region = isEmailValid(account) ? null : "86";
-        AccountMgr.getHttpService().findUser(region, account, new SimpleSubscriberListener(httpRequestState));
+        AccountMgr.getHttpService().findUser(region, account, new MVVMSubscriberListener(httpRequestState));
     }
 
     void cancelShare(ShareList.DataBean.User user, DeviceList.Device device,

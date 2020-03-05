@@ -32,6 +32,7 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.start_preview).setOnClickListener(this);
         findViewById(R.id.start_record).setOnClickListener(this);
         findViewById(R.id.start_web_api_activity).setOnClickListener(this);
+        findViewById(R.id.start_test_qrcode_activity).setOnClickListener(this);
         findViewById(R.id.test_http_via_p2p).setOnClickListener(this);
     }
 
@@ -46,6 +47,9 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.start_web_api_activity:
                 startWebApiActivity();
+                break;
+            case R.id.start_test_qrcode_activity:
+                startQRCodeActivity();
                 break;
             case R.id.test_http_via_p2p:
                 VasService vasService = VasMgr.getVasService();
@@ -90,6 +94,11 @@ public class TestActivity extends BaseActivity implements View.OnClickListener {
 
     private void startWebApiActivity() {
         Intent intent = new Intent(this, TestWebApiActivity.class);
+        startActivity(intent);
+    }
+
+    private void startQRCodeActivity() {
+        Intent intent = new Intent(this, TestQRCodeActivity.class);
         startActivity(intent);
     }
 }

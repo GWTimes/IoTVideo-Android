@@ -81,8 +81,9 @@
     <string name="vas">增值服务</string>
     <string name="local_playback">本地回放</string>
     <string name="copy_to_clipboard">已复制</string>
-    <string name="effective_after_restarting">重启应用后生效</string>
+    <string name="effective_after_restarting">切换环境重启应用后生效</string>
     <string name="official_server">线上环境</string>
     <string name="test_server">测试环境</string>
     <string name="welcome"><u>Welcome</u></string>
+    <string name="more"><u>更多</u></string>
 </resources>

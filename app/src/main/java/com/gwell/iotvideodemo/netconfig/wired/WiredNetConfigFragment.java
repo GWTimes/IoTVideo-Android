@@ -111,13 +111,6 @@ public class WiredNetConfigFragment extends BaseFragment {
                 }
             }
         });
-
-        view.findViewById(R.id.bind_device).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mNetConfigInfoViewModel.bindDevice("031400005df99fe06cbb9181cd2bc219");
-            }
-        });
     }
 
     class DeviceItemHolder extends RecyclerView.ViewHolder {
@@ -137,7 +130,7 @@ public class WiredNetConfigFragment extends BaseFragment {
         mNetConfigInfoViewModel.findDevice();
     }
 
-    private void bindDevice(String did) {
-        mNetConfigInfoViewModel.bindDevice(did);
+    private void bindDevice(String devId) {
+        mNetConfigInfoViewModel.bindDevice(devId);
     }
 }

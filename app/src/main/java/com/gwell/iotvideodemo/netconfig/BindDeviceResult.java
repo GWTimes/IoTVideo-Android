@@ -1,15 +1,16 @@
 package com.gwell.iotvideodemo.netconfig;
 
 public class BindDeviceResult {
+
     /**
      * code : 0
+     * data : {"devToken":"018BD4040D0100000643D3708A43765429B1D7D51C229E3D49A6C0ECF8CE9D69A1F0C80B2A1B9D677C187343714EEC0DD47868145F69F44C67753D6C33C3E0DE"}
      * msg : Success
-     * data : {"token":"-9223371598768111611"}
      */
 
     private int code;
-    private String msg;
     private DataBean data;
+    private String msg;
 
     public int getCode() {
         return code;
@@ -17,14 +18,6 @@ public class BindDeviceResult {
 
     public void setCode(int code) {
         this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
     }
 
     public DataBean getData() {
@@ -35,19 +28,27 @@ public class BindDeviceResult {
         this.data = data;
     }
 
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
     public static class DataBean {
         /**
-         * token : -9223371598768111611
+         * devToken : 018BD4040D0100000643D3708A43765429B1D7D51C229E3D49A6C0ECF8CE9D69A1F0C80B2A1B9D677C187343714EEC0DD47868145F69F44C67753D6C33C3E0DE
          */
 
-        private String token;
+        private String devToken;
 
-        public String getToken() {
-            return token;
+        public String getDevToken() {
+            return devToken;
         }
 
-        public void setToken(String token) {
-            this.token = token;
+        public void setDevToken(String devToken) {
+            this.devToken = devToken;
         }
     }
 }

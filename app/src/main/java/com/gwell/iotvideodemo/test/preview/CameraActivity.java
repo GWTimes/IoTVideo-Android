@@ -19,10 +19,9 @@ package com.gwell.iotvideodemo.test.preview;
 import android.os.Bundle;
 
 import com.gwell.iotvideodemo.R;
+import com.gwell.iotvideodemo.base.BaseActivity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-public class CameraActivity extends AppCompatActivity {
+public class CameraActivity extends BaseActivity {
     public static final String OPERATE_TYPE = "operate_type";
 
     public static final int OPERATE_PREVIEW = 0;

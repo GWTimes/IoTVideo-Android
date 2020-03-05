@@ -150,10 +150,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         mMonitorPlayer.setTimeListener(mTimeListener);
         mMonitorPlayer.setErrorListener(mErrorListener);
         mMonitorPlayer.setUserDataListener(mUserDataListener);
-
-        //mVideoView.prepare();
-
-        applyForStoragePerMission();
     }
 
     private IPreparedListener mPreparedListener = new IPreparedListener() {
@@ -278,29 +274,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
             case R.id.mute_btn:
                 mMonitorPlayer.mute(!mMonitorPlayer.isMute());
                 break;
-        }
-    }
-
-    @Override
-    protected void applyForPermissionResult(int mark, Map<String, Boolean> permissionResult, boolean applyResult) {
-        super.applyForPermissionResult(mark, permissionResult, applyResult);
-        if (applyResult) {
-            Boolean readStorage = permissionResult.get(Manifest.permission.READ_EXTERNAL_STORAGE);
-            Boolean writeStorage = permissionResult.get(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            if (readStorage != null && writeStorage != null && readStorage && writeStorage) {
-//                boolean isFileExist = StorageManager.isFileExists(new File(Environment.getExternalStorageDirectory(), "iotvideo.mp4").getAbsolutePath());
-//                if (!isFileExist) {
-//                    Single.create(new SingleOnSubscribe<String>() {
-//
-//                        @Override
-//                        public void subscribe(SingleEmitter<String> emitter) throws Exception {
-//                            StorageManager.copyToSDCard(VideoPlayerActivity.this.getApplicationContext(), "iotvideo.mp4",
-//                                    new File(Environment.getExternalStorageDirectory(), "iotvideo.mp4").getAbsolutePath());
-//                        }
-//                    }).subscribeOn(Schedulers.io())
-//                            .subscribe();
-//                }
-            }
         }
     }
 

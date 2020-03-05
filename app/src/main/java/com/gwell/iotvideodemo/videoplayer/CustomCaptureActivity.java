@@ -11,6 +11,7 @@ import android.widget.Button;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseActivity;
+import com.gwell.iotvideodemo.utils.StatusBarUtils;
 import com.gwell.zxing.CaptureHelper;
 import com.gwell.zxing.Intents;
 import com.gwell.zxing.OnCaptureCallback;
@@ -34,6 +35,7 @@ public class CustomCaptureActivity extends BaseActivity implements OnCaptureCall
         LogUtils.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_capture);
+        StatusBarUtils.setColor(this, android.R.color.transparent, 1);
         mSurfaceView = findViewById(R.id.surfaceView);
         mViewfinderView = findViewById(R.id.viewfinderView);
         mPreviewControl = findViewById(R.id.preview_control);

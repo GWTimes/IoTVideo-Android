@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideo.utils.UrlHelper;
 import com.gwell.iotvideodemo.R;
+import com.gwell.iotvideodemo.utils.StatusBarUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import androidx.annotation.NonNull;
@@ -49,6 +50,8 @@ public class BaseActivity extends AppCompatActivity {
         if (!UrlHelper.getInstance().isRelease()) {
             setTitle(getTitle());
         }
+        //设置状态栏颜色V
+        StatusBarUtils.setColor(this, getResources().getColor(R.color.colorPrimary), 0);
     }
 
     @Override

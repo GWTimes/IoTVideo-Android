@@ -40,20 +40,6 @@
             android:text="@string/find_device"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/bind_device"
-            style="?android:textAppearanceMedium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="16dp"
-            android:backgroundTint="@color/colorPrimary"
-            android:padding="16dp"
-            android:text="绑定设备"
-            android:visibility="gone"
-            android:textColor="@android:color/white"
-            android:textStyle="bold" />
     </FrameLayout>
 
 </LinearLayout>

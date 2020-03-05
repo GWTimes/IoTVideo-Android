@@ -40,7 +40,6 @@ import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.media.MediaMuxer;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Size;
@@ -54,11 +53,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.gwell.iotvideo.utils.LogUtils;
-import com.gwell.iotvideodemo.MyApp;
 import com.gwell.iotvideodemo.R;
 import com.gwell.iotvideodemo.base.BaseFragment;
 import com.gwell.iotvideodemo.utils.StorageManager;
-import com.gwell.iotvideodemo.videoplayer.VideoPlayerActivity;
 
 import java.io.File;
 import java.io.IOException;

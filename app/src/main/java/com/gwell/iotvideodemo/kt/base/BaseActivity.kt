@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.gwell.iotvideo.utils.LogUtils
 import com.gwell.iotvideo.utils.UrlHelper
 import com.gwell.iotvideodemo.R
-import com.gwell.iotvideodemo.kt.utils.StatusBarUtils
+import com.gwell.iotvideodemo.utils.StatusBarUtils
 import com.gwell.iotvideodemo.kt.utils.ViewUtils
 import com.gwell.iotvideodemo.kt.widget.dialog.LoadingDialog
 import com.gwell.iotvideodemo.rxbus2.RxBus

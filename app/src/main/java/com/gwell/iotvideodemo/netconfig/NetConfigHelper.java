@@ -8,7 +8,7 @@ import com.gwell.iotvideo.netconfig.DeviceInfo;
 import com.gwell.iotvideo.netconfig.wired.WiredNetConfig;
 import com.gwell.iotvideo.utils.LogUtils;
 import com.gwell.iotvideodemo.base.HttpRequestState;
-import com.gwell.iotvideodemo.base.SimpleSubscriberListener;
+import com.gwell.iotvideodemo.base.MVVMSubscriberListener;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -21,8 +21,8 @@ class NetConfigHelper {
         mNetConfigViewModel = model;
     }
 
-    void bindDevice(String did, MutableLiveData<HttpRequestState> httpRequestStateMutableLiveData) {
-        AccountMgr.getHttpService().deviceBind(did, true, new SimpleSubscriberListener(httpRequestStateMutableLiveData));
+    void bindDevice(String devId, MutableLiveData<HttpRequestState> httpRequestStateMutableLiveData) {
+        AccountMgr.getHttpService().deviceBind(devId, true, new MVVMSubscriberListener(httpRequestStateMutableLiveData));
     }
 
     void findDevices() {
