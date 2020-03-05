@@ -2,6 +2,7 @@ package com.gwell.iotvideodemo
 
 import android.app.Application
 import android.text.TextUtils
+import android.widget.Toast
 
 import com.gwell.iotvideo.IoTVideoSdk
 import com.gwell.iotvideo.accountmgr.AccountMgr
@@ -26,7 +27,6 @@ class MyApp : Application() {
                     StorageManager.getDocPath() + File.separator + "IoTVideo" + File.separator + "errorLog")
         }
 
-        val needChangeService = AppSPUtils.getInstance().getBoolean(this, AppSPUtils.NEED_SWITCH_SERVER_TYPE, false)
         UrlHelper.getInstance().serverType = AppSPUtils.getInstance().getInteger(this, AppSPUtils.SERVER_TYPE, UrlHelper.SERVER_RELEASE)
 
         IoTVideoSdk.init(applicationContext, null)
@@ -34,12 +34,9 @@ class MyApp : Application() {
             IoTVideoSdk.setLogPath(StorageManager.getDocPath() + File.separator + "xLog")
             IoTVideoSdk.setDebugMode(true, 1)
         }
-        if (needChangeService) {
-            val productId = AppSPUtils.getInstance().getString(this, AppSPUtils.PRODUCT_ID, PRODUCT_ID)
-            AccountMgr.init(productId)
-        } else {
-            AccountMgr.init(PRODUCT_ID)
-        }
+        val productId = AppSPUtils.getInstance().getString(this, AppSPUtils.PRODUCT_ID, PRODUCT_ID)
+        Toast.makeText(applicationContext, "productId : $productId", Toast.LENGTH_LONG).show()
+        AccountMgr.init(productId)
         checkAndAutoLogin()
         VasMgr.init()
         if (BuildConfig.DEBUG) {
