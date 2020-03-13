@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:text="获取设备回放列表"
             android:textSize="18sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
     </RadioGroup>
 
     <FrameLayout

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">IoTVideo</string>
+    <string name="app_name">IoTVideoDemo</string>
     <string name="start_preview">start preview</string>
     <string name="stop_preview">stop preview</string>
     <string name="start_torch">start torch</string>
@@ -86,4 +86,7 @@
     <string name="test_server">Test server</string>
     <string name="welcome"><u>Welcome</u></string>
     <string name="more"><u>more</u></string>
+    <string name="cloud_storage">云存储</string>
+    <string name="delete">delete</string>
+    <string name="device_ota">OTA</string>
 </resources>

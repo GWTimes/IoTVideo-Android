@@ -17,18 +17,25 @@
         android:title="@string/device_model"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_menu_ota"
+        android:orderInCategory="1"
+        android:title="@string/device_ota"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_menu_share"
         android:orderInCategory="1"
         android:title="@string/device_share"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_menu_unbind"
-        android:orderInCategory="2"
-        android:title="@string/unbind"
+        android:visible="false"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_menu_vas"
         android:orderInCategory="2"
-        android:title="@string/vas"
+        android:title="@string/cloud_storage"
+        android:visible="false"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_menu_unbind"
+        android:orderInCategory="2"
+        android:title="@string/delete"
+        app:showAsAction="never" />
 </menu>

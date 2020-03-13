@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".videoplayer.PlaybackPlayerActivity">
-    <com.gwell.iotvideo.iotvideoplayer.IoTVideoView
-        android:id="@+id/gwell_gl_surface_view"
+    <com.tencentcs.iotvideo.iotvideoplayer.IoTVideoView
+        android:id="@+id/tencentcs_gl_surface_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="H,16:9"
@@ -14,35 +14,48 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/playback_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@android:color/white" />
+
     <Button
         android:id="@+id/tv_start_record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="打开设备录像开关"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tv_stop_record"
-        app:layout_constraintTop_toBottomOf="@+id/gwell_gl_surface_view" />
+        app:layout_constraintTop_toBottomOf="@+id/tencentcs_gl_surface_view" />
 
     <Button
         android:id="@+id/tv_stop_record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="关闭设备录像开关"
+        app:layout_constraintStart_toEndOf="@+id/tv_start_record"
         app:layout_constraintEnd_toStartOf="@+id/tv_get_playback"
-        app:layout_constraintTop_toBottomOf="@+id/gwell_gl_surface_view" />
+        app:layout_constraintTop_toBottomOf="@+id/tencentcs_gl_surface_view" />
 
     <Button
         android:id="@+id/tv_get_playback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="获取回放列表"
+        app:layout_constraintStart_toEndOf="@+id/tv_stop_record"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gwell_gl_surface_view" />
+        app:layout_constraintTop_toBottomOf="@+id/tencentcs_gl_surface_view" />
 
     <Button
         android:id="@+id/btn_record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="开始录像"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_get_playback" />
 

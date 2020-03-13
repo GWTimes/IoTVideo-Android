@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_menu_qrcode"
+        android:id="@+id/action_menu_wired"
         android:orderInCategory="1"
+        android:title="@string/wired_net_config"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_menu_qrcode"
+        android:orderInCategory="2"
         android:title="@string/qrcode_net_config"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_menu_ap"
-        android:orderInCategory="2"
-        android:title="@string/ap_net_config"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_menu_wired"
         android:orderInCategory="3"
-        android:title="@string/wired_net_config"
+        android:title="@string/ap_net_config"
         app:showAsAction="never" />
 </menu>

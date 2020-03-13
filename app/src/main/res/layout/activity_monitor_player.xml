@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".videoplayer.MonitorPlayerActivity">
 
-    <com.gwell.iotvideo.iotvideoplayer.IoTVideoView
-        android:id="@+id/gwell_gl_surface_view"
+    <com.tencentcs.iotvideo.iotvideoplayer.IoTVideoView
+        android:id="@+id/tencentcs_gl_surface_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="H,16:9"
@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="播放"
-        app:layout_constraintBottom_toBottomOf="@+id/gwell_gl_surface_view"
+        app:layout_constraintBottom_toBottomOf="@+id/tencentcs_gl_surface_view"
         app:layout_constraintEnd_toStartOf="@+id/snap_btn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="开始对讲"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@+id/mute_btn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,7 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="结束对讲"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/mute_btn"

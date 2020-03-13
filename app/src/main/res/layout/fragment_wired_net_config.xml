@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:layout_gravity="center"
-            android:backgroundTint="@color/colorPrimary"
+            android:backgroundTint="@color/default_button"
             android:padding="16dp"
             android:text="@string/find_device"
             android:textColor="@android:color/white"

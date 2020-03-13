@@ -10,6 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="16dp"
-        android:text="@string/ap_net_config" />
+        android:text="开发中" />
 
 </LinearLayout>
