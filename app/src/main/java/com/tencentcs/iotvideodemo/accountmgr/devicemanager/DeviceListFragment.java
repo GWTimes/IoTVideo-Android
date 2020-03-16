@@ -13,18 +13,14 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.tencentcs.iotvideo.IoTVideoSdk;
 import com.tencentcs.iotvideo.accountmgr.AccountMgr;
-import com.tencentcs.iotvideo.http.HttpCode;
 import com.tencentcs.iotvideo.messagemgr.IModelListener;
 import com.tencentcs.iotvideo.messagemgr.ModelMessage;
 import com.tencentcs.iotvideo.utils.JSONUtils;
 import com.tencentcs.iotvideo.utils.LogUtils;
 import com.tencentcs.iotvideo.utils.rxjava.IResultListener;
 import com.tencentcs.iotvideo.utils.rxjava.SubscriberListener;
-import com.tencentcs.iotvideodemo.MyApp;
 import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.accountmgr.deviceshare.DeviceShareActivity;
-import com.tencentcs.iotvideodemo.accountmgrtc.data.TencentcsDeviceList;
-import com.tencentcs.iotvideodemo.accountmgrtc.httpservice.TencentcsAccountMgr;
 import com.tencentcs.iotvideodemo.base.BaseFragment;
 import com.tencentcs.iotvideodemo.messagemgr.DeviceMessageActivity;
 import com.tencentcs.iotvideodemo.vas.VasActivity;
@@ -46,7 +42,7 @@ public class DeviceListFragment extends BaseFragment {
     private static final String TAG = "DeviceManagerActivity";
 
     private RecyclerView mRVDeviceList;
-    private RecyclerView.Adapter<DeviceListFragment.DeviceItemHolder> mAdapter;
+    private RecyclerView.Adapter<DeviceItemHolder> mAdapter;
     private List<DeviceList.Device> mDeviceInfoList;
 
     @Nullable
@@ -62,17 +58,17 @@ public class DeviceListFragment extends BaseFragment {
         mRVDeviceList = view.findViewById(R.id.device_list);
         mRVDeviceList.addItemDecoration(new RecycleViewDivider(getActivity(), RecycleViewDivider.VERTICAL));
         mRVDeviceList.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
-        mAdapter = new RecyclerView.Adapter<DeviceListFragment.DeviceItemHolder>() {
+        mAdapter = new RecyclerView.Adapter<DeviceItemHolder>() {
             @NonNull
             @Override
-            public DeviceListFragment.DeviceItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            public DeviceItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(getActivity()).inflate(R.layout.item_manager_device, parent, false);
-                DeviceListFragment.DeviceItemHolder holder = new DeviceListFragment.DeviceItemHolder(view);
+                DeviceItemHolder holder = new DeviceItemHolder(view);
                 return holder;
             }
 
             @Override
-            public void onBindViewHolder(@NonNull final DeviceListFragment.DeviceItemHolder holder, int position) {
+            public void onBindViewHolder(@NonNull final DeviceItemHolder holder, int position) {
                 final DeviceList.Device deviceInfo = mDeviceInfoList.get(position);
                 holder.tvDeviceName.setText(deviceInfo.getDeviceName());
                 if (!TextUtils.isEmpty(deviceInfo.getDevId())) {
@@ -104,11 +100,7 @@ public class DeviceListFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (MyApp.ENABLE_TENCENTCS) {
-            tencentQueryDeviceList();
-        } else {
-            queryDeviceList();
-        }
+        queryDeviceList();
     }
 
     private void showPopupMenu(final View anchor, final DeviceList.Device device) {
@@ -153,11 +145,7 @@ public class DeviceListFragment extends BaseFragment {
                         break;
                     case R.id.action_menu_unbind:
                         if ("owner".equals(device.getShareType())) {
-                            if (MyApp.ENABLE_TENCENTCS) {
-                                tencentcsUnbindDevice(device);
-                            } else {
-                                unbindDevice(device);
-                            }
+                            unbindDevice(device);
                         } else {
                             Snackbar.make(anchor, R.string.you_are_not_owner, Snackbar.LENGTH_LONG).show();
                         }
@@ -189,7 +177,7 @@ public class DeviceListFragment extends BaseFragment {
             public void onSuccess(@NonNull JsonObject response) {
                 LogUtils.i(TAG, "queryDeviceList = " + response.toString());
                 DeviceList deviceList = JSONUtils.JsonToEntity(response.toString(), DeviceList.class);
-                if (deviceList.getCode() == HttpCode.ERROR_0 && deviceList.getData() != null) {
+                if (deviceList.getData() != null) {
                     mDeviceInfoList = deviceList.getData();
                     updateDeviceModel();
                     registerNotify();
@@ -210,65 +198,8 @@ public class DeviceListFragment extends BaseFragment {
         });
     }
 
-    private void tencentQueryDeviceList() {
-        TencentcsAccountMgr.getHttpService().DescribeBindDev(TencentcsAccountMgr.getAccessId(), new SubscriberListener() {
-            @Override
-            public void onStart() {
-
-            }
-
-            @Override
-            public void onSuccess(@NonNull JsonObject response) {
-                LogUtils.i(TAG, "tencentQueryDeviceList = " + response.toString());
-                TencentcsDeviceList deviceList = JSONUtils.JsonToEntity(response.toString(), TencentcsDeviceList.class);
-                if (deviceList.getResponse() == null || deviceList.getResponse().getData() == null) {
-                    Snackbar.make(mRVDeviceList, "device count = 0", Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-                mDeviceInfoList.clear();
-                for (TencentcsDeviceList.ResponseBean.Device tencentcsDevice : deviceList.getResponse().getData()) {
-                    mDeviceInfoList.add(new DeviceList.Device(tencentcsDevice.getTid(), tencentcsDevice.getDeviceName(),
-                            tencentcsDevice.getRole(), tencentcsDevice.getDeviceModel()));
-                }
-                updateDeviceModel();
-                registerNotify();
-                if (mDeviceInfoList.size() != 0) {
-                    mAdapter.notifyDataSetChanged();
-                } else {
-                    Snackbar.make(mRVDeviceList, "device count = 0", Snackbar.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFail(@NonNull Throwable e) {
-                Snackbar.make(mRVDeviceList, e.getMessage(), Snackbar.LENGTH_LONG).show();
-            }
-        });
-    }
-
     private void unbindDevice(final DeviceList.Device device) {
         AccountMgr.getHttpService().deviceUnbind(device.getDevId(), new SubscriberListener() {
-            @Override
-            public void onStart() {
-
-            }
-
-            @Override
-            public void onSuccess(@NonNull JsonObject response) {
-                mDeviceInfoList.remove(device);
-                mAdapter.notifyDataSetChanged();
-                Snackbar.make(mRVDeviceList, response.toString(), Snackbar.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFail(@NonNull Throwable e) {
-                Snackbar.make(mRVDeviceList, e.getMessage(), Snackbar.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void tencentcsUnbindDevice(final DeviceList.Device device) {
-        TencentcsAccountMgr.getHttpService().DeleteBinding(TencentcsAccountMgr.getAccessId(), device.getDevId(), "owner", new SubscriberListener() {
             @Override
             public void onStart() {
 

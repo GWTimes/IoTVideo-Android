@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.tencentcs.iotvideo.utils.LogUtils;
+import com.tencentcs.iotvideodemo.BuildConfig;
 import com.tencentcs.iotvideodemo.MainActivity;
 import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.base.BaseActivity;
@@ -33,6 +34,7 @@ public class LoginActivity extends BaseActivity {
     private LoginFragment mLoginFragment;
     private InputAccountFragment mInputAccountFragment;
     private InputPasswordFragment mInputPasswordFragment;
+    private TencentcsLoginFragment mTencentcsLoginFragment;
     private Stack<Fragment> mFragmentStack;
     private Fragment mCurrentFragment;
     private LoginViewModel mLoginViewModel;
@@ -51,6 +53,7 @@ public class LoginActivity extends BaseActivity {
         mLoginFragment = new LoginFragment();
         mInputAccountFragment = new InputAccountFragment();
         mInputPasswordFragment = new InputPasswordFragment();
+        mTencentcsLoginFragment = new TencentcsLoginFragment();
         mLoginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory(this)).get(LoginViewModel.class);
         mLoginViewModel.getFragmentData().observe(this, new Observer<LoginViewModel.Fragment>() {
             @Override
@@ -66,10 +69,15 @@ public class LoginActivity extends BaseActivity {
                     case InputPassword:
                         startFragment(mInputPasswordFragment);
                         break;
+                    case TencentcsLogin:
+                        startFragment(mTencentcsLoginFragment);
+                        break;
                 }
             }
         });
-        mLoginViewModel.getFragmentData().setValue(LoginViewModel.Fragment.Login);
+        LoginViewModel.Fragment defaultValue = "tencentcs".equals(BuildConfig.FLAVOR) ?
+                LoginViewModel.Fragment.TencentcsLogin : LoginViewModel.Fragment.Login;
+        mLoginViewModel.getFragmentData().setValue(defaultValue);
         mLoginViewModel.getLoginState().observe(this, new Observer<HttpRequestState>() {
             @Override
             public void onChanged(HttpRequestState loginState) {

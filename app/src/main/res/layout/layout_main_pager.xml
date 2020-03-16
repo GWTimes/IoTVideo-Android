@@ -10,19 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <Button
-        android:id="@+id/start_test_activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_gravity="bottom|end"
-        android:backgroundTint="@color/default_button"
-        android:padding="20dp"
-        android:text="Test"
-        android:textColor="@android:color/white"
-        android:textSize="14sp"
-        android:visibility="gone"/>
-
     <ProgressBar
         android:id="@+id/progress_logout"
         style="?android:attr/progressBarStyleLarge"

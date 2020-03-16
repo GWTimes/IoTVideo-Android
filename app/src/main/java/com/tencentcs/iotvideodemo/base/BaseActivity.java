@@ -72,7 +72,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     public void setTitle(CharSequence title) {
-        if (!UrlHelper.getInstance().isRelease() && !MyApp.ENABLE_TENCENTCS) {
+        if (!UrlHelper.getInstance().isRelease()) {
             title = title + "(测试环境)";
         }
         super.setTitle(title);

@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:orientation="vertical">
 
     <TextView
@@ -10,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:lineSpacingExtra="4dp"
         android:textIsSelectable="true"  />
 
     <androidx.cardview.widget.CardView
@@ -32,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:backgroundTint="@color/colorAccent"
+        android:backgroundTint="@color/default_button"
         android:padding="16dp"
         android:text="@string/fresh_qrcode"
         android:textColor="@android:color/white"

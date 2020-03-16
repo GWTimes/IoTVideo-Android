@@ -57,22 +57,9 @@
         <activity
             android:name="com.tencentcs.iotvideodemo.MainActivity"
             android:theme="@style/MainActivity" />
-        <activity android:name="com.tencentcs.iotvideodemo.test.preview.CameraActivity" />
-        <activity
-            android:name="com.tencentcs.iotvideodemo.test.TestWebApiActivity"
-            android:label="@string/start_web_api_activity" />
-        <activity
-            android:name="com.tencentcs.iotvideodemo.test.TestQRCodeActivity"
-            android:label="@string/qrcode" />
         <activity
             android:name="com.tencentcs.iotvideodemo.videoplayer.MonitorPlayerActivity"
             android:label="@string/player" />
-        <activity
-            android:name="com.tencentcs.iotvideodemo.videoplayer.CustomCaptureActivity"
-            android:theme="@style/AppNoActionBarTheme" />
-        <activity
-            android:name="com.tencentcs.iotvideodemo.videoplayer.CustomCaptureActivity2"
-            android:theme="@style/AppNoActionBarTheme" />
         <activity android:name="com.tencentcs.iotvideodemo.accountmgr.login.LoginActivity" />
         <activity
             android:name="com.tencentcs.iotvideodemo.netconfig.NetConfigActivity"
@@ -81,9 +68,6 @@
         <activity
             android:name="com.tencentcs.iotvideodemo.netconfig.PrepareNetConfigActivity"
             android:label="@string/net_config" />
-        <activity
-            android:name="com.tencentcs.iotvideodemo.accountmgr.devicemanager.DeviceManagerActivity"
-            android:label="@string/device_manager" />
         <activity
             android:name="com.tencentcs.iotvideodemo.accountmgr.deviceshare.DeviceShareActivity"
             android:label="@string/device_share"
@@ -94,9 +78,6 @@
         <activity
             android:name="com.tencentcs.iotvideodemo.vas.VasActivity"
             android:label="@string/vas" />
-        <activity
-            android:name="com.tencentcs.iotvideodemo.test.TestActivity"
-            android:label="Test" />
         <activity android:name=".videoplayer.MultiMonitorPlayerActivity" />
         <activity
             android:name=".accountmgr.devicemanager.DeviceOTAActivity"

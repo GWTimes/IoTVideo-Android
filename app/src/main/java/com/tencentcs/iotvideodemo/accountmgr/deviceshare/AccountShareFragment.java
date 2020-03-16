@@ -1,13 +1,16 @@
 package com.tencentcs.iotvideodemo.accountmgr.deviceshare;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.tencentcs.iotvideo.utils.JSONUtils;
+import com.tencentcs.iotvideo.utils.Utils;
 import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.base.BaseFragment;
 import com.tencentcs.iotvideodemo.base.HttpRequestState;
@@ -90,12 +93,25 @@ public class AccountShareFragment extends BaseFragment implements View.OnClickLi
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.confirm_to_share) {
-            mDeviceShareViewModel.findUser(mInputAccount.getText().toString());
+            InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+            if (inputMethodManager != null) {
+                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+            String userName = mInputAccount.getText().toString();
+            if (isAccessId(userName)) {
+                mDeviceShareViewModel.shareDevice(userName);
+            } else {
+                mDeviceShareViewModel.findUser(userName);
+            }
         }
     }
 
     @Override
     public void onRecyclerViewItemClick(int position) {
         mDeviceShareViewModel.shareDevice(mUserList.get(position).getAccessId());
+    }
+
+    private boolean isAccessId(String input) {
+        return input != null && input.length() == 20 && input.startsWith("-");
     }
 }

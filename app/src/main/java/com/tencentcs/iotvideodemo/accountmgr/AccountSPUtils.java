@@ -6,9 +6,11 @@ import android.content.SharedPreferences;
 public class AccountSPUtils {
     private static final String SP_FILE_TEMP = "iotvideo_temp";
 
-    public static final String ACCESS_ID = "ACCESS_ID";
+    public static final String SECRET_ID = "SECRET_ID";
     public static final String SECRET_KEY = "SECRET_KEY";
     public static final String TOKEN = "TOKEN";
+    public static final String ACCESS_ID = "ACCESS_ID";
+    public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     public static final String VALIDITY_TIMESTAMP = "VALIDITY_TIMESTAMP";
 
     private static class SPHolder {

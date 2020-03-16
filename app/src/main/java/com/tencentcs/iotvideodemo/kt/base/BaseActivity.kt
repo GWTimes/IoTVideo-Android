@@ -114,7 +114,7 @@ abstract class BaseActivity<P : IBasePresenter> : AppCompatActivity(), IBaseView
     }
 
     override fun setTitle(title: CharSequence?) {
-        if (!UrlHelper.getInstance().isRelease && !MyApp.ENABLE_TENCENTCS) {
+        if (!UrlHelper.getInstance().isRelease) {
             super.setTitle("${title}(测试环境)")
         } else {
             super.setTitle(title)

@@ -16,7 +16,7 @@
             android:layout_margin="16dp"
             android:layout_weight="1"
             android:textColor="@android:color/black"
-            android:textSize="20sp"/>
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/flip_to_delete"
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_gravity="center"
-            android:textColor="@android:color/holo_red_dark"
+            android:textColor="@color/default_button"
             android:text="@string/flip_to_delete" />
 
     </LinearLayout>

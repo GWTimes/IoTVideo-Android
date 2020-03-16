@@ -15,7 +15,7 @@ class LoginViewModel extends ViewModel {
     }
 
     enum Fragment {
-        Login, InputAccount, InputPassword
+        Login, InputAccount, InputPassword, TencentcsLogin
     }
 
     private LoginManager mLoginManager;
@@ -71,8 +71,16 @@ class LoginViewModel extends ViewModel {
         mLoginManager.login(account, password, uuid, mLoginRequest);
     }
 
+    void login(String uuid) {
+        mLoginManager.login(uuid, mLoginRequest);
+    }
+
     void register(String password, String vcode) {
         mLoginManager.register(password, vcode, mRegisterRequest);
+    }
+
+    void register(String userName) {
+        mLoginManager.register(userName, mRegisterRequest);
     }
 
     void retrieve(String password, String vcode) {

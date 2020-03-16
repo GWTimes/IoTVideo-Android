@@ -15,5 +15,6 @@
 .cxx
 /accountmgr/*
 /iotvideo/*
+/test/*
 /vas/*
 /app/IotVideo.jks

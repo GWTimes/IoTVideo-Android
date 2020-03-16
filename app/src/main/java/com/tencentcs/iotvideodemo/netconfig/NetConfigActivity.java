@@ -9,9 +9,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.tencentcs.iotvideo.netconfig.NetConfig;
 import com.tencentcs.iotvideo.netconfig.NetConfigInfo;
 import com.tencentcs.iotvideo.utils.JSONUtils;
-import com.tencentcs.iotvideodemo.MyApp;
 import com.tencentcs.iotvideodemo.R;
-import com.tencentcs.iotvideodemo.accountmgrtc.data.TencentcsBindResponse;
 import com.tencentcs.iotvideodemo.base.BaseActivity;
 import com.tencentcs.iotvideodemo.base.HttpRequestState;
 import com.tencentcs.iotvideodemo.netconfig.ap.APNetConfigFragment;
@@ -63,18 +61,6 @@ public class NetConfigActivity extends BaseActivity {
                         break;
                     case SUCCESS:
                         dismissProgressDialog();
-                        if (MyApp.ENABLE_TENCENTCS) {
-                            TencentcsBindResponse bindResponse = JSONUtils.JsonToEntity(httpRequestState.getJsonObject().toString(),
-                                    TencentcsBindResponse.class);
-                            if (bindResponse != null && bindResponse.getResponse() != null
-                                    && bindResponse.getResponse().getAccessToken() != null) {
-                                NetConfig.getInstance().subscribeDevice(bindResponse.getResponse().getAccessToken());
-                            }
-                        } else {
-                            BindDeviceResult bindDeviceResult = JSONUtils.JsonToEntity(httpRequestState.getJsonObject().toString(),
-                                    BindDeviceResult.class);
-                            NetConfig.getInstance().subscribeDevice(bindDeviceResult.getData().getDevToken());
-                        }
                         Snackbar.make(mViewPager, httpRequestState.getStatusTip(), Snackbar.LENGTH_LONG).show();
                         break;
                     case ERROR:

@@ -14,38 +14,11 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp">
         <TableRow
             tools:visibility="visible"
-            android:layout_margin="8dp">
-            <TextView
-                android:text="AccessId : "
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:id="@+id/tv_access_id"
-                android:maxWidth="165dp"
-                android:textIsSelectable="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </TableRow>
-        <TableRow
-            tools:visibility="visible"
-            android:layout_margin="8dp">
-            <TextView
-                android:text="AccessToken : "
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:id="@+id/tv_access_token"
-                android:maxWidth="165dp"
-                android:textIsSelectable="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </TableRow>
-        <TableRow
-            tools:visibility="visible"
-            android:layout_margin="8dp">
+            android:layout_marginTop="4dp">
             <TextView
                 android:text="TerminalId : "
                 android:layout_width="wrap_content"
@@ -59,7 +32,35 @@
         </TableRow>
         <TableRow
             tools:visibility="visible"
-            android:layout_margin="8dp">
+            android:layout_marginTop="4dp">
+            <TextView
+                android:text="AccessId : "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/tv_access_id"
+                android:maxWidth="165dp"
+                android:textIsSelectable="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+        <TableRow
+            tools:visibility="visible"
+            android:layout_marginTop="4dp">
+            <TextView
+                android:text="AccessToken : "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/tv_access_token"
+                android:maxWidth="165dp"
+                android:textIsSelectable="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+        <TableRow
+            tools:visibility="visible"
+            android:layout_marginTop="4dp">
             <TextView
                 android:text="SecretId : "
                 android:layout_width="wrap_content"
@@ -73,7 +74,7 @@
         </TableRow>
         <TableRow
             tools:visibility="visible"
-            android:layout_margin="8dp">
+            android:layout_marginTop="4dp">
             <TextView
                 android:text="SecretKey : "
                 android:layout_width="wrap_content"
@@ -87,7 +88,7 @@
         </TableRow>
         <TableRow
             tools:visibility="visible"
-            android:layout_margin="8dp">
+            android:layout_marginTop="4dp">
             <TextView
                 android:text="token : "
                 android:layout_width="wrap_content"
@@ -98,22 +99,6 @@
                 android:maxWidth="165dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-        </TableRow>
-
-        <TableRow
-            android:layout_margin="8dp"
-            tools:visibility="visible"
-            android:visibility="gone">
-            <TextView
-                android:text="打开测试服 : "
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <Switch
-                android:id="@+id/switch_server"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="" />
-
         </TableRow>
     </TableLayout>
 
@@ -129,18 +114,12 @@
         android:textColor="@android:color/white"
         android:textSize="14sp" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
     <TextView
         android:id="@+id/tv_app_version"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginTop="16dp"
         android:gravity="center_horizontal"
-        android:padding="20dp"
         android:textSize="14sp" />
 
 </LinearLayout>
