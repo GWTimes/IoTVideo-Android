@@ -75,8 +75,8 @@ public class LoginActivity extends BaseActivity {
                 }
             }
         });
-        LoginViewModel.Fragment defaultValue = "tencentcs".equals(BuildConfig.FLAVOR) ?
-                LoginViewModel.Fragment.TencentcsLogin : LoginViewModel.Fragment.Login;
+        LoginViewModel.Fragment defaultValue = "oem".equals(BuildConfig.FLAVOR) ?
+                LoginViewModel.Fragment.Login : LoginViewModel.Fragment.TencentcsLogin;
         mLoginViewModel.getFragmentData().setValue(defaultValue);
         mLoginViewModel.getLoginState().observe(this, new Observer<HttpRequestState>() {
             @Override
