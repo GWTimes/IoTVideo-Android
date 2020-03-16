@@ -9,13 +9,13 @@ apply plugin: 'kotlin-kapt'
 
 def BUILD_TIME = new Date().format("MMddHHmm")
 def VERSION_PRE = "0.1"
-def SVN_VERSION = 19
+def SVN_VERSION = 20
 
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId "com.gwell.iotvideodemo"
+        applicationId "com.tencentcs.iotvideodemo"
         minSdkVersion 22
         targetSdkVersion 29
         versionCode 1
@@ -97,7 +97,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
 
     //IoTVideo accountmgr vas
-    implementation(name: "accountmgr-release", ext: 'aar')
+    implementation project(":accountmgrtc")
     implementation(name: "vas-release", ext: 'aar')
     implementation 'com.squareup.okhttp3:okhttp:4.3.0'
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'
@@ -119,10 +119,4 @@ dependencies {
     implementation 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.8'
     implementation 'tv.danmaku.ijk.media:ijkplayer-arm64:0.8.8'
     implementation 'tv.danmaku.ijk.media:ijkplayer-exo:0.8.8'
-
-
-
-
-
-
 }
