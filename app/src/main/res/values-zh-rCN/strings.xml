@@ -22,7 +22,7 @@
     <string name="error_no_password">输入密码</string>
     <string name="input_vcode">请输入验证码</string>
     <string name="vcode_was_sent">验证码已发送</string>
-    <string name="select_wifi">选择一个Wi-Fi</string>
+    <string name="wifi_name">Wi-Fi</string>
     <string name="location_permission_tip">获取WI-FI列表需要定位权限</string>
     <string name="net_config">配网</string>
     <string name="qrcode_net_config">二维码</string>

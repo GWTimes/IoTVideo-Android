@@ -38,8 +38,8 @@ import io.reactivex.schedulers.Schedulers;
 public class TencentcsHttpServiceAdapter implements HttpService {
     private static final String TAG = "TencentcsHttpServiceAdapter";
 
-    private static final String TENCENTCS_API_URL = "http://14.22.4.147:80";
-    //    private static final String TENCENTCS_API_URL = "https://iotvideo.tencentcloudapi.com";
+    //    private static final String TENCENTCS_API_URL = "http://14.22.4.147:80";
+    private static final String TENCENTCS_API_URL = "https://iotvideo.tencentcloudapi.com";
 
     private static Gson mGson;
     private TencentcsHttpServiceFactory mTencentcsHttpServiceFactory;
@@ -84,7 +84,7 @@ public class TencentcsHttpServiceAdapter implements HttpService {
         return jsonParser.parse(jsonString).getAsJsonObject();
     }
 
-    private  <T> T toEntity(String jsonData, Class<T> type) {
+    private <T> T toEntity(String jsonData, Class<T> type) {
         T result = null;
         try {
             result = mGson.fromJson(jsonData, type);
@@ -509,8 +509,15 @@ public class TencentcsHttpServiceAdapter implements HttpService {
     }
 
     @Override
-    public void cloudStorageCreate(Integer cid, String tid, String pkgId, Integer type, int startTime, int endTime, int storageLen, SubscriberListener subscriberListener) {
-
+    public void cloudStorageCreate(Integer cid, String tid, String pkgId, Integer type, int startTime, int endTime, int storageLen, final SubscriberListener subscriberListener) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("PkgId", pkgId);
+        jsonObject.addProperty("Tid", tid);
+        jsonObject.addProperty("UserTag", mAccessId);
+        final Observable<JsonObject> observable = mHttpInterface.tencentcsApi(
+                "CreateStorage", "2019-11-26", jsonObject);
+        final Observer<JsonObject> subscriber = new Observer<>(subscriberListener);
+        toSubscribe(observable, subscriber);
     }
 
     @Override

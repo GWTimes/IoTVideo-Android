@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -25,10 +26,12 @@ import com.tencentcs.iotvideodemo.base.BaseFragment;
 import com.tencentcs.iotvideodemo.messagemgr.DeviceMessageActivity;
 import com.tencentcs.iotvideodemo.vas.VasActivity;
 import com.tencentcs.iotvideodemo.videoplayer.MonitorPlayerActivity;
+import com.tencentcs.iotvideodemo.videoplayer.MultiMonitorPlayerActivity;
 import com.tencentcs.iotvideodemo.videoplayer.PlaybackPlayerActivity;
 import com.tencentcs.iotvideodemo.widget.RecycleViewDivider;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -38,12 +41,16 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class DeviceListFragment extends BaseFragment {
+public class DeviceListFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = "DeviceManagerActivity";
 
+    private static final boolean ENABLE_MULTI_MONITOR = false;
+
     private RecyclerView mRVDeviceList;
+    private Button mBtnMultiMonitor;
     private RecyclerView.Adapter<DeviceItemHolder> mAdapter;
     private List<DeviceList.Device> mDeviceInfoList;
+    private List<DeviceList.Device> mDeviceSelectedList;
 
     @Nullable
     @Override
@@ -55,7 +62,10 @@ public class DeviceListFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mDeviceInfoList = new ArrayList<>();
+        mDeviceSelectedList = new ArrayList<>();
         mRVDeviceList = view.findViewById(R.id.device_list);
+        mBtnMultiMonitor = view.findViewById(R.id.btn_multi_monitor);
+        mBtnMultiMonitor.setOnClickListener(this);
         mRVDeviceList.addItemDecoration(new RecycleViewDivider(getActivity(), RecycleViewDivider.VERTICAL));
         mRVDeviceList.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
         mAdapter = new RecyclerView.Adapter<DeviceItemHolder>() {
@@ -87,6 +97,28 @@ public class DeviceListFragment extends BaseFragment {
                         showPopupMenu(holder.tvOperator, deviceInfo);
                     }
                 });
+                holder.llDeviceInfo.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        if (!ENABLE_MULTI_MONITOR) {
+                            return false;
+                        }
+                        deviceInfo.setSelected(!deviceInfo.isSelected());
+                        if (deviceInfo.isSelected()) {
+                            mDeviceSelectedList.add(deviceInfo);
+                        } else {
+                            mDeviceSelectedList.remove(deviceInfo);
+                        }
+                        updateMultiMonitorBtn();
+                        mAdapter.notifyDataSetChanged();
+                        return true;
+                    }
+                });
+                if (deviceInfo.isSelected()) {
+                    holder.llDeviceInfo.setBackgroundColor(getResources().getColor(R.color.colorSelected));
+                } else {
+                    holder.llDeviceInfo.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                }
             }
 
             @Override
@@ -179,6 +211,8 @@ public class DeviceListFragment extends BaseFragment {
                 DeviceList deviceList = JSONUtils.JsonToEntity(response.toString(), DeviceList.class);
                 if (deviceList.getData() != null) {
                     mDeviceInfoList = deviceList.getData();
+                    mDeviceSelectedList.clear();
+                    updateMultiMonitorBtn();
                     updateDeviceModel();
                     registerNotify();
                     if (mDeviceInfoList.size() != 0) {
@@ -208,6 +242,8 @@ public class DeviceListFragment extends BaseFragment {
             @Override
             public void onSuccess(@NonNull JsonObject response) {
                 mDeviceInfoList.remove(device);
+                mDeviceSelectedList.remove(device);
+                updateMultiMonitorBtn();
                 mAdapter.notifyDataSetChanged();
                 Snackbar.make(mRVDeviceList, response.toString(), Snackbar.LENGTH_LONG).show();
             }
@@ -217,6 +253,19 @@ public class DeviceListFragment extends BaseFragment {
                 Snackbar.make(mRVDeviceList, e.getMessage(), Snackbar.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btn_multi_monitor) {
+            Intent playIntent = new Intent(getActivity(), MultiMonitorPlayerActivity.class);
+            String[] deviceIdArray = new String[mDeviceSelectedList.size()];
+            for (int i = 0; i < mDeviceSelectedList.size(); i++) {
+                deviceIdArray[i] = mDeviceSelectedList.get(i).getDevId();
+            }
+            playIntent.putExtra("deviceIDArray", deviceIdArray);
+            startActivity(playIntent);
+        }
     }
 
     class DeviceItemHolder extends RecyclerView.ViewHolder {
@@ -236,10 +285,10 @@ public class DeviceListFragment extends BaseFragment {
         }
     }
 
-    private void updateDeviceModel(){
-        if(mDeviceInfoList != null && mDeviceInfoList.size() > 0){
-            for (DeviceList.Device device : mDeviceInfoList){
-                IoTVideoSdk.getMessageMgr().readProperty(device.getDevId(), "", new IResultListener<ModelMessage>(){
+    private void updateDeviceModel() {
+        if (mDeviceInfoList != null && mDeviceInfoList.size() > 0) {
+            for (DeviceList.Device device : mDeviceInfoList) {
+                IoTVideoSdk.getMessageMgr().readProperty(device.getDevId(), "", new IResultListener<ModelMessage>() {
 
                     @Override
                     public void onStart() {
@@ -249,6 +298,7 @@ public class DeviceListFragment extends BaseFragment {
                     @Override
                     public void onSuccess(ModelMessage msg) {
                         DeviceModelManager.getInstance().onNotify(msg);
+                        mAdapter.notifyDataSetChanged();
                     }
 
                     @Override
@@ -267,5 +317,13 @@ public class DeviceListFragment extends BaseFragment {
                 mAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private void updateMultiMonitorBtn() {
+        if (mDeviceSelectedList.size() > 1) {
+            mBtnMultiMonitor.setVisibility(View.VISIBLE);
+        } else {
+            mBtnMultiMonitor.setVisibility(View.GONE);
+        }
     }
 }

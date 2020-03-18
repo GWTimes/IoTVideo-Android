@@ -10,4 +10,6 @@
     <color name="normal">#0ABF5B</color>
     <color name="dangerous">#E54545</color>
     <color name="default_button">#006EFF</color>
+
+    <color name="colorSelected">#30262626</color>
 </resources>

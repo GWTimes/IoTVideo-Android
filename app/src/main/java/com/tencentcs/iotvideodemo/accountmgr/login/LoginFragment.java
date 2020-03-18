@@ -5,10 +5,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -20,7 +22,6 @@ import android.widget.Toast;
 import com.tencentcs.iotvideo.accountmgr.AccountMgr;
 import com.tencentcs.iotvideo.utils.LogUtils;
 import com.tencentcs.iotvideo.utils.UrlHelper;
-import com.tencentcs.iotvideodemo.MyApp;
 import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.accountmgr.AccountSPUtils;
 import com.tencentcs.iotvideodemo.base.BaseFragment;
@@ -39,8 +40,11 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
 
     private AutoCompleteTextView mUserNameView;
     private EditText mPasswordView;
-    private TextView mTvSwitchServiceTip;
     private LoginViewModel mLoginViewModel;
+    private OEMDialog mOEMDialog;
+    private Button mLoginBtn;
+
+    private boolean mIsNeedRestart;
 
     @Nullable
     @Override
@@ -51,9 +55,10 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
         mUserNameView = view.findViewById(R.id.tv_user_name);
         mPasswordView = view.findViewById(R.id.tv_password);
-        mTvSwitchServiceTip = view.findViewById(R.id.tv_switch_service_tip);
+        mLoginBtn = view.findViewById(R.id.btn_login);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -68,34 +73,6 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
         view.findViewById(R.id.btn_login).setOnClickListener(this);
         view.findViewById(R.id.btn_forgot_password).setOnClickListener(this);
         view.findViewById(R.id.btn_forgot_register).setOnClickListener(this);
-        view.findViewById(R.id.tv_more).setOnClickListener(this);
-        Spinner spinner = view.findViewById(R.id.spinner_service_list);
-        List<String> serviceList = new ArrayList<>();
-        serviceList.add(getString(R.string.official_server));
-        serviceList.add(getString(R.string.test_server));
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.simple_spinner_item, serviceList);
-        spinner.setAdapter(arrayAdapter);
-        spinner.setSelection(UrlHelper.getInstance().isRelease() ? 0 : 1);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                int selectedService = position == 0 ? UrlHelper.SERVER_RELEASE : UrlHelper.SERVER_DEV;
-                if (selectedService != UrlHelper.getInstance().getServerType()) {
-                    AccountSPUtils.getInstance().putInteger(getActivity(), AccountSPUtils.VALIDITY_TIMESTAMP, 0);
-                    AppSPUtils.getInstance().putBoolean(getActivity(), AppSPUtils.NEED_SWITCH_SERVER_TYPE, true);
-                    AppSPUtils.getInstance().putInteger(getActivity(), AppSPUtils.SERVER_TYPE, selectedService);
-                    Toast.makeText(getActivity(), R.string.effective_after_restarting, Toast.LENGTH_LONG).show();
-                    mTvSwitchServiceTip.setVisibility(View.VISIBLE);
-                } else {
-                    mTvSwitchServiceTip.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
     }
 
     @Override
@@ -111,13 +88,28 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mOEMDialog != null) {
+            if (mOEMDialog.isShowing()) {
+                mOEMDialog.dismiss();
+            }
+            mOEMDialog = null;
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login:
                 if (getActivity() instanceof LoginActivity) {
                     ((LoginActivity) getActivity()).hideSoftKeyboard();
                 }
-                loginClicked();
+                if (mIsNeedRestart) {
+                    Toast.makeText(getActivity(), R.string.effective_after_restarting, Toast.LENGTH_LONG).show();
+                } else {
+                    loginClicked();
+                }
                 break;
 
             case R.id.btn_forgot_password:
@@ -126,10 +118,6 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
 
             case R.id.btn_forgot_register:
                 registerClicked();
-                break;
-
-            case R.id.tv_more:
-                showOEMDialog();
                 break;
         }
     }
@@ -151,17 +139,47 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
         mLoginViewModel.getOperateData().setValue(LoginViewModel.OperateType.ResetPwd);
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.login_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_menu_login_setting) {
+            showOEMDialog();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void showOEMDialog() {
-        new OEMDialog(getActivity()).show(new OnConfirmClickedListener() {
+        if (mOEMDialog == null) {
+            mOEMDialog = new OEMDialog(getActivity());
+        }
+        mOEMDialog.show(new OnConfirmClickedListener() {
             @Override
-            public void onConfirmClicked(String productId) {
-                LogUtils.i(TAG, "showOEMDialog productId = " + productId);
-                String currentProductId = AppSPUtils.getInstance().getString(getActivity(), AppSPUtils.PRODUCT_ID, MyApp.PRODUCT_ID);
-                if (!currentProductId.equals(productId)) {
+            public void onConfirmClicked(String productId, int serviceType) {
+                LogUtils.i(TAG, "showOEMDialog productId = " + productId + " serviceType = " + serviceType);
+                boolean hasChanged = false;
+                if (!AccountMgr.getProductId().equals(productId)) {
                     AppSPUtils.getInstance().putString(getActivity(), AppSPUtils.PRODUCT_ID, productId);
+                    hasChanged = true;
+                }
+
+                if (serviceType != UrlHelper.getInstance().getServerType()) {
                     AppSPUtils.getInstance().putBoolean(getActivity(), AppSPUtils.NEED_SWITCH_SERVER_TYPE, true);
-                    Toast.makeText(getActivity(), R.string.effective_after_restarting, Toast.LENGTH_LONG).show();
-                    mTvSwitchServiceTip.setVisibility(View.VISIBLE);
+                    AppSPUtils.getInstance().putInteger(getActivity(), AppSPUtils.SERVER_TYPE, serviceType);
+                    hasChanged = true;
+                }
+
+                if (hasChanged) {
+                    AccountSPUtils.getInstance().putInteger(getActivity(), AccountSPUtils.VALIDITY_TIMESTAMP, 0);
+                    mLoginBtn.setText(R.string.effective_after_restarting);
+                    mIsNeedRestart = true;
+                } else {
+                    mLoginBtn.setText(R.string.action_sign_in);
+                    mIsNeedRestart = false;
                 }
             }
         });
@@ -171,6 +189,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
         private Button confirmBtn;
         private Button cancelBtn;
         private EditText etProductId;
+        private Spinner spinner;
 
         private OEMDialog(@NonNull Context context) {
             super(context);
@@ -178,6 +197,13 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
             confirmBtn = findViewById(R.id.btn_confirm);
             cancelBtn = findViewById(R.id.btn_cancel);
             etProductId = findViewById(R.id.et_product_id);
+            spinner = findViewById(R.id.spinner_service_list);
+            List<String> serviceList = new ArrayList<>();
+            serviceList.add(getString(R.string.official_server));
+            serviceList.add(getString(R.string.test_server));
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.simple_spinner_item, serviceList);
+            spinner.setAdapter(arrayAdapter);
+            spinner.setSelection(UrlHelper.getInstance().isRelease() ? 0 : 1);
 
             String productId = AppSPUtils.getInstance().getString(getActivity(), AppSPUtils.PRODUCT_ID, AccountMgr.getProductId());
             etProductId.setText(productId);
@@ -188,8 +214,9 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
                 @Override
                 public void onClick(View v) {
                     String productId = etProductId.getText().toString();
+                    int serviceType = spinner.getSelectedItemPosition() == 0 ? UrlHelper.SERVER_RELEASE : UrlHelper.SERVER_DEV;
                     if (listener != null) {
-                        listener.onConfirmClicked(productId);
+                        listener.onConfirmClicked(productId, serviceType);
                     }
                     dismiss();
                 }
@@ -205,6 +232,6 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
     }
 
     private interface OnConfirmClickedListener {
-        void onConfirmClicked(String productId);
+        void onConfirmClicked(String productId, int serviceType);
     }
 }

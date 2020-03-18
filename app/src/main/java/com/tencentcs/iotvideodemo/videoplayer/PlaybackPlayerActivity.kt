@@ -61,10 +61,13 @@ class PlaybackPlayerActivity : BaseActivity<BasePresenter>() {
                 }
                 .bindEvent { data, position ->
                     onClick(itemView) {
-                        //设置播放器数据源
-                        mPlaybackPlayer.setDataResource(mDeviceId, it.startTime, it)
-                        mPlaybackPlayer.stop()
-                        mPlaybackPlayer.play()
+                        if (mPlaybackPlayer.isPlaying) {
+                            mPlaybackPlayer.seek(it.startTime, it)
+                        } else {
+                            //设置播放器数据源
+                            mPlaybackPlayer.setDataResource(mDeviceId, it.startTime, it)
+                            mPlaybackPlayer.play()
+                        }
                     }
                 }
 
@@ -191,9 +194,11 @@ class PlaybackPlayerActivity : BaseActivity<BasePresenter>() {
     private fun initPlaybackPlayer() {
         mPlaybackPlayer.setVideoView(tencentcs_gl_surface_view)
         mPlaybackPlayer.setPreparedListener {
-            playback_status.text = "开始准备"
+            LogUtils.i(TAG, "onPrepared")
+//            playback_status.text = "开始准备"
         }
         mPlaybackPlayer.setStatusListener {
+            LogUtils.i(TAG, "onStatus changed ${getPlayStatus(it)}")
             playback_status.text = getPlayStatus(it)
         }
         mPlaybackPlayer.setTimeListener {
@@ -203,7 +208,7 @@ class PlaybackPlayerActivity : BaseActivity<BasePresenter>() {
             playback_status.text = "播放错误：$it"
         }
         mPlaybackPlayer.setUserDataListener {
-            playback_status.text = "收到数据：$data"
+//            playback_status.text = "收到数据：$data"
             LogUtils.i(TAG, "收到数据：$data")
         }
 

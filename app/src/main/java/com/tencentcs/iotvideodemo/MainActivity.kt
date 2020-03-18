@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -48,9 +47,6 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         mNavigationHead!!.iv_secret_id.text = AccountMgr.getSecretId()
         mNavigationHead!!.iv_secret_key.text = AccountMgr.getSecretKey()
         mNavigationHead!!.iv_token.text = AccountMgr.getToken()
-        if (!TextUtils.isEmpty(AccountMgr.getProductId())) {
-            Toast.makeText(applicationContext, "productId : ${AccountMgr.getProductId()}", Toast.LENGTH_LONG).show()
-        }
         registerNotify()
     }
 

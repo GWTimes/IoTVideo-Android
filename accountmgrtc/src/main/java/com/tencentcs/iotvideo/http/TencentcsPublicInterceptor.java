@@ -79,7 +79,7 @@ class TencentcsPublicInterceptor implements Interceptor {
         Request.Builder builder = request.newBuilder();
         String authorization = "";
         try {
-            authorization = new TencentcsSign(secretId, secretKey).sign(request);
+            authorization = TencentcsSign.sign(secretId, secretKey, request);
         } catch (Exception e) {
             e.printStackTrace();
         }

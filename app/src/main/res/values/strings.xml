@@ -22,7 +22,7 @@
     <string name="error_no_password">Input your password</string>
     <string name="input_vcode">please input verification code</string>
     <string name="vcode_was_sent">verification code was sent</string>
-    <string name="select_wifi">select a wifi</string>
+    <string name="wifi_name">wifi name</string>
     <string name="location_permission_tip">need location permission before scanning wifi list</string>
     <string name="net_config">Net config</string>
     <string name="qrcode_net_config">QRCode</string>

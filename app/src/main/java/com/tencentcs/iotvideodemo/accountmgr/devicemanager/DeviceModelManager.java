@@ -9,6 +9,7 @@ import com.tencentcs.iotvideo.messagemgr.ModelMessage;
 import com.tencentcs.iotvideo.utils.LogUtils;
 import com.tencentcs.iotvideo.utils.rxjava.IResultListener;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -132,8 +133,8 @@ public class DeviceModelManager implements IModelListener {
         DeviceModel model = mDeviceModelMap.get(data.device);
         if (model == null) {
             DeviceModel newModel = new DeviceModel(data.device, data.path, data.data);
-            LogUtils.i(TAG, "onNotify add " + newModel.toString());
             mDeviceModelMap.put(data.device, newModel);
+            LogUtils.i(TAG, "onNotify mDeviceModelMap = " + Arrays.toString(mDeviceModelMap.keySet().toArray()));
         } else {
             model.setData(data.path, data.data);
         }
@@ -152,11 +153,18 @@ public class DeviceModelManager implements IModelListener {
             //LogUtils.d(TAG, "path : " + path + ", data : " + data);
 
             this.deviceId = deviceId;
-            model = new JSONObject();
-            if (TextUtils.isEmpty(path)) {
+            if (path == null) {
+                return;
+            } else if (path.equals("")) {
+                try {
+                    model = new JSONObject(data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 return;
             }
 
+            model = new JSONObject();
             try {
                 String[] pathSplits = path.split("\\.");
 

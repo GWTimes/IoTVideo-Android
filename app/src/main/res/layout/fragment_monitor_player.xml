@@ -31,7 +31,7 @@
         android:text="播放"
         app:layout_constraintBottom_toBottomOf="@+id/surface_view"
         app:layout_constraintEnd_toStartOf="@+id/snap_btn"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:text="停止"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/record_btn"
         app:layout_constraintTop_toTopOf="@+id/play_btn" />
 
@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:text="截图"
         app:layout_constraintEnd_toStartOf="@+id/mute_btn"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/play_btn"
         app:layout_constraintTop_toTopOf="@+id/play_btn" />
 
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:text="静音"
         app:layout_constraintEnd_toStartOf="@+id/record_btn"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/snap_btn"
         app:layout_constraintTop_toTopOf="@+id/play_btn" />
 
@@ -70,7 +70,7 @@
         android:layout_height="wrap_content"
         android:text="录像"
         app:layout_constraintEnd_toStartOf="@+id/stop_btn"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/mute_btn"
         app:layout_constraintTop_toTopOf="@+id/snap_btn" />
 

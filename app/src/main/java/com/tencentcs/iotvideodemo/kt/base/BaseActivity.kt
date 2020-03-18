@@ -18,7 +18,6 @@ import com.tencentcs.iotvideodemo.kt.utils.ViewUtils
 import com.tencentcs.iotvideodemo.kt.widget.dialog.LoadingDialog
 import com.tencentcs.iotvideodemo.rxbus2.RxBus
 import com.tbruyelle.rxpermissions2.RxPermissions
-import com.tencentcs.iotvideodemo.MyApp
 
 abstract class BaseActivity<P : IBasePresenter> : AppCompatActivity(), IBaseView {
     protected val TAG = javaClass.simpleName

@@ -57,6 +57,7 @@ public class DeviceList {
         private String deviceMode;
         private String url;
         private String shareType;
+        private boolean isSelected;
 
         public Device() {}
 
@@ -121,6 +122,14 @@ public class DeviceList {
 
         public void setShareType(String shareType) {
             this.shareType = shareType;
+        }
+
+        public boolean isSelected() {
+            return isSelected;
+        }
+
+        public void setSelected(boolean selected) {
+            isSelected = selected;
         }
 
         @Override

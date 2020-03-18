@@ -10,7 +10,6 @@ import android.view.MenuItem;
 
 import com.tencentcs.iotvideo.utils.LogUtils;
 import com.tencentcs.iotvideo.utils.UrlHelper;
-import com.tencentcs.iotvideodemo.MyApp;
 import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.utils.StatusBarUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;

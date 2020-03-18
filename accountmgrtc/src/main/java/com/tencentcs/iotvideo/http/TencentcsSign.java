@@ -15,32 +15,25 @@ import okhttp3.RequestBody;
 import okio.Buffer;
 import okio.BufferedSink;
 
-public class TencentcsSign {
+class TencentcsSign {
     private final static Charset UTF8 = StandardCharsets.UTF_8;
-    private String SECRET_ID = "";
-    private String SECRET_KEY = "";
 
-    public TencentcsSign(String id, String key) {
-        SECRET_ID = id;
-        SECRET_KEY = key;
-    }
-
-    private byte[] hmac256(byte[] key, String msg) throws Exception {
+    private static byte[] hmac256(byte[] key, String msg) throws Exception {
         Mac mac = Mac.getInstance("HmacSHA256");
         SecretKeySpec secretKeySpec = new SecretKeySpec(key, mac.getAlgorithm());
         mac.init(secretKeySpec);
         return mac.doFinal(msg.getBytes(UTF8));
     }
 
-    private String sha256Hex(String s) throws Exception {
+    private static String sha256Hex(String s) throws Exception {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] d = md.digest(s.getBytes(UTF8));
         return byteToHex(d).toLowerCase();
     }
 
-    private String byteToHex(byte[] bytes) {
-        String strHex = "";
-        StringBuilder sb = new StringBuilder("");
+    private static String byteToHex(byte[] bytes) {
+        String strHex;
+        StringBuilder sb = new StringBuilder();
         for (byte aByte : bytes) {
             strHex = Integer.toHexString(aByte & 0xFF);
             sb.append((strHex.length() == 1) ? "0" + strHex : strHex); // 每个字节由两个字符表示，位数不够，高位补0
@@ -48,7 +41,7 @@ public class TencentcsSign {
         return sb.toString().trim();
     }
 
-    private String getPayload(Request request) {
+    private static String getPayload(Request request) {
         RequestBody requestBody = request.body();
         String requestPayload = "";
 
@@ -62,9 +55,9 @@ public class TencentcsSign {
         return requestPayload;
     }
 
-    public String sign(Request request) throws Exception {
-        String service = "live";
-        String host = "live.tencentcloudapi.com";
+    static String sign(String secretId, String secretKey, Request request) throws Exception {
+        String service = "iotvideo";
+        String host = "iotvideo.tencentcloudapi.com";
         String algorithm = "TC3-HMAC-SHA256";
         String timestamp = request.header("X-TC-Timestamp");
         //String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
@@ -91,13 +84,14 @@ public class TencentcsSign {
         String stringToSign = algorithm + "\n" + timestamp + "\n" + credentialScope + "\n" + hashedCanonicalRequest;
 
         // ************* 步骤 3：计算签名 *************
-        byte[] secretDate = hmac256(("TC3" + SECRET_KEY).getBytes(UTF8), date);
+        byte[] secretDate = hmac256(("TC3" + secretKey).getBytes(UTF8), date);
         byte[] secretService = hmac256(secretDate, service);
         byte[] secretSigning = hmac256(secretService, "tc3_request");
         String signature = byteToHex(hmac256(secretSigning, stringToSign)).toLowerCase();
 
         // ************* 步骤 4：拼接 Authorization *************
-        String authorization = algorithm + " " + "Credential=" + SECRET_ID + "/" + credentialScope + ", "
+        String authorization;
+        authorization = algorithm + " " + "Credential=" + secretId + "/" + credentialScope + ", "
                 + "SignedHeaders=" + signedHeaders + ", " + "Signature=" + signature;
 
         return authorization;

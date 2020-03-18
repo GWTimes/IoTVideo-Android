@@ -20,7 +20,18 @@
         android:layout_gravity="center">
 
         <TableRow
-            android:id="@+id/iv_token_row"
+            android:layout_marginTop="16dp">
+            <TextView
+                android:text="service : "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <Spinner
+                android:id="@+id/spinner_service_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+
+        <TableRow
             android:layout_marginTop="16dp">
             <TextView
                 android:text="product id : "

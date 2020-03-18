@@ -4,53 +4,64 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".netconfig.PrepareNetConfigActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/select_wifi"
+        android:text="配置网络信息"
         android:textColor="@android:color/black"
         android:textSize="18sp" />
 
-    <FrameLayout
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/bg_rect_blue_5"
-        android:gravity="center">
+        android:layout_marginTop="24dp">
+        <TableRow
+            tools:visibility="visible"
+            android:layout_marginTop="4dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/wifi_name"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
 
-        <Spinner
-            android:id="@+id/spinner_wifi_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </FrameLayout>
+            <Spinner
+                android:id="@+id/spinner_wifi_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp" />
+        </TableRow>
+        <TableRow
+            tools:visibility="visible"
+            android:layout_marginTop="4dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/login_user_name_password"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
 
-    <AutoCompleteTextView
-        android:id="@+id/input_wifi_pwd"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="16dp"
-        android:hint="@string/login_user_name_password" />
+            <AutoCompleteTextView
+                android:id="@+id/input_wifi_pwd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:layout_marginStart="16dp" />
+        </TableRow>
+    </TableLayout>
 
     <Button
         android:id="@+id/start_net_config"
         style="?android:textAppearanceMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginTop="32dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/default_button"
         android:padding="16dp"

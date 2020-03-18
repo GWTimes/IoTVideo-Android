@@ -90,7 +90,7 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
     public void setDeviceId(String deviceId) {
         mDeviceId = deviceId;
         mMonitorPlayer.setDataResource(mDeviceId);
-        showToast("deviceId : " + deviceId);
+        mTvMonitorState.setText(mDeviceId);
     }
 
     private IPreparedListener mPreparedListener = new IPreparedListener() {
@@ -105,7 +105,7 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
         @Override
         public void onStatus(int status) {
             log("onStatus status " + getPlayStatus(status));
-            showToast("播放状态：" + getPlayStatus(status));
+            showToast(getPlayStatus(status));
         }
     };
 
@@ -120,7 +120,7 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
         @Override
         public void onError(int error) {
             log("onError error " + error);
-            showToast("onError error " + error);
+            showToast("onError " + error);
         }
     };
 
@@ -206,7 +206,7 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
     }
 
     private void showToast(String msg) {
-        Toast.makeText(getActivity(), mDeviceId + " : " + msg, Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), mDeviceId + " : " + msg, Toast.LENGTH_SHORT).show();
         mTvMonitorState.setText(msg);
     }
 
