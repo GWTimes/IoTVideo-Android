@@ -183,7 +183,7 @@ public class TencentcsHttpServiceAdapter implements HttpService {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("AccessId", mAccessId);
         jsonObject.addProperty("UniqueId", uniqueId);
-        jsonObject.addProperty("TtlMinutes", 24 * 60);
+        jsonObject.addProperty("TtlMinutes", 30 * 24 * 60);
         final Observable<JsonObject> observable = mHttpInterface.tencentcsApi(
                 "CreateUsrToken", "2019-11-26", jsonObject);
         LogUtils.i(TAG, "accountLogin jsonObject = " + jsonObject.toString());
