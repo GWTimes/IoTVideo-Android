@@ -8,10 +8,10 @@ import com.tencentcs.iotvideo.vas.VasMgr
 import com.tencentcs.iotvideodemo.accountmgr.AccountSPUtils
 import com.tencentcs.iotvideodemo.accountmgr.devicemanager.DeviceModelManager
 import com.tencentcs.iotvideodemo.utils.AppSPUtils
-import com.tencentcs.iotvideodemo.utils.FloatLogWindows
 import com.tencentcs.iotvideodemo.utils.StorageManager
 import xcrash.XCrash
 import java.io.File
+import java.util.HashMap
 
 class DemoApp : Application() {
 
@@ -24,7 +24,7 @@ class DemoApp : Application() {
             XCrash.init(this, xCrashParams)
         }
 
-        val defaultServiceType = if (BuildConfig.DEBUG) UrlHelper.SERVER_DEV else UrlHelper.SERVER_RELEASE
+        val defaultServiceType = if (BuildConfig.DEBUG && "oem" == BuildConfig.FLAVOR) UrlHelper.SERVER_DEV else UrlHelper.SERVER_RELEASE
         UrlHelper.getInstance().serverType = AppSPUtils.getInstance().getInteger(this, AppSPUtils.SERVER_TYPE, defaultServiceType)
 
         IoTVideoSdk.init(applicationContext, null)
@@ -34,11 +34,8 @@ class DemoApp : Application() {
         }
         val productId = AppSPUtils.getInstance().getString(this, AppSPUtils.PRODUCT_ID, PRODUCT_ID)
         AccountMgr.init(productId)
-        checkAndAutoLogin()
         VasMgr.init()
-        if (BuildConfig.DEBUG) {
-            FloatLogWindows.getInstance().init(this)
-        }
+        checkAndAutoLogin()
     }
 
     private fun checkAndAutoLogin() {
@@ -55,6 +52,10 @@ class DemoApp : Application() {
             AccountMgr.setAccessInfo(accessId, accessToken)
             //监听物模型变化
             IoTVideoSdk.getMessageMgr().addModelListener(DeviceModelManager.getInstance())
+            //设置vas模块公共参数
+            val publicParams = HashMap<String, Any>()
+            publicParams["accessId"] = AccountMgr.getAccessId()
+            VasMgr.updatePublicParams(publicParams)
         }
     }
 

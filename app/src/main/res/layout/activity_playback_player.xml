@@ -23,41 +23,45 @@
         app:layout_constraintTop_toTopOf="parent"
         android:textColor="@android:color/white" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        style="@style/DefaultButton"
         android:id="@+id/tv_start_record"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="打开设备录像开关"
+        android:text="打开设备录像"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tv_stop_record"
         app:layout_constraintTop_toBottomOf="@+id/tencentcs_gl_surface_view" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        style="@style/DefaultButton"
         android:id="@+id/tv_stop_record"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="关闭设备录像开关"
+        android:text="关闭设备录像"
         app:layout_constraintStart_toEndOf="@+id/tv_start_record"
-        app:layout_constraintEnd_toStartOf="@+id/tv_get_playback"
+        app:layout_constraintEnd_toStartOf="@+id/tv_get_playback_previous"
         app:layout_constraintTop_toBottomOf="@+id/tencentcs_gl_surface_view" />
 
-    <Button
-        android:id="@+id/tv_get_playback"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="获取回放列表"
+    <com.google.android.material.button.MaterialButton
+        style="@style/DefaultButton"
+        android:id="@+id/tv_get_playback_previous"
+        android:text="上一页"
         app:layout_constraintStart_toEndOf="@+id/tv_stop_record"
+        app:layout_constraintEnd_toStartOf="@+id/tv_get_playback_next"
+        app:layout_constraintTop_toBottomOf="@+id/tencentcs_gl_surface_view" />
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/DefaultButton"
+        android:id="@+id/tv_get_playback_next"
+        android:text="下一页"
+        app:layout_constraintStart_toEndOf="@+id/tv_get_playback_previous"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tencentcs_gl_surface_view" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        style="@style/DefaultButton"
         android:id="@+id/btn_record"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="开始录像"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_get_playback" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_get_playback_previous" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_playback_list"

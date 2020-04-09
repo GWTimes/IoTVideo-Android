@@ -16,6 +16,7 @@ public class SimpleRecyclerViewAdapter<T> extends RecyclerView.Adapter<SimpleIte
     private Context mContext;
     private List<T> mDataList;
     private OnItemClickListener mOnItemClickListener;
+    private int mItemVerticalPadding;
 
     public SimpleRecyclerViewAdapter(Context context, List<T> list) {
         mContext = context;
@@ -26,11 +27,16 @@ public class SimpleRecyclerViewAdapter<T> extends RecyclerView.Adapter<SimpleIte
         mOnItemClickListener = listener;
     }
 
+    public void setItemVerticalPadding(int value) {
+        mItemVerticalPadding = value;
+    }
+
     @NonNull
     @Override
     public SimpleItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_simple_recyclerview, parent, false);
         SimpleItemHolder holder = new SimpleItemHolder(view);
+        holder.rootView.setPadding(0, mItemVerticalPadding, 0, mItemVerticalPadding);
         return holder;
     }
 

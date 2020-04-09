@@ -74,7 +74,7 @@ class SetDataFragment : BaseFragment<DeviceMessagePresenter>(), IDeviceModelView
         mAdapter.notifyDataSetChanged()
     }
 
-    private fun doSetDataClick(data: DeviceModelItemData, position: Int){
+    private fun doSetDataClick(data: DeviceModelItemData, position: Int) {
         var path = data.typeData!!.name
         data.functionData?.let {
             path += "."
@@ -95,14 +95,17 @@ class SetDataFragment : BaseFragment<DeviceMessagePresenter>(), IDeviceModelView
                     IoTVideoSdk.getMessageMgr().writeProperty(mBasePresenter.deviceId, path, it, object : IResultListener<ModelMessage> {
                         override fun onSuccess(p0: ModelMessage?) {
                             LogUtils.d(TAG, "writeProperty" + p0!!.data)
-//                            Toast.makeText(this@SetDataFragment.context, "设置${path}成功", Toast.LENGTH_LONG).show()
-
-                            mBasePresenter.initModelData(this@SetDataFragment.context!!, mBasePresenter.deviceId)
+                            if (this@SetDataFragment.context != null) {
+                                Toast.makeText(this@SetDataFragment.context, "设置${path}成功", Toast.LENGTH_LONG).show()
+                                mBasePresenter.initModelData(this@SetDataFragment.context!!, mBasePresenter.deviceId)
+                            }
                         }
 
                         override fun onError(p0: Int, p1: String?) {
                             LogUtils.d(TAG, "writeProperty error code $p0, content $p1")
-//                            Toast.makeText(this@SetDataFragment.context, "设置${path}失败, error:${p0}", Toast.LENGTH_LONG).show()
+                            if (this@SetDataFragment.context != null) {
+                                Toast.makeText(this@SetDataFragment.context, "设置${path}失败, error:${p0}", Toast.LENGTH_LONG).show()
+                            }
                         }
 
                         override fun onStart() {

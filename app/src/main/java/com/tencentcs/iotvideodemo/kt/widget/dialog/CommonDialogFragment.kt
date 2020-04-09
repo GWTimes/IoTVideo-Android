@@ -47,8 +47,8 @@ class CommonDialogFragment : BaseDialogFragment(), View.OnClickListener {
         tv_content.movementMethod = ScrollingMovementMethod.getInstance()
 
         iv_dialog_bg.round(r = 2.0f, solidColor = Color.parseColor("#FFFFFF"))
-        tv_cancel.round(r = 2.0f, solidColor = Color.parseColor("#ff7676"))
-        tv_ok.round(r = 2.0f, solidColor = Color.parseColor("#d20000"))
+        tv_cancel.round(r = 2.0f, solidColor = Color.parseColor("#00574B"))
+        tv_ok.round(r = 2.0f, solidColor = Color.parseColor("#006EFF"))
 
         tv_cancel.setOnClickListener(this)
         tv_ok.setOnClickListener(this)

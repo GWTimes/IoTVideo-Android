@@ -38,7 +38,7 @@ public class BaseResponse {
 
         @Override
         public String toString() {
-            return "ErrorBean{" +
+            return "Error{" +
                     "Code='" + Code + '\'' +
                     ", Message='" + Message + '\'' +
                     '}';

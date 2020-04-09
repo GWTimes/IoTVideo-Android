@@ -1,6 +1,5 @@
 package com.tencentcs.iotvideodemo.accountmgr.login;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -33,6 +32,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDialog;
 import androidx.lifecycle.ViewModelProviders;
 
 public class LoginFragment extends BaseFragment implements View.OnClickListener {
@@ -185,7 +185,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
         });
     }
 
-    private class OEMDialog extends Dialog {
+    private class OEMDialog extends AppCompatDialog {
         private Button confirmBtn;
         private Button cancelBtn;
         private EditText etProductId;

@@ -3,16 +3,7 @@ package com.tencentcs.iotvideo.data;
 import java.util.List;
 
 public class DescribeBindDevResult extends BaseResult {
-    private int code;
     private List<DataBean> data;
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
 
     public List<DataBean> getData() {
         return data;

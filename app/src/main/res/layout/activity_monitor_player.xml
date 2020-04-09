@@ -2,11 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".videoplayer.MonitorPlayerActivity">
 
-    <com.tencentcs.iotvideo.iotvideoplayer.IoTVideoView
+    <!--占位View, 真正的Surface在代码中动态加载-->
+    <View
         android:id="@+id/tencentcs_gl_surface_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -15,50 +17,53 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <TextureView
+        android:id="@+id/preview_surface"
+        android:layout_width="90dp"
+        android:layout_height="120dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/play_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/DefaultButton"
         android:text="播放"
-        app:layout_constraintBottom_toBottomOf="@+id/tencentcs_gl_surface_view"
+        app:layout_constraintTop_toBottomOf="@+id/tencentcs_gl_surface_view"
         app:layout_constraintEnd_toStartOf="@+id/snap_btn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/stop_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/DefaultButton"
         android:text="停止"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/record_btn"
         app:layout_constraintTop_toTopOf="@+id/play_btn" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/snap_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/DefaultButton"
         android:text="截图"
         app:layout_constraintEnd_toStartOf="@+id/record_btn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/play_btn"
         app:layout_constraintTop_toTopOf="@+id/play_btn" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/record_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/DefaultButton"
         android:text="录像"
         app:layout_constraintEnd_toStartOf="@+id/stop_btn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/snap_btn"
         app:layout_constraintTop_toTopOf="@+id/snap_btn" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/start_talk_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/DefaultButton"
         android:text="开始对讲"
         android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@+id/mute_btn"
@@ -67,10 +72,9 @@
         app:layout_constraintTop_toTopOf="@+id/mute_btn"
         tools:visibility="visible" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/stop_talk_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/DefaultButton"
         android:text="结束对讲"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
@@ -79,22 +83,20 @@
         app:layout_constraintTop_toTopOf="@+id/start_talk_btn"
         tools:visibility="visible" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/mute_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        style="@style/DefaultButton"
+        android:layout_marginTop="8dp"
         android:text="静音"
         app:layout_constraintEnd_toStartOf="@+id/stop_talk_btn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/start_talk_btn"
         app:layout_constraintTop_toBottomOf="@+id/play_btn" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/open_camera_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        style="@style/DefaultButton"
+        android:layout_marginTop="8dp"
         android:text="打开摄像头"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/choose_camera_btn"
@@ -103,10 +105,9 @@
         app:layout_constraintTop_toBottomOf="@+id/mute_btn"
         tools:visibility="visible" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/choose_camera_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/DefaultButton"
         android:text="切换摄像头"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/close_camera_btn"
@@ -115,10 +116,9 @@
         app:layout_constraintTop_toTopOf="@+id/open_camera_btn"
         tools:visibility="visible" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/close_camera_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/DefaultButton"
         android:text="关闭摄像头"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -131,27 +131,25 @@
         android:id="@+id/output_txt"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="60dp"
         android:gravity="left|top"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_clear"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mute_btn" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_clear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/DefaultButton"
         android:layout_marginEnd="8dp"
         android:text="清除日志"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/output_txt" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_browse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/DefaultButton"
         android:layout_marginEnd="16dp"
         android:text="浏览"
         android:visibility="gone"

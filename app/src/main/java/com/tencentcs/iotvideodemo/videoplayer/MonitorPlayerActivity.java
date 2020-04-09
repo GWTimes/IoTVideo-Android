@@ -3,11 +3,12 @@ package com.tencentcs.iotvideodemo.videoplayer;
 import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
+import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,7 +23,10 @@ import com.tencentcs.iotvideo.iotvideoplayer.ITimeListener;
 import com.tencentcs.iotvideo.iotvideoplayer.IUserDataListener;
 import com.tencentcs.iotvideo.iotvideoplayer.IoTVideoView;
 import com.tencentcs.iotvideo.iotvideoplayer.PlayerStateEnum;
-import com.tencentcs.iotvideo.iotvideoplayer.player.MonitorPlayer;
+import com.tencentcs.iotvideo.iotvideoplayer.codec.MediaCodecAudioDecoder;
+import com.tencentcs.iotvideo.iotvideoplayer.codec.MediaCodecPlayer;
+import com.tencentcs.iotvideo.iotvideoplayer.codec.MediaCodecVideoDecoder;
+import com.tencentcs.iotvideo.iotvideoplayer.player.LivePlayer;
 import com.tencentcs.iotvideo.utils.LogUtils;
 import com.tencentcs.iotvideo.utils.Utils;
 import com.tencentcs.iotvideodemo.R;
@@ -33,14 +37,17 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 
 public class MonitorPlayerActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "MonitorPlayerActivity";
 
-    private IoTVideoView mVideoView;
-    private MonitorPlayer mMonitorPlayer;
+    private View mVideoView;
+    private TextureView mPreviewSurface;
+    private LivePlayer mMonitorPlayer;
 
+    private ConstraintLayout mRootView;
     private Button mPlayBtn;
     private Button mStopBtn;
     private Button mSnapBtn;
@@ -65,7 +72,8 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monitor_player);
-        mVideoView = findViewById(R.id.tencentcs_gl_surface_view);
+        mRootView = findViewById(R.id.root_view);
+        mPreviewSurface = findViewById(R.id.preview_surface);
         mPlayBtn = findViewById(R.id.play_btn);
         mPlayBtn.setOnClickListener(this);
         mStopBtn = findViewById(R.id.stop_btn);
@@ -129,24 +137,51 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
             }
         });
 
-        if (getIntent() != null) {
-            String devId = getIntent().getStringExtra("deviceID");
-            if (!TextUtils.isEmpty(devId)) {
-                mDeviceId = devId;
-                LogUtils.i(TAG, "mDeviceId = " + mDeviceId);
+        mDeviceId = getIntent().getStringExtra("deviceID");
+        boolean useMediaCodec = getIntent().getBooleanExtra("useMediaCodec", false);
+        boolean renderDirectly = getIntent().getBooleanExtra("renderDirectly", false);
+        int renderDirectlyType = getIntent().getIntExtra("renderDirectlyType", 0);
+        LogUtils.i(TAG, "mDeviceId = " + mDeviceId + " useMediaCodec = " + useMediaCodec
+                + " renderDirectly = " + renderDirectly + " renderDirectlyType = " + renderDirectlyType);
 
-                appendToOutput("设备ID：" + mDeviceId);
+        if (useMediaCodec && renderDirectly) {
+            if (renderDirectlyType == 0) {
+                mVideoView = new TextureView(this);
+            } else {
+                mVideoView = new GLSurfaceView(this);
+                ((GLSurfaceView) mVideoView).setEGLContextClientVersion(2);
             }
+        } else {
+            mVideoView = new IoTVideoView(this);
         }
+        mRootView.addView(mVideoView);
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mVideoView.getLayoutParams();
+        layoutParams.width = 0;
+        layoutParams.height = 0;
+        layoutParams.dimensionRatio = "H,16:9";
+        layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
+        layoutParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
+        layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
 
-        mMonitorPlayer = new MonitorPlayer();
+        mMonitorPlayer = new LivePlayer();
         mMonitorPlayer.setDataResource(mDeviceId);
-        mMonitorPlayer.setVideoView(mVideoView);
         mMonitorPlayer.setPreparedListener(mPreparedListener);
         mMonitorPlayer.setStatusListener(mStatusListener);
         mMonitorPlayer.setTimeListener(mTimeListener);
         mMonitorPlayer.setErrorListener(mErrorListener);
         mMonitorPlayer.setUserDataListener(mUserDataListener);
+        if (mVideoView instanceof IoTVideoView) {
+            if (useMediaCodec) {
+                mMonitorPlayer.setVideoView((IoTVideoView) mVideoView);
+                mMonitorPlayer.setVideoDecoder(new MediaCodecVideoDecoder());
+                mMonitorPlayer.setAudioDecoder(new MediaCodecAudioDecoder());
+            } else {
+                mMonitorPlayer.setVideoView((IoTVideoView) mVideoView);
+            }
+        } else {
+            new MediaCodecPlayer(this, mVideoView, mMonitorPlayer).init();
+        }
+        appendToOutput("设备ID：" + mDeviceId + " useMediaCodec = " + useMediaCodec + " " + mVideoView.getClass().getSimpleName());
     }
 
     private IPreparedListener mPreparedListener = new IPreparedListener() {
@@ -202,9 +237,12 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
                     Toast.makeText(this, "storage is not available", Toast.LENGTH_LONG).show();
                     break;
                 }
-                Date date = new Date();
-                String dateStringParse = mSimpleDateFormat.format(date);
-                mMonitorPlayer.snapShot(new File(StorageManager.getPicPath(), dateStringParse + ".jpeg").getAbsolutePath(),
+                File snapFile = new File(StorageManager.getPicPath() + File.separator + mDeviceId);
+                if (!snapFile.exists() && !snapFile.mkdirs()) {
+                    LogUtils.e(TAG, "can not create file");
+                    break;
+                }
+                mMonitorPlayer.snapShot(snapFile.getAbsolutePath() + File.separator + mSimpleDateFormat.format(new Date()) + ".jpeg",
                         new ISnapShotListener() {
                             @Override
                             public void onResult(int code, String path) {
@@ -225,9 +263,12 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
                 } else {
                     mRecordBtn.setText("停止录像");
                     appendToOutput("开始录像");
-                    Date tdate = new Date();
-                    String tdateStringParse = mSimpleDateFormat.format(tdate);
-                    mMonitorPlayer.startRecord(new File(StorageManager.getVideoPath(), tdateStringParse + ".mp4").getAbsolutePath(),
+                    File recordFile = new File(StorageManager.getVideoPath() + File.separator + mDeviceId);
+                    if (!recordFile.exists() && !recordFile.mkdirs()) {
+                        LogUtils.e(TAG, "can not create file");
+                        break;
+                    }
+                    mMonitorPlayer.startRecord(recordFile.getAbsolutePath() + File.separator + mSimpleDateFormat.format(new Date()) + ".mp4",
                             new IRecordListener() {
                                 @Override
                                 public void onResult(int code, String path) {
@@ -258,15 +299,26 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
                 }
                 break;
             case R.id.open_camera_btn:
-//                mVideoView.openCamera();
+                requestPermissions(new OnPermissionsListener() {
+                    @Override
+                    public void OnPermissions(boolean granted) {
+                        if (granted) {
+                            mMonitorPlayer.openCameraAndPreview(MonitorPlayerActivity.this,
+                                    mPreviewSurface, StorageManager.getVideoPath() + File.separator + "preview.mp4");
+                            appendToOutput("打开摄像头");
+                        }
+                    }
+                }, Manifest.permission.CAMERA);
                 break;
             case R.id.choose_camera_btn:
-//                mVideoView.switchCamera(1);
+                mMonitorPlayer.switchCamera(this);
+                appendToOutput("切换摄像头");
                 break;
             case R.id.close_camera_btn:
-//                if (mVideoView.isCameraOpen()) {
-//                    mVideoView.closeCamera();
-//                }
+                if (mMonitorPlayer.isCameraOpen()) {
+                    mMonitorPlayer.closeCamera();
+                    appendToOutput("关闭摄像头");
+                }
                 break;
             case R.id.mute_btn:
                 mMonitorPlayer.mute(!mMonitorPlayer.isMute());
@@ -277,16 +329,20 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
     @Override
     protected void onResume() {
         super.onResume();
-        if (mVideoView != null) {
-            mVideoView.onResume();
+        if (mVideoView instanceof IoTVideoView) {
+            ((IoTVideoView) mVideoView).onResume();
+        } else if (mVideoView instanceof GLSurfaceView) {
+            ((GLSurfaceView) mVideoView).onResume();
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (mVideoView != null) {
-            mVideoView.onPause();
+        if (mVideoView instanceof IoTVideoView) {
+            ((IoTVideoView) mVideoView).onPause();
+        } else if (mVideoView instanceof GLSurfaceView) {
+            ((GLSurfaceView) mVideoView).onPause();
         }
     }
 

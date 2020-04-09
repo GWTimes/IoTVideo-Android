@@ -11,6 +11,8 @@ import com.tencentcs.iotvideo.data.CreateAppUsrResult;
 import com.tencentcs.iotvideo.data.CreateBindingResponse;
 import com.tencentcs.iotvideo.data.CreateBindingResult;
 import com.tencentcs.iotvideo.data.CreateShareTokenResult;
+import com.tencentcs.iotvideo.data.CreateStorageResponse;
+import com.tencentcs.iotvideo.data.CreateStorageResult;
 import com.tencentcs.iotvideo.data.CreateUsrTokenResponse;
 import com.tencentcs.iotvideo.data.CreateUsrTokenResult;
 import com.tencentcs.iotvideo.data.DeleteBindingResponse;
@@ -516,7 +518,31 @@ public class TencentcsHttpServiceAdapter implements HttpService {
         jsonObject.addProperty("UserTag", mAccessId);
         final Observable<JsonObject> observable = mHttpInterface.tencentcsApi(
                 "CreateStorage", "2019-11-26", jsonObject);
-        final Observer<JsonObject> subscriber = new Observer<>(subscriberListener);
+        final Observer<JsonObject> subscriber = new Observer<>(new SubscriberListener() {
+            @Override
+            public void onStart() {
+                subscriberListener.onStart();
+            }
+
+            @Override
+            public void onSuccess(@NonNull JsonObject response) {
+                String responseJson = response.getAsJsonObject("Response").toString();
+                CreateStorageResponse createStorageResponse = toEntity(responseJson, CreateStorageResponse.class);
+                if (createStorageResponse.getError() != null) {
+                    subscriberListener.onFail(new Throwable(createStorageResponse.getError().toString()));
+                    return;
+                }
+                CreateStorageResult createStorageResult = new CreateStorageResult();
+                createStorageResult.setCode(0);
+                createStorageResult.setMsg("Success");
+                subscriberListener.onSuccess(toJson(createStorageResult));
+            }
+
+            @Override
+            public void onFail(@NonNull Throwable e) {
+                subscriberListener.onFail(e);
+            }
+        });
         toSubscribe(observable, subscriber);
     }
 

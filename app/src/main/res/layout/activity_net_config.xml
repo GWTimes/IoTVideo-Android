@@ -19,12 +19,14 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextColor="@color/textColorPrimary"/>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:tabTextColor="@color/textColorPrimary"
             app:tabIndicatorColor="@color/colorAccent" />
     </com.google.android.material.appbar.AppBarLayout>
 

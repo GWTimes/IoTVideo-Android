@@ -9,8 +9,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
         android:text="自定义参数"/>
 
     <TableLayout
@@ -24,7 +25,8 @@
             <TextView
                 android:text="service : "
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"/>
             <Spinner
                 android:id="@+id/spinner_service_list"
                 android:layout_width="wrap_content"
@@ -32,11 +34,12 @@
         </TableRow>
 
         <TableRow
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="32dp">
             <TextView
                 android:text="product id : "
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"/>
             <EditText
                 android:id="@+id/et_product_id"
                 android:minWidth="165dp"
@@ -51,18 +54,24 @@
         android:layout_marginTop="16dp"
         android:gravity="center">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
+            style="@style/DefaultButton"
             android:id="@+id/btn_cancel"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
             android:textSize="18sp"
             android:text="@string/cancel"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
+            style="@style/DefaultButton"
             android:id="@+id/btn_confirm"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_marginStart="32dp"
             android:textSize="18sp"
             android:text="@string/confirm"/>
     </LinearLayout>

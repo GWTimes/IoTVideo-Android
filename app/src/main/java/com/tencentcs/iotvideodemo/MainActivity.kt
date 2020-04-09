@@ -13,12 +13,15 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.JsonObject
 import com.tencentcs.iotvideo.IoTVideoSdk
 import com.tencentcs.iotvideo.accountmgr.AccountMgr
+import com.tencentcs.iotvideo.netconfig.NetConfigInfo
 import com.tencentcs.iotvideo.utils.LogUtils
 import com.tencentcs.iotvideo.utils.rxjava.SubscriberListener
 import com.tencentcs.iotvideodemo.accountmgr.AccountSPUtils
 import com.tencentcs.iotvideodemo.accountmgr.devicemanager.DeviceListFragment
+import com.tencentcs.iotvideodemo.accountmgr.devicemanager.DeviceModelManager
 import com.tencentcs.iotvideodemo.accountmgr.login.LoginActivity
 import com.tencentcs.iotvideodemo.base.BaseActivity
+import com.tencentcs.iotvideodemo.netconfig.NetConfigActivity
 import com.tencentcs.iotvideodemo.netconfig.PrepareNetConfigActivity
 import com.tencentcs.iotvideodemo.utils.Utils
 import kotlinx.android.synthetic.main.activity_main.*
@@ -63,7 +66,9 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun startNetMatchActivity() {
-        val intent = Intent(this, PrepareNetConfigActivity::class.java)
+        val netConfigInfo = NetConfigInfo("", "", 2.toByte())
+        val intent = Intent(this, NetConfigActivity::class.java)
+        intent.putExtra("NetConfigInfo", netConfigInfo)
         startActivity(intent)
     }
 
@@ -77,12 +82,17 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             override fun onSuccess(response: JsonObject) {
                 showProgress(false)
                 AccountSPUtils.getInstance().clear(this@MainActivity)
+                IoTVideoSdk.getMessageMgr().removeModelListener(DeviceModelManager.getInstance())
+                IoTVideoSdk.unregister()
                 startActivity(Intent(this@MainActivity, LoginActivity::class.java))
             }
 
             override fun onFail(e: Throwable) {
                 showProgress(false)
-                Snackbar.make(progress_logout, e.message.toString(), Snackbar.LENGTH_LONG).show()
+                AccountSPUtils.getInstance().clear(this@MainActivity)
+                IoTVideoSdk.getMessageMgr().removeModelListener(DeviceModelManager.getInstance())
+                IoTVideoSdk.unregister()
+                startActivity(Intent(this@MainActivity, LoginActivity::class.java))
             }
         })
     }
@@ -132,12 +142,24 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun registerNotify() {
-        IoTVideoSdk.getMessageMgr().addEventListener { data -> Toast.makeText(applicationContext, data.data, Toast.LENGTH_LONG).show() }
+        IoTVideoSdk.getMessageMgr().addEventListener { data ->
+            Toast.makeText(applicationContext, "onEventChanged : ${data.data}", Toast.LENGTH_LONG).show()
+            LogUtils.i(TAG, "onEventChanged : ${data.data}")
+        }
 
         IoTVideoSdk.getMessageMgr().addModelListener { data ->
-            LogUtils.i(TAG, "onModeChanged deviceId:" + data.device + ", path:" + data.path + ", data:" + data.data)
-            Toast.makeText(applicationContext, "deviceId:" + data.device +
-                    ", path:" + data.path + ", data:" + data.data, Toast.LENGTH_LONG).show()
+            LogUtils.i(TAG, "onModeChanged deviceId:${data.device}, path:${data.path}, data:${data.data}")
+            Toast.makeText(applicationContext, "onModeChanged deviceId:${data.device}, path:${data.path}, data:${data.data}", Toast.LENGTH_LONG).show()
+        }
+
+        IoTVideoSdk.getMessageMgr().addAppLinkListener {
+            when (it) {
+                1 -> Toast.makeText(applicationContext, "App已上线", Toast.LENGTH_LONG).show()
+                2 -> Toast.makeText(applicationContext, "App已离线", Toast.LENGTH_LONG).show()
+                3 -> Toast.makeText(applicationContext, "Access Token Error", Toast.LENGTH_LONG).show()
+                4 -> Toast.makeText(applicationContext, "TID初始化失败", Toast.LENGTH_LONG).show()
+                5 -> Toast.makeText(applicationContext, "TID无效", Toast.LENGTH_LONG).show()
+            }
         }
     }
 

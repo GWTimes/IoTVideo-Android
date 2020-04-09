@@ -9,26 +9,31 @@ import android.widget.ImageView;
 import com.tencentcs.iotvideodemo.R;
 
 public class BigImageDialog extends Dialog {
-    private ImageView mIvQrCode;
+    private ImageView mImageView;
 
-    public BigImageDialog(Context context, Bitmap qrCode) {
+    public BigImageDialog(Context context) {
+        super(context);
+        initView(context);
+    }
+
+    public BigImageDialog(Context context, Bitmap bitmap) {
         super(context, R.style.DialogFullscreen);
-        initView(context, qrCode);
+        initView(context);
+        loadBitmap(bitmap);
     }
 
-    private void initView(Context context, Bitmap qrCode) {
-        setContentView(R.layout.dialog_big_qr_code);
+    private void initView(Context context) {
+        setContentView(R.layout.dialog_big_image);
         setCanceledOnTouchOutside(true);
-        mIvQrCode = findViewById(R.id.iv_qr_code);
-        loadQrCodeBitmap(context, qrCode);
+        mImageView = findViewById(R.id.image_view);
     }
 
-    private void loadQrCodeBitmap(Context context, Bitmap qrCodeBitmap) {
-        if (qrCodeBitmap == null) {
+    public void loadBitmap(Bitmap bitmap) {
+        if (bitmap == null) {
             return;
         }
-        mIvQrCode.setImageBitmap(qrCodeBitmap);
-        mIvQrCode.setOnClickListener(new View.OnClickListener() {
+        mImageView.setImageBitmap(bitmap);
+        mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();

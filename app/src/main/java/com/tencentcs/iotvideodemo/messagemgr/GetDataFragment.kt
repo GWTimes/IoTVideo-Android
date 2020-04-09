@@ -18,6 +18,7 @@ import com.tencentcs.iotvideodemo.kt.ui.adapter.onClick
 import com.tencentcs.iotvideodemo.kt.ui.adapter.setText
 import com.tencentcs.iotvideodemo.kt.utils.ViewUtils.dip2px
 import com.tencentcs.iotvideodemo.kt.widget.dialog.CommonDialogFragment
+import com.tencentcs.iotvideodemo.kt.widget.dialog.CommonEditDialogFragment
 import kotlinx.android.synthetic.main.item_device_model_type.view.*
 import kotlinx.android.synthetic.main.item_device_model_function.view.*
 
@@ -45,16 +46,25 @@ class GetDataFragment : BaseFragment<DeviceMessagePresenter>(), IDeviceModelView
                 }
                 .bindEvent { data, position ->
                     onClick(itemView) {
-                        doGetDataClick(data, position)
+//                        doGetDataClick(data, position)
                     }
                 }
         val functionItem = ItemHolder<DeviceModelItemData>(R.layout.item_device_model_function, 1)
                 .bindData { data, position ->
                     setText(itemView.tv_function, data.functionData!!.name)
+                    if (data.typeData!!.name == "Action" || data.typeData!!.name == "ProWritable") {
+                        itemView.btn_operate.setText(R.string.edit)
+                    } else {
+                        itemView.btn_operate.setText(R.string.check)
+                    }
                 }
                 .bindEvent { data, position ->
-                    onClick(itemView) {
-                        doGetDataClick(data, position)
+                    onClick(itemView.btn_operate) {
+                        if (data.typeData!!.name == "Action" || data.typeData!!.name == "ProWritable") {
+                            doSetDataClick(data, position)
+                        } else {
+                            doGetDataClick(data, position)
+                        }
                     }
                 }
         mAdapter = SimpleAdapter<DeviceModelItemData>(data, typeItem, functionItem) { data, postion ->
@@ -96,8 +106,51 @@ class GetDataFragment : BaseFragment<DeviceMessagePresenter>(), IDeviceModelView
 
             override fun onError(p0: Int, p1: String?) {
                 LogUtils.d(TAG, "readProperty error code $p0, content $p1")
-//                Toast.makeText(this@GetDataFragment.context, "获取${path}失败", Toast.LENGTH_LONG).show()
+                if (this@GetDataFragment.context != null) {
+                    Toast.makeText(this@GetDataFragment.context, "获取${path}失败", Toast.LENGTH_LONG).show()
+                }
             }
         })
+    }
+
+    private fun doSetDataClick(data: DeviceModelItemData, position: Int) {
+        var path = data.typeData!!.name
+        data.functionData?.let {
+            path += "."
+            path += it.name
+        }
+
+        var jsondata = data.typeData!!.data
+        data.functionData?.let {
+            jsondata = it.data
+        }
+
+        CommonEditDialogFragment.newDialog()
+                .title(path)
+                .tips(jsondata)
+                .outSideFinish(false)
+                .callback(ok = {
+                    LogUtils.d(TAG, "writeProperty path is $path, data is $it")
+                    IoTVideoSdk.getMessageMgr().writeProperty(mBasePresenter.deviceId, path, it, object : IResultListener<ModelMessage> {
+                        override fun onSuccess(p0: ModelMessage?) {
+                            LogUtils.d(TAG, "writeProperty" + p0!!.data)
+                            if (this@GetDataFragment.context != null) {
+                                Toast.makeText(this@GetDataFragment.context, "设置${path}成功", Toast.LENGTH_LONG).show()
+                                mBasePresenter.initModelData(this@GetDataFragment.context!!, mBasePresenter.deviceId)
+                            }
+                        }
+
+                        override fun onError(p0: Int, p1: String?) {
+                            LogUtils.d(TAG, "writeProperty error code $p0, content $p1")
+                            if (this@GetDataFragment.context != null) {
+                                Toast.makeText(this@GetDataFragment.context, "设置${path}失败, error:${p0}", Toast.LENGTH_LONG).show()
+                            }
+                        }
+
+                        override fun onStart() {
+                        }
+                    })
+                })
+                .show(this@GetDataFragment.childFragmentManager!!, "SetDataDialog")
     }
 }

@@ -2,6 +2,7 @@ package com.tencentcs.iotvideodemo.videoplayer
 
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -42,6 +43,10 @@ class PlaybackPlayerActivity : BaseActivity<BasePresenter>() {
 
     private var mPlaybackPlayer = PlaybackPlayer()
 
+    private var mCurrentPageIndex = 0
+
+    private var mPageCount = -1
+
     override fun getResId() = R.layout.activity_playback_player
 
     override fun init(savedInstanceState: Bundle?) {
@@ -75,39 +80,28 @@ class PlaybackPlayerActivity : BaseActivity<BasePresenter>() {
 
         recyclerView.adapter = mAdapter
 
-        tv_get_playback.click {
-            PlaybackPlayer.getPlaybackList(mDeviceId, 0, System.currentTimeMillis(),
-                    0, 50, object : IResultListener<PlaybackMessage> {
-                override fun onStart() {
-                    LogUtils.d(TAG, "请求中...")
-                    playback_status.text = "正在获取回放列表..."
-                }
+        tv_get_playback_previous.click {
+            if (mPageCount == -1) {
+                //未成功获取到回放列表，默认从第一页获取
+                getPlaybackList(tv_get_playback_previous, 0)
+                return@click
+            } else if (mCurrentPageIndex == 0) {
+                Snackbar.make(tv_get_playback_previous, "已是第一页", Snackbar.LENGTH_SHORT).show()
+                return@click
+            }
+            getPlaybackList(tv_get_playback_previous, mCurrentPageIndex--)
+        }
 
-                override fun onSuccess(msg: PlaybackMessage?) {
-                    val logStr = "获取成功 : 当前页 ${msg?.currentPage}, 总页数 ${msg?.pageCount}"
-                    LogUtils.d(TAG, logStr)
-                    LogUtils.d(TAG, "获取成功 ${msg.toString()}")
-                    runOnUiThread {
-                        playback_status.text = "获取回放列表成功"
-                        data.clear()
-                        msg?.playbackList?.let {
-                            data.addAll(it)
-                            mAdapter.notifyDataSetChanged()
-                        }
-                        Snackbar.make(tv_get_playback, logStr, Snackbar.LENGTH_LONG).show()
-                    }
-                }
-
-                override fun onError(errorCode: Int, errorMsg: String?) {
-                    val logStr = "getPlaybackList error code $errorCode,  $errorMsg"
-                    runOnUiThread {
-                        playback_status.text = "获取回放列表失败 $errorCode, $errorMsg"
-                        LogUtils.d(TAG, logStr)
-                        Snackbar.make(tv_get_playback, logStr, Snackbar.LENGTH_LONG).show()
-                    }
-                }
-            })
-
+        tv_get_playback_next.click {
+            if (mPageCount == -1) {
+                //未成功获取到回放列表，默认从第一页获取
+                getPlaybackList(tv_get_playback_next, 0)
+                return@click
+            } else if (mCurrentPageIndex == mPageCount - 1) {
+                Snackbar.make(tv_get_playback_next, "已是最后页", Snackbar.LENGTH_SHORT).show()
+                return@click
+            }
+            getPlaybackList(tv_get_playback_next, mCurrentPageIndex++)
         }
 
         tv_start_record.click {
@@ -173,7 +167,7 @@ class PlaybackPlayerActivity : BaseActivity<BasePresenter>() {
 
         initPlaybackPlayer()
 
-        //request permission
+        getPlaybackList(tv_get_playback_previous, 0)
     }
 
     override fun onResume() {
@@ -229,6 +223,41 @@ class PlaybackPlayerActivity : BaseActivity<BasePresenter>() {
             PlayerStateEnum.STATE_STOP -> playStatus = "停止播放"
         }
         return playStatus
+    }
+
+    private fun getPlaybackList(view: View, pageIndex: Int) {
+        PlaybackPlayer.getPlaybackList(mDeviceId, 0, System.currentTimeMillis(),
+                pageIndex, 50, object : IResultListener<PlaybackMessage> {
+            override fun onStart() {
+                LogUtils.d(TAG, "请求中...")
+                playback_status.text = "正在获取回放列表..."
+            }
+
+            override fun onSuccess(msg: PlaybackMessage?) {
+                mPageCount = msg?.pageCount!!
+                val logStr = "获取成功 : 当前页 ${msg?.currentPage}, 总页数 $mPageCount"
+                LogUtils.d(TAG, logStr)
+                LogUtils.d(TAG, "获取成功 ${msg.toString()}")
+                runOnUiThread {
+                    playback_status.text = "获取回放列表成功"
+                    data.clear()
+                    msg?.playbackList?.let {
+                        data.addAll(it)
+                        mAdapter.notifyDataSetChanged()
+                    }
+                    Snackbar.make(view, logStr, Snackbar.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onError(errorCode: Int, errorMsg: String?) {
+                val logStr = "getPlaybackList error code $errorCode,  $errorMsg"
+                runOnUiThread {
+                    playback_status.text = "获取回放列表失败 $errorCode, $errorMsg"
+                    LogUtils.d(TAG, logStr)
+                    Snackbar.make(view, logStr, Snackbar.LENGTH_LONG).show()
+                }
+            }
+        })
     }
 
 }

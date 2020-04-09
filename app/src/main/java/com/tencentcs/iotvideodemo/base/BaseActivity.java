@@ -50,8 +50,8 @@ public class BaseActivity extends AppCompatActivity {
         if (!UrlHelper.getInstance().isRelease()) {
             setTitle(getTitle());
         }
-        //设置状态栏颜色
-        StatusBarUtils.setColor(this, getResources().getColor(R.color.colorPrimary), 0);
+//        //设置状态栏颜色
+//        StatusBarUtils.setColor(this, getResources().getColor(R.color.colorPrimary), 0);
     }
 
     @Override

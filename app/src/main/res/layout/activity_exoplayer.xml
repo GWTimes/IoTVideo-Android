@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@color/colorAccent"
     android:orientation="vertical">
 
-    <chuangyuan.ycj.videolibrary.widget.VideoPlayerView
+    <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/exo_play_context_id"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
+        android:background="@android:color/black"
         app:resize_mode="fit"
-        android:layout_marginTop="10dp"
         app:fastforward_increment="1000"
         app:rewind_increment="1000"
         app:show_timeout="1000000000"
-        app:surface_type="surface_view" >
+        app:show_buffering="always"
+        app:surface_type="surface_view" />
 
-    </chuangyuan.ycj.videolibrary.widget.VideoPlayerView>
-
-
+    <TextView android:id="@+id/debug_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:textSize="10sp"
+        android:textColor="@android:color/white"
+        tools:ignore="SmallSp"/>
 
 </FrameLayout>

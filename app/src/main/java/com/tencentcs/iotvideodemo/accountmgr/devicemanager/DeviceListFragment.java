@@ -16,6 +16,7 @@ import com.tencentcs.iotvideo.IoTVideoSdk;
 import com.tencentcs.iotvideo.accountmgr.AccountMgr;
 import com.tencentcs.iotvideo.messagemgr.IModelListener;
 import com.tencentcs.iotvideo.messagemgr.ModelMessage;
+import com.tencentcs.iotvideo.netconfig.NetConfigInfo;
 import com.tencentcs.iotvideo.utils.JSONUtils;
 import com.tencentcs.iotvideo.utils.LogUtils;
 import com.tencentcs.iotvideo.utils.rxjava.IResultListener;
@@ -24,14 +25,17 @@ import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.accountmgr.deviceshare.DeviceShareActivity;
 import com.tencentcs.iotvideodemo.base.BaseFragment;
 import com.tencentcs.iotvideodemo.messagemgr.DeviceMessageActivity;
-import com.tencentcs.iotvideodemo.vas.VasActivity;
+import com.tencentcs.iotvideodemo.netconfig.NetConfigActivity;
+import com.tencentcs.iotvideodemo.netconfig.PrepareNetConfigActivity;
+import com.tencentcs.iotvideodemo.utils.AppConfig;
+import com.tencentcs.iotvideodemo.vas.CloudStorageActivity;
 import com.tencentcs.iotvideodemo.videoplayer.MonitorPlayerActivity;
 import com.tencentcs.iotvideodemo.videoplayer.MultiMonitorPlayerActivity;
 import com.tencentcs.iotvideodemo.videoplayer.PlaybackPlayerActivity;
+import com.tencentcs.iotvideodemo.videoplayer.LocalAlbumActivity;
 import com.tencentcs.iotvideodemo.widget.RecycleViewDivider;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -40,6 +44,7 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class DeviceListFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = "DeviceManagerActivity";
@@ -48,6 +53,8 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
 
     private RecyclerView mRVDeviceList;
     private Button mBtnMultiMonitor;
+    private TextView mTvAddDevice;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView.Adapter<DeviceItemHolder> mAdapter;
     private List<DeviceList.Device> mDeviceInfoList;
     private List<DeviceList.Device> mDeviceSelectedList;
@@ -66,6 +73,8 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
         mRVDeviceList = view.findViewById(R.id.device_list);
         mBtnMultiMonitor = view.findViewById(R.id.btn_multi_monitor);
         mBtnMultiMonitor.setOnClickListener(this);
+        mTvAddDevice = view.findViewById(R.id.tv_add_device);
+        mTvAddDevice.setOnClickListener(this);
         mRVDeviceList.addItemDecoration(new RecycleViewDivider(getActivity(), RecycleViewDivider.VERTICAL));
         mRVDeviceList.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
         mAdapter = new RecyclerView.Adapter<DeviceItemHolder>() {
@@ -127,6 +136,14 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
             }
         };
         mRVDeviceList.setAdapter(mAdapter);
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                queryDeviceList();
+            }
+        });
     }
 
     @Override
@@ -145,6 +162,9 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
                     case R.id.action_menu_monitor_player:
                         Intent monitorIntent = new Intent(getActivity(), MonitorPlayerActivity.class);
                         monitorIntent.putExtra("deviceID", device.getDevId());
+                        monitorIntent.putExtra("useMediaCodec", AppConfig.USE_MEIDACODEC);
+                        monitorIntent.putExtra("renderDirectly", AppConfig.RENDER_DIRECTLY);
+                        monitorIntent.putExtra("renderDirectlyType", AppConfig.RENDER_DIRECTLY_TYPE);
                         startActivity(monitorIntent);
                         break;
                     case R.id.action_menu_playback_player:
@@ -184,12 +204,17 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
                         break;
                     case R.id.action_menu_vas:
                         if ("owner".equals(device.getShareType())) {
-                            Intent vasIntent = new Intent(getActivity(), VasActivity.class);
+                            Intent vasIntent = new Intent(getActivity(), CloudStorageActivity.class);
                             vasIntent.putExtra("Device", device);
                             startActivity(vasIntent);
                         } else {
                             Snackbar.make(anchor, R.string.you_are_not_owner, Snackbar.LENGTH_LONG).show();
                         }
+                        break;
+                    case R.id.action_menu_local_album:
+                        Intent albumIntent = new Intent(getActivity(), LocalAlbumActivity.class);
+                        albumIntent.putExtra("deviceID", device.getDevId());
+                        startActivity(albumIntent);
                         break;
                 }
                 return false;
@@ -202,7 +227,7 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
         AccountMgr.getHttpService().deviceList(new SubscriberListener() {
             @Override
             public void onStart() {
-
+                mTvAddDevice.setVisibility(View.GONE);
             }
 
             @Override
@@ -217,17 +242,28 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
                     registerNotify();
                     if (mDeviceInfoList.size() != 0) {
                         mAdapter.notifyDataSetChanged();
+                        mTvAddDevice.setVisibility(View.GONE);
                     } else {
                         Snackbar.make(mRVDeviceList, "device count = 0", Snackbar.LENGTH_LONG).show();
+                        mTvAddDevice.setVisibility(View.VISIBLE);
                     }
                 } else {
                     Snackbar.make(mRVDeviceList, response.toString(), Snackbar.LENGTH_LONG).show();
+                }
+                if (mSwipeRefreshLayout.isRefreshing()) {
+                    mSwipeRefreshLayout.setRefreshing(false);
                 }
             }
 
             @Override
             public void onFail(@NonNull Throwable e) {
                 Snackbar.make(mRVDeviceList, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                if (mSwipeRefreshLayout.isRefreshing()) {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+                if (mDeviceInfoList.isEmpty()) {
+                    mTvAddDevice.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
@@ -246,6 +282,9 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
                 updateMultiMonitorBtn();
                 mAdapter.notifyDataSetChanged();
                 Snackbar.make(mRVDeviceList, response.toString(), Snackbar.LENGTH_LONG).show();
+                if (mDeviceInfoList.isEmpty()) {
+                    mTvAddDevice.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -265,6 +304,11 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
             }
             playIntent.putExtra("deviceIDArray", deviceIdArray);
             startActivity(playIntent);
+        } else if (v.getId() == R.id.tv_add_device) {
+            NetConfigInfo netConfigInfo = new NetConfigInfo("", "", (byte) 2);
+            Intent intent = new Intent(getActivity(), NetConfigActivity.class);
+            intent.putExtra("NetConfigInfo", netConfigInfo);
+            startActivity(intent);
         }
     }
 

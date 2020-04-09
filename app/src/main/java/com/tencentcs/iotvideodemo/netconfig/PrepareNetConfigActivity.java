@@ -81,7 +81,7 @@ public class PrepareNetConfigActivity extends BaseActivity {
                     mWifiSpinner.setAdapter(arrayAdapter);
                 }
             }
-        }, R.string.location_permission_tip, Manifest.permission.ACCESS_FINE_LOCATION);
+        }, R.string.location_permission_tip, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION);
     }
 
     private void startNetConfig() {

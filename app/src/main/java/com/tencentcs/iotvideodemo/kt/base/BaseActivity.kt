@@ -349,7 +349,7 @@ abstract class BaseActivity<P : IBasePresenter> : AppCompatActivity(), IBaseView
         /**
          * 使用状态栏
          */
-        var isUseStatusBar = true
+        var isUseStatusBar = false
 
         /**
          * 屏幕常亮

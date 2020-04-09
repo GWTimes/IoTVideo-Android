@@ -105,6 +105,7 @@ public class DeviceModelManager implements IModelListener {
     public void setStringValue(String deviceId, String path, String value, IResultListener<ModelMessage> listener) {
         if (!mDeviceModelMap.containsKey(deviceId)) {
             LogUtils.e(TAG, "getStringValue not contains deviceId " + deviceId);
+            listener.onError(0, "getStringValue not contains deviceId");
             return;
         }
 
@@ -115,7 +116,8 @@ public class DeviceModelManager implements IModelListener {
 
     public void setIntValue(String deviceId, String path, int value, IResultListener<ModelMessage> listener) {
         if (!mDeviceModelMap.containsKey(deviceId)) {
-            LogUtils.e(TAG, "getStringValue not contains deviceId " + deviceId);
+            LogUtils.e(TAG, "setIntValue not contains deviceId " + deviceId);
+            listener.onError(0, "setIntValue not contains deviceId");
             return;
         }
 

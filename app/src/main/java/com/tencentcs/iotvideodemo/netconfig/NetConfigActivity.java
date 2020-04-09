@@ -41,6 +41,7 @@ public class NetConfigActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_net_config);
         Toolbar toolbar = findViewById(R.id.toolbar_main);
+        toolbar.setOverflowIcon(getDrawable(R.drawable.ic_action_more));
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -84,21 +85,18 @@ public class NetConfigActivity extends BaseActivity {
 
         List<String> titles = new ArrayList<>();
         titles.add(getString(R.string.wired_net_config));
-        titles.add(getString(R.string.qrcode_net_config));
-        titles.add(getString(R.string.ap_net_config));
-//        titles.add(getString(R.string.bluetooth_net_config));
+//        titles.add(getString(R.string.qrcode_net_config));
+//        titles.add(getString(R.string.ap_net_config));
         mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(0)));
-        mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(1)));
-        mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(2)));
-//        mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(3)));
+//        mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(1)));
+//        mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(2)));
 
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new WiredNetConfigFragment());
-        fragments.add(new QRCodeNetConfigFragment());
-        fragments.add(new APNetConfigFragment());
-//        fragments.add(new BTNetConfigFragment());
+//        fragments.add(new QRCodeNetConfigFragment());
+//        fragments.add(new APNetConfigFragment());
 
-        mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setOffscreenPageLimit(0);
 
         FragmentAdapter mFragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), fragments, titles);
         mViewPager.setAdapter(mFragmentAdapter);
@@ -107,8 +105,9 @@ public class NetConfigActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.net_config_menu, menu);
-        return true;
+//        getMenuInflater().inflate(R.menu.net_config_menu, menu);
+//        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

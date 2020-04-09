@@ -1,16 +1,7 @@
 package com.tencentcs.iotvideo.data;
 
 public class CreateUsrTokenResult extends BaseResult {
-    private int code;
     private DataBean data;
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
 
     public DataBean getData() {
         return data;

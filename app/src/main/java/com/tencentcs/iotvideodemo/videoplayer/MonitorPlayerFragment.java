@@ -45,9 +45,10 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
     private Button mSnapBtn;
     private Button mRecordBtn;
     private Button mMuteBtn;
-    private Button mTalk;
-    private Button mCamera;
-    private Button mChooseCamera;
+    private Button mStartTalkBtn;
+    private Button mStopTalkBtn;
+    private Button mStartCameraBtn;
+    private Button mSopCameraBtn;
     private TextView mTvMonitorState;
 
     @Nullable
@@ -70,12 +71,14 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
         mRecordBtn.setOnClickListener(this);
         mMuteBtn = view.findViewById(R.id.mute_btn);
         mMuteBtn.setOnClickListener(this);
-        mTalk = view.findViewById(R.id.start_talk_btn);
-        mTalk.setOnClickListener(this);
-        mCamera = view.findViewById(R.id.open_camera_btn);
-        mCamera.setOnClickListener(this);
-        mChooseCamera = view.findViewById(R.id.choose_camera_btn);
-        mChooseCamera.setOnClickListener(this);
+        mStartTalkBtn = view.findViewById(R.id.start_talk_btn);
+        mStartTalkBtn.setOnClickListener(this);
+        mStopTalkBtn = view.findViewById(R.id.stop_talk_btn);
+        mStopTalkBtn.setOnClickListener(this);
+        mStartCameraBtn = view.findViewById(R.id.open_camera_btn);
+        mStartCameraBtn.setOnClickListener(this);
+        mSopCameraBtn = view.findViewById(R.id.close_camera_btn);
+        mSopCameraBtn.setOnClickListener(this);
         mTvMonitorState = view.findViewById(R.id.monitor_status);
 
         mMonitorPlayer = new MonitorPlayer();
@@ -183,9 +186,7 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
                 }
                 break;
             case R.id.start_talk_btn:
-                if (mMonitorPlayer.isTalking()) {
-                    mMonitorPlayer.stopTalk();
-                } else {
+                if (!mMonitorPlayer.isTalking()) {
                     requestPermissions(new BaseFragment.OnPermissionsListener() {
                         @Override
                         public void OnPermissions(boolean granted) {
@@ -196,11 +197,14 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
                     }, Manifest.permission.RECORD_AUDIO);
                 }
                 break;
-            case R.id.open_camera_btn:
-//                mVideoView.openCamera();
+            case R.id.stop_talk_btn:
+                if (mMonitorPlayer.isTalking()) {
+                    mMonitorPlayer.stopTalk();
+                }
                 break;
-            case R.id.choose_camera_btn:
-//                mVideoView.switchCamera(1);
+            case R.id.open_camera_btn:
+                break;
+            case R.id.close_camera_btn:
                 break;
         }
     }

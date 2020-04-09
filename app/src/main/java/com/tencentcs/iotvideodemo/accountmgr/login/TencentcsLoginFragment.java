@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.tencentcs.iotvideo.accountmgr.AccountMgr;
+import com.tencentcs.iotvideodemo.BuildConfig;
 import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.accountmgr.AccountSPUtils;
 import com.tencentcs.iotvideodemo.base.BaseFragment;
@@ -23,6 +25,7 @@ import androidx.lifecycle.ViewModelProviders;
 public class TencentcsLoginFragment extends BaseFragment {
 
     private EditText mEtSecretId, mEtSecretKey, mEtToken, mEtUserName;
+    private TextView mTvVersion;
     private LoginViewModel mLoginViewModel;
 
     @Nullable
@@ -38,6 +41,8 @@ public class TencentcsLoginFragment extends BaseFragment {
         mEtSecretKey = view.findViewById(R.id.et_secret_key);
         mEtToken = view.findViewById(R.id.et_token);
         mEtUserName = view.findViewById(R.id.et_user_name);
+        mTvVersion = view.findViewById(R.id.tv_app_version);
+        mTvVersion.setText(BuildConfig.VERSION_NAME);
         view.findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

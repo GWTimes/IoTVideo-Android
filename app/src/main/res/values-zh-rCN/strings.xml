@@ -1,13 +1,10 @@
 <resources>
-    <string name="app_name">IoTVideoDemo</string>
+    <string name="app_name">IoT Video Demo</string>
     <string name="create_qrcode">创建二维码</string>
     <string name="accept_the_permissions">请在设置中同意权限</string>
-    <string name="player">监控</string>
+    <string name="player">直播监控</string>
     <string name="confirm">确认</string>
     <string name="cancel">取消</string>
-    <string name="enable_bluetooth">打开蓝牙</string>
-    <string name="disable_bluetooth">关闭蓝牙</string>
-    <string name="scan_bluetooth">扫描蓝牙</string>
     <string name="title_activity_login">登录</string>
     <string name="title_activity_retrieve_password">忘记密码</string>
     <string name="input_account">请输入帐号</string>
@@ -32,7 +29,7 @@
     <string name="find_device">查找设备</string>
     <string name="click_to_bind">点击绑定</string>
     <string name="click_to_operate">点击操作</string>
-    <string name="device_share">分享</string>
+    <string name="device_share">设备分享</string>
     <string name="you_are_not_owner">你不是该设备的主人</string>
     <string name="share_to">分享给</string>
     <string name="fresh_qrcode">刷新二维码</string>
@@ -40,7 +37,7 @@
     <string name="account_share">帐号分享</string>
     <string name="qrcode_share">二维码分享</string>
     <string name="success">成功</string>
-    <string name="device_model">物模型</string>
+    <string name="device_model">物模型获取及配置</string>
     <string name="local_monitor">局域网监控</string>
     <string name="share_list">已分享列表</string>
     <string name="flip_to_delete">滑动删除</string>
@@ -53,6 +50,10 @@
     <string name="welcome"><u>Welcome</u></string>
     <string name="more"><u>更多</u></string>
     <string name="cloud_storage">云存储</string>
-    <string name="delete">删除</string>
-    <string name="device_ota">OTA</string>
+    <string name="delete_device">删除设备</string>
+    <string name="device_ota">固件升级</string>
+    <string name="local_album">本地相册</string>
+    <string name="add_device">添加设备</string>
+    <string name="check">查看</string>
+    <string name="edit">编辑</string>
 </resources>

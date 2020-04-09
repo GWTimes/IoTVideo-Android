@@ -8,11 +8,14 @@ import com.tencentcs.iotvideo.utils.JSONUtils;
 import com.tencentcs.iotvideo.IoTVideoSdk;
 import com.tencentcs.iotvideo.accountmgr.AccountMgr;
 import com.tencentcs.iotvideo.utils.LogUtils;
+import com.tencentcs.iotvideo.vas.VasMgr;
 import com.tencentcs.iotvideodemo.accountmgr.AccountSPUtils;
 import com.tencentcs.iotvideodemo.accountmgr.devicemanager.DeviceModelManager;
 import com.tencentcs.iotvideodemo.base.HttpRequestState;
 import com.tencentcs.iotvideodemo.base.MVVMSubscriberListener;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -115,6 +118,10 @@ class LoginManager {
         AccountMgr.setAccessInfo(accessId, accessToken);
         //监听物模型变化
         IoTVideoSdk.getMessageMgr().addModelListener(DeviceModelManager.getInstance());
+        //设置vas模块公共参数
+        Map<String, Object> publicParams = new HashMap<>();
+        publicParams.put("accessId", accessId);
+        VasMgr.updatePublicParams(publicParams);
     }
 
     private void saveLoginInfo(String accessId, String accessToken, int validityTime) {

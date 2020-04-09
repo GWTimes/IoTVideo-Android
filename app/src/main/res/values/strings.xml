@@ -1,13 +1,10 @@
 <resources>
-    <string name="app_name">IoTVideoDemo</string>
+    <string name="app_name">IoT Video Demo</string>
     <string name="create_qrcode">create qr code</string>
     <string name="accept_the_permissions">please accept the permission in settings</string>
     <string name="player">monitor</string>
     <string name="confirm">confirm</string>
     <string name="cancel">cancel</string>
-    <string name="enable_bluetooth">enable bluetooth</string>
-    <string name="disable_bluetooth">disable bluetooth</string>
-    <string name="scan_bluetooth">scan bluetooth</string>
     <string name="title_activity_login">Login</string>
     <string name="title_activity_retrieve_password">Retrieve password</string>
     <string name="input_account">input account</string>
@@ -32,11 +29,11 @@
     <string name="find_device">Find Device</string>
     <string name="click_to_bind">click to bind</string>
     <string name="click_to_operate">operate</string>
-    <string name="device_share">share</string>
+    <string name="device_share">device share</string>
     <string name="you_are_not_owner">you are not the owner of the device</string>
     <string name="share_to">share to</string>
     <string name="fresh_qrcode">fresh QR Code</string>
-    <string name="account_hint">input account</string>
+    <string name="account_hint">input account</string>Sh
     <string name="account_share">account share</string>
     <string name="qrcode_share">QR Code share</string>
     <string name="success">success</string>
@@ -53,6 +50,10 @@
     <string name="welcome"><u>Welcome</u></string>
     <string name="more"><u>more</u></string>
     <string name="cloud_storage">云存储</string>
-    <string name="delete">delete</string>
+    <string name="delete_device">delete</string>
     <string name="device_ota">OTA</string>
+    <string name="local_album">本地相册</string>
+    <string name="add_device">add device</string>
+    <string name="check">查看</string>
+    <string name="edit">编辑</string>
 </resources>

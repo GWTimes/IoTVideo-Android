@@ -1,6 +1,8 @@
 package com.tencentcs.iotvideodemo.kt.widget.dialog;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
@@ -11,13 +13,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.tencentcs.iotvideodemo.R;
 
 
 public class LoadingDialog extends Dialog {
-
-    private LottieAnimationView mLottie;
+    private Context mContext;
+    private View mProgressView;
 
     public LoadingDialog(Context context) {
         super(context);
@@ -30,9 +31,9 @@ public class LoadingDialog extends Dialog {
     }
 
     private void initDialog(Context ctx) {
+        mContext = ctx;
         View view = LayoutInflater.from(ctx).inflate(R.layout.dialog_loading, null);
-        //清理背景变暗
-        mLottie = view.findViewById(R.id.lottie);
+        mProgressView = findViewById(R.id.progress_login);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
         Window window = getWindow();
@@ -54,11 +55,29 @@ public class LoadingDialog extends Dialog {
     @Override
     public void show() {
         super.show();
-        mLottie.playAnimation();
+        showProgress(true);
     }
 
     public void show(String msgText) {
         show();
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        showProgress(false);
+    }
+
+    private void showProgress(final boolean show) {
+        int shortAnimTime = mContext.getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
 }

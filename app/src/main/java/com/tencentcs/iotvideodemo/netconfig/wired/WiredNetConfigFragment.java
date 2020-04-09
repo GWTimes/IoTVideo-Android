@@ -16,7 +16,6 @@ import com.tencentcs.iotvideodemo.base.BaseFragment;
 import com.tencentcs.iotvideodemo.netconfig.NetConfigViewModel;
 import com.tencentcs.iotvideodemo.netconfig.NetConfigViewModelFactory;
 import com.tencentcs.iotvideodemo.videoplayer.MonitorPlayerActivity;
-import com.tencentcs.iotvideodemo.videoplayer.MultiMonitorPlayerActivity;
 import com.tencentcs.iotvideodemo.widget.RecycleViewDivider;
 
 import java.util.ArrayList;
@@ -79,13 +78,6 @@ public class WiredNetConfigFragment extends BaseFragment {
                         Intent playIntent = new Intent(WiredNetConfigFragment.this.getContext(), MonitorPlayerActivity.class);
                         playIntent.putExtra("deviceID", deviceInfo.tencentID);
                         startActivity(playIntent);
-//                        if (mDeviceInfoList.size() >= 2) {
-//                            Intent playIntent = new Intent(WiredNetConfigFragment.this.getContext(), MultiMonitorPlayerActivity.class);
-//                            String[] deviceIdArray = {String.valueOf(mDeviceInfoList.get(0).deviceID),
-//                                    String.valueOf(mDeviceInfoList.get(1).deviceID)};
-//                            playIntent.putExtra("deviceIDArray", deviceIdArray);
-//                            startActivity(playIntent);
-//                        }
                     }
                 });
             }

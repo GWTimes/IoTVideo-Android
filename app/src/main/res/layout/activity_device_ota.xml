@@ -6,75 +6,56 @@
     android:layout_margin="16dp"
     android:orientation="vertical">
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp">
-        <TableRow
-            android:visibility="gone">
-            <TextView
-                android:text="当前版本 : "
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:id="@+id/tv_current_version"
-                android:maxWidth="165dp"
-                android:textIsSelectable="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </TableRow>
-        <TableRow>
-            <TextView
-                android:text="最新版本 : "
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:id="@+id/tv_latest_version"
-                android:maxWidth="165dp"
-                android:textIsSelectable="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </TableRow>
-        <TableRow
-            android:visibility="gone">
-            <TextView
-                android:text="OTA模式 : "
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:id="@+id/tv_ota_mode"
-                android:textIsSelectable="true"
-                android:maxWidth="165dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </TableRow>
-    </TableLayout>
-
-    <Button
-        android:id="@+id/btn_update_latest_version"
+    <com.google.android.material.button.MaterialButton
+        style="@style/DefaultButton"
+        android:id="@+id/btn_get_latest_version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:textSize="16sp"
         android:text="检查设备待更新版本"/>
 
-    <Button
-        android:id="@+id/btn_start_ota"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/ll_version_info"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_marginTop="16dp"
-        android:text="确认更新"/>
+        android:visibility="gone">
 
-    <Button
-        android:id="@+id/btn_get_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="查看更新进度"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="16sp"
+            android:text="设备当前待更新版本："/>
 
-    <TextView
-        android:id="@+id/tv_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"/>
+        <TextView
+            android:id="@+id/tv_latest_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/textColorPrimary"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="16sp"
+            android:text="更新进度："/>
+
+        <TextView
+            android:id="@+id/tv_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/textColorPrimary"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+    </LinearLayout>
 
 </LinearLayout>
