@@ -162,7 +162,6 @@ public class CloudStorageActivity extends BaseActivity implements View.OnClickLi
                 }
             });
         } else if (view.getId() == R.id.playback) {
-            //startPlayActivity("http://lcb.iotvideo.tencentcs.com/timeshift/live/2c5e01cd-30af-4816-b28c-ef365d68b12c/timeshift.m3u8?starttime=20200402140518&endtime=20200402141155");
             mVasService.cloudStoragePlayback(mDevice.getDevId(), 28800, mPlaybackStartTime, mPlaybackEndTime, new SubscriberListener() {
                 @Override
                 public void onStart() {
