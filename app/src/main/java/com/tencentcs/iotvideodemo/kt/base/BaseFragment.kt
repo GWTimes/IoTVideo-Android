@@ -9,15 +9,13 @@ import androidx.fragment.app.FragmentManager
 import com.tencentcs.iotvideodemo.kt.widget.dialog.LoadingDialog
 import com.tencentcs.iotvideodemo.rxbus2.RxBus
 
-abstract class BaseFragment<P : IBasePresenter> : Fragment(), IBaseView {
+abstract class BaseFragment : Fragment(), IBaseView {
 
     protected var TAG = this.javaClass.name
 
     private val fragmentConfig = FragmentConfig()
 
     private var isOnCreateView = false
-
-    lateinit var mBasePresenter: P
 
     lateinit var mRootView: View
 
@@ -64,8 +62,8 @@ abstract class BaseFragment<P : IBasePresenter> : Fragment(), IBaseView {
     override fun onResume() {
         super.onResume()
         //当前界面处于视觉可见态，生命周期才要触发可见回调
-        if (parentFragment != null && parentFragment is BaseFragment<*>) {
-            if ((parentFragment as BaseFragment<*>).isVisibleToUsers) {
+        if (parentFragment != null && parentFragment is BaseFragment) {
+            if ((parentFragment as BaseFragment).isVisibleToUsers) {
                 if (isPassivityVisible()) {
                     setVisibleToUser(true)
                 }
@@ -87,9 +85,6 @@ abstract class BaseFragment<P : IBasePresenter> : Fragment(), IBaseView {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        if (::mBasePresenter.isInitialized) {
-            mBasePresenter.dispose()
-        }
         if (fragmentConfig.isApplyRxBus) {
             RxBus.getDefault().unregister(this)
         }
@@ -118,7 +113,7 @@ abstract class BaseFragment<P : IBasePresenter> : Fragment(), IBaseView {
         val fragments = getValidChildFragmentManager()?.fragments
         if (fragments != null && fragments.isNotEmpty()) {
             fragments.forEach {
-                if (it is BaseFragment<*>) {
+                if (it is BaseFragment) {
                     //当子Fragment处于视觉可见态，才随父Fragment触发可见回调
                     if (it.isPassivityVisible()) {
                         it.setVisibleToUser(isVisibleToUser)
@@ -135,7 +130,7 @@ abstract class BaseFragment<P : IBasePresenter> : Fragment(), IBaseView {
         val fragments = getValidChildFragmentManager()?.fragments
         if (fragments != null && fragments.isNotEmpty()) {
             fragments.forEach {
-                if (it is BaseFragment<*>) {
+                if (it is BaseFragment) {
                     //当子Fragment处于可见态，才随父Fragment触发可见回调
                     if (it.isPassivityVisible()) {
                         it.setVisibleToUser(!hidden)

@@ -19,12 +19,10 @@ import com.tencentcs.iotvideodemo.kt.widget.dialog.LoadingDialog
 import com.tencentcs.iotvideodemo.rxbus2.RxBus
 import com.tbruyelle.rxpermissions2.RxPermissions
 
-abstract class BaseActivity<P : IBasePresenter> : AppCompatActivity(), IBaseView {
+abstract class BaseActivity : AppCompatActivity(), IBaseView {
     protected val TAG = javaClass.simpleName
 
     private val activityConfig = ActivityConfig()
-
-    lateinit var mBasePresenter: P
 
     var mRxPermission: RxPermissions? = null
 
@@ -148,9 +146,6 @@ abstract class BaseActivity<P : IBasePresenter> : AppCompatActivity(), IBaseView
         super.onDestroy()
         LogUtils.i(TAG, "onDestroy")
         hideLoadingDialog()
-        if (::mBasePresenter.isInitialized) {
-            mBasePresenter.dispose()
-        }
         if (activityConfig.isApplyRxBus) RxBus.getDefault().unregister(this)
     }
 
@@ -231,7 +226,7 @@ abstract class BaseActivity<P : IBasePresenter> : AppCompatActivity(), IBaseView
      */
     fun hideStatusBar() {
         val decorView = window.decorView
-        var systemUiVisibility = decorView.systemUiVisibility
+        val systemUiVisibility = decorView.systemUiVisibility
         val uiOptions = (systemUiVisibility
                 or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -245,7 +240,7 @@ abstract class BaseActivity<P : IBasePresenter> : AppCompatActivity(), IBaseView
      */
     fun showStatusBar() {
         val decorView = window.decorView
-        var systemUiVisibility = decorView.systemUiVisibility
+        val systemUiVisibility = decorView.systemUiVisibility
         val uiOptions = (systemUiVisibility and (View.SYSTEM_UI_FLAG_FULLSCREEN.inv()))
         decorView.systemUiVisibility = uiOptions
     }
@@ -303,7 +298,7 @@ abstract class BaseActivity<P : IBasePresenter> : AppCompatActivity(), IBaseView
     }
 
     private fun hasNotchInOppo(): Boolean {
-        return getPackageManager().hasSystemFeature("com.oppo.feature.screen.heteromorphism")
+        return packageManager.hasSystemFeature("com.oppo.feature.screen.heteromorphism")
     }
 
     @SuppressLint("PrivateApi")
@@ -312,14 +307,12 @@ abstract class BaseActivity<P : IBasePresenter> : AppCompatActivity(), IBaseView
         try {
             val cl = classLoader
             val ftFeature = cl.loadClass("android.util.FtFeature")
-            val methods = ftFeature.getDeclaredMethods()
-            if (methods != null) {
-                for (i in methods.indices) {
-                    val method = methods[i]
-                    if (method.name.equals("isFeatureSupport", true)) {
-                        hasNotch = method.invoke(ftFeature, 0x00000020) as Boolean
-                        break
-                    }
+            val methods = ftFeature.declaredMethods
+            for (i in methods.indices) {
+                val method = methods[i]
+                if (method.name.equals("isFeatureSupport", true)) {
+                    hasNotch = method.invoke(ftFeature, 0x00000020) as Boolean
+                    break
                 }
             }
         } catch (e: Exception) {

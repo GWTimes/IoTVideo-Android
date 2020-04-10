@@ -56,4 +56,5 @@
     <string name="add_device">add device</string>
     <string name="check">查看</string>
     <string name="edit">编辑</string>
+    <string name="message_box">Message box</string>
 </resources>

@@ -2,8 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_menu_message"
+        android:orderInCategory="1"
+        android:icon="@drawable/ic_action_message"
+        android:title="@string/message_box"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_menu_add"
         android:orderInCategory="1"
         android:icon="@drawable/ic_add"
+        android:title="@string/net_config"
         app:showAsAction="ifRoom" />
 </menu>

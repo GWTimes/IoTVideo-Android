@@ -70,11 +70,15 @@
         <activity
             android:name="com.tencentcs.iotvideodemo.vas.CloudStorageActivity"
             android:label="@string/cloud_storage" />
-        <activity android:name=".videoplayer.MultiMonitorPlayerActivity" />
+        <activity
+            android:name=".videoplayer.MultiMonitorPlayerActivity"
+            android:label="@string/player"/>
         <activity
             android:name=".accountmgr.devicemanager.DeviceOTAActivity"
             android:label="@string/device_ota" />
-        <activity android:name="com.tencentcs.iotvideodemo.videoplayer.PlaybackPlayerActivity" />
+        <activity
+            android:name="com.tencentcs.iotvideodemo.videoplayer.PlaybackPlayerActivity"
+            android:label="@string/local_playback" />
         <activity
             android:name="com.tencentcs.iotvideodemo.videoplayer.ijkplayer.IjkPlayerActivity"
             android:label="IjkPlayer" />
@@ -84,6 +88,9 @@
         <activity
             android:name=".videoplayer.LocalAlbumActivity"
             android:label="@string/local_album" />
+        <activity
+            android:name=".messagemgr.MessageBoxActivity"
+            android:label="@string/message_box" />
     </application>
 
 </manifest>

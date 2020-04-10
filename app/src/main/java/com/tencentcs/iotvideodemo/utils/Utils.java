@@ -5,6 +5,10 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.text.TextUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.UUID;
 
 public class Utils {
@@ -35,5 +39,34 @@ public class Utils {
         if (cm != null) {
             cm.setPrimaryClip(mClipData);
         }
+    }
+
+    public static String printJson(String msg) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        String message;
+
+        try {
+            if (msg.startsWith("{")) {
+                JSONObject jsonObject = new JSONObject(msg);
+                message = jsonObject.toString(4);//最重要的方法，就一行，返回格式化的json字符串，其中的数字4是缩进字符数
+            } else if (msg.startsWith("[")) {
+                JSONArray jsonArray = new JSONArray(msg);
+                message = jsonArray.toString(4);
+            } else {
+                message = msg;
+            }
+        } catch (JSONException e) {
+            message = msg;
+        }
+
+        String lineSeparator = System.getProperty("line.separator");
+        String[] lines = message.split(lineSeparator);
+        stringBuilder.append("\n");
+        for (String line : lines) {
+            stringBuilder.append(line).append("\n");
+        }
+
+        return stringBuilder.toString();
     }
 }

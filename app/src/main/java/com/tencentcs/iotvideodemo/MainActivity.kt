@@ -21,6 +21,8 @@ import com.tencentcs.iotvideodemo.accountmgr.devicemanager.DeviceListFragment
 import com.tencentcs.iotvideodemo.accountmgr.devicemanager.DeviceModelManager
 import com.tencentcs.iotvideodemo.accountmgr.login.LoginActivity
 import com.tencentcs.iotvideodemo.base.BaseActivity
+import com.tencentcs.iotvideodemo.messagemgr.MessageBox
+import com.tencentcs.iotvideodemo.messagemgr.MessageBoxActivity
 import com.tencentcs.iotvideodemo.netconfig.NetConfigActivity
 import com.tencentcs.iotvideodemo.netconfig.PrepareNetConfigActivity
 import com.tencentcs.iotvideodemo.utils.Utils
@@ -69,6 +71,11 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         val netConfigInfo = NetConfigInfo("", "", 2.toByte())
         val intent = Intent(this, NetConfigActivity::class.java)
         intent.putExtra("NetConfigInfo", netConfigInfo)
+        startActivity(intent)
+    }
+
+    private fun startMessgeBoxActivity() {
+        val intent = Intent(this, MessageBoxActivity::class.java)
         startActivity(intent)
     }
 
@@ -122,18 +129,25 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            if (!drawer_layout.isDrawerOpen(GravityCompat.START)) {
-                drawer_layout.openDrawer(GravityCompat.START)
-            } else {
-                drawer_layout.closeDrawer(GravityCompat.START)
+        when {
+            item.itemId == android.R.id.home -> {
+                if (!drawer_layout.isDrawerOpen(GravityCompat.START)) {
+                    drawer_layout.openDrawer(GravityCompat.START)
+                } else {
+                    drawer_layout.closeDrawer(GravityCompat.START)
+                }
+                return true
             }
-            return true
-        } else if (item.itemId == R.id.action_menu_add) {
-            startNetMatchActivity()
-            return true
+            item.itemId == R.id.action_menu_add -> {
+                startNetMatchActivity()
+                return true
+            }
+            item.itemId == R.id.action_menu_message -> {
+                startMessgeBoxActivity()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -143,12 +157,14 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     private fun registerNotify() {
         IoTVideoSdk.getMessageMgr().addEventListener { data ->
-            Toast.makeText(applicationContext, "onEventChanged : ${data.data}", Toast.LENGTH_LONG).show()
-            LogUtils.i(TAG, "onEventChanged : ${data.data}")
+            Toast.makeText(applicationContext, "onEventChanged ${data.topic} : ${data.data}", Toast.LENGTH_LONG).show()
+            MessageBox.eventMessageList.add(data)
+            LogUtils.i(TAG, "onEventChanged ${data.topic} : ${data.data}")
         }
 
         IoTVideoSdk.getMessageMgr().addModelListener { data ->
             LogUtils.i(TAG, "onModeChanged deviceId:${data.device}, path:${data.path}, data:${data.data}")
+            MessageBox.modelMessageList.add(data)
             Toast.makeText(applicationContext, "onModeChanged deviceId:${data.device}, path:${data.path}, data:${data.data}", Toast.LENGTH_LONG).show()
         }
 
