@@ -22,9 +22,6 @@ import com.tencentcs.iotvideo.iotvideoplayer.ITimeListener;
 import com.tencentcs.iotvideo.iotvideoplayer.IUserDataListener;
 import com.tencentcs.iotvideo.iotvideoplayer.IoTVideoView;
 import com.tencentcs.iotvideo.iotvideoplayer.PlayerStateEnum;
-import com.tencentcs.iotvideo.iotvideoplayer.codec.MediaCodecAudioDecoder;
-import com.tencentcs.iotvideo.iotvideoplayer.codec.MediaCodecPlayer;
-import com.tencentcs.iotvideo.iotvideoplayer.codec.MediaCodecVideoDecoder;
 import com.tencentcs.iotvideo.iotvideoplayer.player.LivePlayer;
 import com.tencentcs.iotvideo.utils.LogUtils;
 import com.tencentcs.iotvideo.utils.Utils;
@@ -43,7 +40,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 public class MonitorPlayerFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = "MonitorPlayerFragment";
 
-    private View mVideoView;
+    private IoTVideoView mVideoView;
     private TextureView mPreviewSurface;
     private LivePlayer mMonitorPlayer;
 
@@ -125,31 +122,12 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
         mMonitorPlayer.setTimeListener(mTimeListener);
         mMonitorPlayer.setErrorListener(mErrorListener);
         mMonitorPlayer.setUserDataListener(mUserDataListener);
-        if (mVideoView instanceof IoTVideoView) {
-            if (mUseMediaCodec) {
-                mMonitorPlayer.setVideoView((IoTVideoView) mVideoView);
-                mMonitorPlayer.setVideoDecoder(new MediaCodecVideoDecoder());
-                mMonitorPlayer.setAudioDecoder(new MediaCodecAudioDecoder());
-            } else {
-                mMonitorPlayer.setVideoView((IoTVideoView) mVideoView);
-            }
-        } else {
-            new MediaCodecPlayer(view.getContext(), mVideoView, mMonitorPlayer).init();
-        }
+        mMonitorPlayer.setVideoView(mVideoView);
         appendToOutput("设备ID：" + mDeviceId + " useMediaCodec = " + mUseMediaCodec + " " + mVideoView.getClass().getSimpleName());
     }
 
     private void addVideoView(Context context) {
-        if (mUseMediaCodec && mRenderDirectly) {
-            if (mRenderDirectlyType == 0) {
-                mVideoView = new TextureView(context);
-            } else {
-                mVideoView = new GLSurfaceView(context);
-                ((GLSurfaceView) mVideoView).setEGLContextClientVersion(2);
-            }
-        } else {
-            mVideoView = new IoTVideoView(context);
-        }
+        mVideoView = new IoTVideoView(context);
         mVideoView.setId(View.generateViewId());
         mRootView.addView(mVideoView);
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mVideoView.getLayoutParams();
@@ -306,21 +284,13 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
     @Override
     public void onResume() {
         super.onResume();
-        if (mVideoView instanceof IoTVideoView) {
-            ((IoTVideoView) mVideoView).onResume();
-        } else if (mVideoView instanceof GLSurfaceView) {
-            ((GLSurfaceView) mVideoView).onResume();
-        }
+        mVideoView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (mVideoView instanceof IoTVideoView) {
-            ((IoTVideoView) mVideoView).onPause();
-        } else if (mVideoView instanceof GLSurfaceView) {
-            ((GLSurfaceView) mVideoView).onPause();
-        }
+        mVideoView.onPause();
     }
 
     @Override
