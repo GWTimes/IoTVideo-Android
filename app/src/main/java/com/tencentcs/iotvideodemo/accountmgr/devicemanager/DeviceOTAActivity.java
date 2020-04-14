@@ -119,7 +119,7 @@ public class DeviceOTAActivity extends BaseActivity implements View.OnClickListe
             Snackbar.make(mTvLatestVersion, "服务器返回数据无效", Snackbar.LENGTH_LONG).show();
             return;
         }
-        if ("ProReadonly._otaVersion".equals(data.path)) {
+        if ("ProReadonly._otaVersion".equals(data.path) || "Action._otaVersion".equals(data.path)) {
             mLLVersionInfo.setVisibility(View.VISIBLE);
             JsonParser jsonParser = new JsonParser();
             String version = jsonParser.parse(data.data).getAsJsonObject().get("stVal").getAsString();
@@ -131,7 +131,7 @@ public class DeviceOTAActivity extends BaseActivity implements View.OnClickListe
                 mProgress.setText(0 + "%");
                 showOTADialog(version);
             }
-        } else if ("ProReadonly._otaUpgrade".equals(data.path)) {
+        } else if ("ProReadonly._otaUpgrade".equals(data.path) || "Action._otaUpgrade".equals(data.path)) {
             JsonParser jsonParser = new JsonParser();
             String progress = jsonParser.parse(data.data).getAsJsonObject().get("stVal").getAsString();
             mProgress.setText(progress + "%");

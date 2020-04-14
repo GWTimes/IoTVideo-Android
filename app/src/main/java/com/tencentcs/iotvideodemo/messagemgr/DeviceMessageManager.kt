@@ -39,6 +39,7 @@ class DeviceMessageManager {
 
     fun updateModelData(deviceId: String, modelLiveData: MutableLiveData<java.util.ArrayList<DeviceModelItemData>>) {
         val deviceModel = DeviceModelManager.getInstance().getDeviceModel(deviceId)
+        LogUtils.i(TAG, "updateModelData JSONObject $deviceModel")
         if (deviceModel?.model != null) {
             modeData = deviceModel.model
             updateModelData(modelLiveData)

@@ -141,7 +141,7 @@ class ModelDataFragment : BaseFragment() {
                             LogUtils.d(TAG, "writeProperty" + p0!!.data)
                             if (this@ModelDataFragment.context != null) {
                                 Toast.makeText(this@ModelDataFragment.context, "设置${path}成功", Toast.LENGTH_LONG).show()
-                                mDeviceMessageMgrViewModel?.initModelData(this@ModelDataFragment.context!!, mDeviceMessageMgrViewModel?.deviceId!!)
+//                                mDeviceMessageMgrViewModel?.initModelData(this@ModelDataFragment.context!!, mDeviceMessageMgrViewModel?.deviceId!!)
                                 DeviceModelManager.getInstance().onNotify(
                                         ModelMessage(mDeviceMessageMgrViewModel?.deviceId, 0, 0, 0, path, it))
                                 mDeviceMessageMgrViewModel?.updateModelData()

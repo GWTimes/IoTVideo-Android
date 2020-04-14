@@ -55,10 +55,10 @@ public class DeviceModelManager implements IModelListener {
             String[] pathArray = path.split("\\.");
             LogUtils.i(TAG, "getStringValue path " + Arrays.toString(pathArray));
             if (model.model.has(pathArray[0]) && model.model.getJSONObject(pathArray[0]).has(pathArray[1])) {
-                value = model.model
+                JSONObject targetJSONObject = model.model
                         .getJSONObject(pathArray[0])
-                        .getJSONObject(pathArray[1])
-                        .getString(getValueName(pathArray[0]));
+                        .getJSONObject(pathArray[1]);
+                value = targetJSONObject.getString(getValueName(targetJSONObject, pathArray));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,10 +81,10 @@ public class DeviceModelManager implements IModelListener {
             String[] pathArray = path.split("\\.");
             LogUtils.i(TAG, "getIntValue path " + Arrays.toString(pathArray));
             if (model.model.has(pathArray[0]) && model.model.getJSONObject(pathArray[0]).has(pathArray[1])) {
-                value = model.model
+                JSONObject targetJSONObject = model.model
                         .getJSONObject(pathArray[0])
-                        .getJSONObject(pathArray[1])
-                        .getInt(getValueName(pathArray[0]));
+                        .getJSONObject(pathArray[1]);
+                value = targetJSONObject.getInt(getValueName(targetJSONObject, pathArray));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,7 +107,7 @@ public class DeviceModelManager implements IModelListener {
         }
         String[] pathArray = path.split("\\.");
         try {
-            jsonObject.put(getValueName(pathArray[0]), value);
+            jsonObject.put(getValueName(jsonObject, pathArray), value);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -129,7 +129,7 @@ public class DeviceModelManager implements IModelListener {
         }
         String[] pathArray = path.split("\\.");
         try {
-            jsonObject.put(getValueName(pathArray[0]), value);
+            jsonObject.put(getValueName(jsonObject, pathArray), value);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -160,14 +160,13 @@ public class DeviceModelManager implements IModelListener {
         return jsonObject;
     }
 
-    private String getValueName(String parentName) {
-        switch (parentName) {
-            case "Action":
-                return "ctlVal";
-            case "ProWritable":
-                return "setVal";
-            case "ProReadonly":
-                return "stVal";
+    private String getValueName(JSONObject jsonObject, String[] pathArray) {
+        if (jsonObject.has("stVal")) {
+            return "stVal";
+        } else if (jsonObject.has("setVal")) {
+            return "setVal";
+        } else if (jsonObject.has("ctlVal")) {
+            return "ctlVal";
         }
         return "unknown";
     }
@@ -235,6 +234,7 @@ public class DeviceModelManager implements IModelListener {
         }
 
         void setData(String path, String data) {
+            LogUtils.d(TAG, "setData path " + path + " " + data);
             if (TextUtils.isEmpty(path) || TextUtils.isEmpty(data)) {
                 return;
             }
@@ -245,6 +245,7 @@ public class DeviceModelManager implements IModelListener {
                 for (int i = 0, size = pathSplits.length; i < size; i++) {
                     if (i == size - 1) {
                         tmpJSONObject.put(pathSplits[i], new JSONObject(data));
+                        LogUtils.d(TAG, "put data to json path " + path + " " + data);
                     } else {
                         if (tmpJSONObject.has(pathSplits[i])) {
                             tmpJSONObject = tmpJSONObject.getJSONObject(pathSplits[i]);
