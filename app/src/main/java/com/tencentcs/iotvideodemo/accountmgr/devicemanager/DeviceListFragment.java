@@ -2,6 +2,7 @@ package com.tencentcs.iotvideodemo.accountmgr.devicemanager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -35,6 +36,9 @@ import com.tencentcs.iotvideodemo.videoplayer.PlaybackPlayerActivity;
 import com.tencentcs.iotvideodemo.videoplayer.LocalAlbumActivity;
 import com.tencentcs.iotvideodemo.widget.RecycleViewDivider;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +62,7 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
     private RecyclerView.Adapter<DeviceItemHolder> mAdapter;
     private List<DeviceList.Device> mDeviceInfoList;
     private List<DeviceList.Device> mDeviceSelectedList;
+    private Handler mHandler = new Handler();
 
     @Nullable
     @Override
@@ -91,7 +96,7 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
                 final DeviceList.Device deviceInfo = mDeviceInfoList.get(position);
                 holder.tvDeviceName.setText(deviceInfo.getDeviceName());
                 if (!TextUtils.isEmpty(deviceInfo.getDevId())) {
-                    if (DeviceModelManager.getInstance().isOnline(deviceInfo.getDevId())) {
+                    if (DeviceModelHelper.isOnline(deviceInfo.getDevId())) {
                         holder.tvOnline.setText("在线");
                         holder.tvOnline.setTextColor(getActivity().getResources().getColor(R.color.normal));
                     } else {
@@ -329,6 +334,13 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
         }
     }
 
+    private Runnable mUpdateModelRunnable = new Runnable() {
+        @Override
+        public void run() {
+            updateDeviceModel();
+        }
+    };
+
     private void updateDeviceModel() {
         if (mDeviceInfoList != null && mDeviceInfoList.size() > 0) {
             for (DeviceList.Device device : mDeviceInfoList) {
@@ -336,18 +348,28 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
 
                     @Override
                     public void onStart() {
-
+                        LogUtils.i(TAG, "updateDeviceModel start");
+                        mHandler.removeCallbacks(mUpdateModelRunnable);
                     }
 
                     @Override
                     public void onSuccess(ModelMessage msg) {
-                        DeviceModelManager.getInstance().onNotify(msg);
+                        try {
+                            JSONObject jsonObject = new JSONObject(msg.data);
+                            DeviceModelManager.DeviceModel model = new DeviceModelManager.DeviceModel(msg.device, jsonObject);
+                            DeviceModelManager.getInstance().setDeviceModel(model);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                         mAdapter.notifyDataSetChanged();
                     }
 
                     @Override
                     public void onError(int errorCode, String errorMsg) {
-
+                        LogUtils.e(TAG, "updateDeviceModel " + errorMsg);
+                        //如果获取失败，则1分钟之后重新获取
+                        mHandler.postDelayed(mUpdateModelRunnable, 60 * 1000);
                     }
                 });
             }
@@ -369,5 +391,11 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
         } else {
             mBtnMultiMonitor.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
     }
 }

@@ -13,14 +13,15 @@ import org.json.JSONObject
 class DeviceMessageManager {
     private val TAG = javaClass.simpleName
 
-    private var modeData : JSONObject? = null
+    private var modeData: JSONObject? = null
 
-    fun initModelData(context:Context, deviceId: String, modelLiveData: MutableLiveData<java.util.ArrayList<DeviceModelItemData>>){
+    fun initModelData(context: Context, deviceId: String, modelLiveData: MutableLiveData<java.util.ArrayList<DeviceModelItemData>>) {
         //获取所有的物模型
         IoTVideoSdk.getMessageMgr().readProperty(deviceId, "", object : IResultListener<ModelMessage> {
             override fun onStart() {
                 LogUtils.d(TAG, "readProperty start")
             }
+
             override fun onSuccess(p0: ModelMessage?) {
                 LogUtils.d(TAG, "readProperty" + p0!!.data)
                 modeData = JSONObject(p0.data)
@@ -36,15 +37,23 @@ class DeviceMessageManager {
         })
     }
 
-    private fun updateModelData(modelLiveData: MutableLiveData<java.util.ArrayList<DeviceModelItemData>>){
+    fun updateModelData(deviceId: String, modelLiveData: MutableLiveData<java.util.ArrayList<DeviceModelItemData>>) {
+        val deviceModel = DeviceModelManager.getInstance().getDeviceModel(deviceId)
+        if (deviceModel?.model != null) {
+            modeData = deviceModel.model
+            updateModelData(modelLiveData)
+        }
+    }
+
+    private fun updateModelData(modelLiveData: MutableLiveData<java.util.ArrayList<DeviceModelItemData>>) {
         val dataList: ArrayList<DeviceModelItemData> = ArrayList()
         modeData?.apply {
             keys().forEach { type_it ->
-                val typeData =  DeviceModelTypeData(type_it, getString(type_it))
+                val typeData = DeviceModelTypeData(type_it, getString(type_it))
                 dataList.add(DeviceModelItemData(0, typeData, null))
 
                 val jsonData = JSONObject(getString(type_it))
-                jsonData.keys().forEach {function_it ->
+                jsonData.keys().forEach { function_it ->
                     dataList.add(DeviceModelItemData(1, typeData, DeviceModelFunctionData(function_it, jsonData.getString(function_it))))
                 }
             }

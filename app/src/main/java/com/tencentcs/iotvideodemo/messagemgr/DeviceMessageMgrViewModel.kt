@@ -17,4 +17,8 @@ internal class DeviceMessageMgrViewModel : ViewModel() {
         messageManager.initModelData(context, deviceId, modelLiveData)
         this.deviceId = deviceId
     }
+
+    fun updateModelData() {
+        messageManager.updateModelData(deviceId!!, modelLiveData)
+    }
 }

@@ -91,6 +91,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 AccountSPUtils.getInstance().clear(this@MainActivity)
                 IoTVideoSdk.getMessageMgr().removeModelListener(DeviceModelManager.getInstance())
                 IoTVideoSdk.unregister()
+                MessageBox.eventMessageList.clear()
+                MessageBox.modelMessageList.clear()
                 startActivity(Intent(this@MainActivity, LoginActivity::class.java))
             }
 
@@ -157,7 +159,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     private fun registerNotify() {
         IoTVideoSdk.getMessageMgr().addEventListener { data ->
-            Toast.makeText(applicationContext, "onEventChanged ${data.topic} : ${data.data}", Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "onEventChanged ${data.topic} : ${data.data}", Toast.LENGTH_SHORT).show()
             MessageBox.eventMessageList.add(data)
             LogUtils.i(TAG, "onEventChanged ${data.topic} : ${data.data}")
         }
@@ -165,16 +167,16 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         IoTVideoSdk.getMessageMgr().addModelListener { data ->
             LogUtils.i(TAG, "onModeChanged deviceId:${data.device}, path:${data.path}, data:${data.data}")
             MessageBox.modelMessageList.add(data)
-            Toast.makeText(applicationContext, "onModeChanged deviceId:${data.device}, path:${data.path}, data:${data.data}", Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "onModeChanged deviceId:${data.device}, path:${data.path}, data:${data.data}", Toast.LENGTH_SHORT).show()
         }
 
         IoTVideoSdk.getMessageMgr().addAppLinkListener {
             when (it) {
-                1 -> Toast.makeText(applicationContext, "App已上线", Toast.LENGTH_LONG).show()
-                2 -> Toast.makeText(applicationContext, "App已离线", Toast.LENGTH_LONG).show()
-                3 -> Toast.makeText(applicationContext, "Access Token Error", Toast.LENGTH_LONG).show()
-                4 -> Toast.makeText(applicationContext, "TID初始化失败", Toast.LENGTH_LONG).show()
-                5 -> Toast.makeText(applicationContext, "TID无效", Toast.LENGTH_LONG).show()
+                IoTVideoSdk.APP_LINK_ONLINE -> Toast.makeText(applicationContext, "App已上线", Toast.LENGTH_SHORT).show()
+                IoTVideoSdk.APP_LINK_OFFLINE -> Toast.makeText(applicationContext, "App已离线", Toast.LENGTH_SHORT).show()
+                IoTVideoSdk.APP_LINK_ACCESS_TOKEN_ERROR -> Toast.makeText(applicationContext, "Access Token Error", Toast.LENGTH_SHORT).show()
+                IoTVideoSdk.APP_LINK_TID_INIT_ERROR -> Toast.makeText(applicationContext, "TID初始化失败", Toast.LENGTH_SHORT).show()
+                IoTVideoSdk.APP_LINK_INVALID_TID -> Toast.makeText(applicationContext, "TID无效", Toast.LENGTH_SHORT).show()
             }
         }
     }

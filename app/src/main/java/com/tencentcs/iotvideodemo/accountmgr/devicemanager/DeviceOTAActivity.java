@@ -62,7 +62,7 @@ public class DeviceOTAActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void getLatestVersion() {
-        DeviceModelManager.getInstance().getLatestVersion(mDeviceId, new IResultListener<ModelMessage>() {
+        DeviceModelHelper.getLatestVersion(mDeviceId, new IResultListener<ModelMessage>() {
             @Override
             public void onStart() {
                 LogUtils.i(TAG, "getLatestVersion starr");
@@ -83,7 +83,7 @@ public class DeviceOTAActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void sendOTARequest() {
-        DeviceModelManager.getInstance().startOTA(mDeviceId, new IResultListener<ModelMessage>() {
+        DeviceModelHelper.startOTA(mDeviceId, new IResultListener<ModelMessage>() {
             @Override
             public void onStart() {
                 LogUtils.i(TAG, "startOTA start");
@@ -104,17 +104,21 @@ public class DeviceOTAActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void getOTAProgress() {
-        int progress = DeviceModelManager.getInstance().getOTAProgress(mDeviceId);
+        int progress = DeviceModelHelper.getOTAProgress(mDeviceId);
         mProgress.setText(progress + "%");
     }
 
     private void displayOTAInfo() {
-        mTvLatestVersion.setText(DeviceModelManager.getInstance().getStringValue(mDeviceId, "ProReadonly._otaVersion"));
+        DeviceModelHelper.getOTAProgress(mDeviceId);
     }
 
     @Override
     public void onNotify(ModelMessage data) {
         LogUtils.i(TAG, "onModeChanged deviceId:" + data.device + ", path:" + data.path + ", data:" + data.data);
+        if (TextUtils.isEmpty(data.data)) {
+            Snackbar.make(mTvLatestVersion, "服务器返回数据无效", Snackbar.LENGTH_LONG).show();
+            return;
+        }
         if ("ProReadonly._otaVersion".equals(data.path)) {
             mLLVersionInfo.setVisibility(View.VISIBLE);
             JsonParser jsonParser = new JsonParser();
@@ -124,6 +128,7 @@ public class DeviceOTAActivity extends BaseActivity implements View.OnClickListe
                 mProgress.setText(100 + "%");
             } else {
                 mTvLatestVersion.setText(version);
+                mProgress.setText(0 + "%");
                 showOTADialog(version);
             }
         } else if ("ProReadonly._otaUpgrade".equals(data.path)) {

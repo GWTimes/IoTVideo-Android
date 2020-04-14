@@ -12,6 +12,7 @@ import com.tencentcs.iotvideo.utils.rxjava.IResultListener
 import com.tencentcs.iotvideo.messagemgr.ModelMessage
 import com.tencentcs.iotvideo.utils.LogUtils
 import com.tencentcs.iotvideodemo.R
+import com.tencentcs.iotvideodemo.accountmgr.devicemanager.DeviceModelManager
 import com.tencentcs.iotvideodemo.kt.base.BaseFragment
 import com.tencentcs.iotvideodemo.kt.ui.ListItemDecoration
 import com.tencentcs.iotvideodemo.kt.ui.adapter.ItemHolder
@@ -141,6 +142,9 @@ class ModelDataFragment : BaseFragment() {
                             if (this@ModelDataFragment.context != null) {
                                 Toast.makeText(this@ModelDataFragment.context, "设置${path}成功", Toast.LENGTH_LONG).show()
                                 mDeviceMessageMgrViewModel?.initModelData(this@ModelDataFragment.context!!, mDeviceMessageMgrViewModel?.deviceId!!)
+                                DeviceModelManager.getInstance().onNotify(
+                                        ModelMessage(mDeviceMessageMgrViewModel?.deviceId, 0, 0, 0, path, it))
+                                mDeviceMessageMgrViewModel?.updateModelData()
                             }
                         }
 

@@ -1,11 +1,9 @@
 package com.tencentcs.iotvideodemo.base;
 
 import android.content.pm.PackageManager;
-import android.widget.Toast;
 
-import com.tencentcs.iotvideo.utils.LogUtils;
-import com.tencentcs.iotvideodemo.R;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.tencentcs.iotvideo.utils.LogUtils;
 
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -25,10 +23,6 @@ public class BaseFragment extends Fragment {
                 listener.OnPermissions(true);
                 return;
             }
-        }
-        if (shouldShowRequestPermissionRationale(permissions)) {
-            Toast.makeText(getActivity(), R.string.accept_the_permissions, Toast.LENGTH_LONG).show();
-            return;
         }
         if (mRxPermissions == null) {
             mRxPermissions = new RxPermissions(this);
