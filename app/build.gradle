@@ -9,7 +9,7 @@ apply plugin: 'kotlin-kapt'
 
 def BUILD_TIME = new Date().format("MMddHHmm")
 def VERSION_PRE = "0.2"
-def SVN_VERSION = 24
+def SVN_VERSION = 25
 
 android {
     compileSdkVersion 29
