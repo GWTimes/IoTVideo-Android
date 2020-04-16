@@ -8,8 +8,6 @@ apply plugin: 'kotlin-kapt'
 
 
 def BUILD_TIME = new Date().format("MMddHHmm")
-def VERSION_PRE = "0.2"
-def SVN_VERSION = 25
 
 android {
     compileSdkVersion 29
@@ -18,10 +16,9 @@ android {
         applicationId "com.tencentcs.iotvideodemo"
         minSdkVersion 22
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionName "${VERSION_PRE}.${SVN_VERSION}"
 
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a"

@@ -42,7 +42,7 @@ public class TencentcsLoginFragment extends BaseFragment {
         mEtToken = view.findViewById(R.id.et_token);
         mEtUserName = view.findViewById(R.id.et_user_name);
         mTvVersion = view.findViewById(R.id.tv_app_version);
-        mTvVersion.setText(BuildConfig.VERSION_NAME);
+        mTvVersion.setText(BuildConfig.VERSION_NAME + "(build " + BuildConfig.VERSION_CODE + ")");
         view.findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

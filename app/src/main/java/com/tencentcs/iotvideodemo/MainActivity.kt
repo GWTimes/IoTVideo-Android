@@ -42,7 +42,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         supportFragmentManager.beginTransaction().replace(R.id.fl_main, DeviceListFragment()).commit()
 
         mNavigationHead = nav_view.getHeaderView(0)
-        mNavigationHead!!.tv_app_version.text = BuildConfig.VERSION_NAME
+        mNavigationHead!!.tv_app_version.text = "${BuildConfig.VERSION_NAME}(build ${BuildConfig.VERSION_CODE})"
         mNavigationHead!!.logout.setOnClickListener(this)
         mNavigationHead!!.iv_token.setOnClickListener(this)
 
