@@ -149,7 +149,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
         String versionName = "";
         StringBuilder sb = new StringBuilder();
-        sb.append("VERSION=" + BuildConfig.VERSION_NAME + "(build" + BuildConfig.VERSION_CODE + ")" + "\n");
+        sb.append("VERSION=" + BuildConfig.VERSION_NAME + "\n");
         for (Map.Entry<String, String> entry : infos.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();

@@ -15,8 +15,7 @@ public class AccountMgr {
     private static String sAccessToken;
 
     public static void init(String productId) {
-        LogUtils.i(TAG, "init version is " + BuildConfig.VERSION_NAME + "(build" + BuildConfig.VERSION_CODE +
-            ") productId = " + productId);
+        LogUtils.i(TAG, "init version is " + BuildConfig.VERSION_NAME + " productId = " + productId);
         sProductId = productId;
     }
 

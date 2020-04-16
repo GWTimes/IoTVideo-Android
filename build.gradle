@@ -1,3 +1,6 @@
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
@@ -29,7 +32,24 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
+def getSvnRevisionNumber() {
+    String Option = "HEAD"
+    String reg = "Revision: (\\d+)"
+    String lastChange = "Last Changed Rev: (\\d+)"
+    String info = "svn info -r ${Option}".execute().text.trim()
+    Pattern pattern = Pattern.compile(lastChange)
+    Matcher matcher = pattern.matcher(info)
+    while (matcher.find()) {
+        String versionStr = matcher.group(1)
+        println("getSvnRevisionNumber is " + versionStr)
+        int versionCode = Integer.parseInt(versionStr)
+        return versionCode
+    }
+    println("getSvnRevisionNumber error, please check and fix it")
+    return 1
+}
+
 ext {
-    versionCode = 25
-    versionName = "1.0.1"
+    versionCode = getSvnRevisionNumber()
+    versionName = "1.0(${versionCode})"
 }
