@@ -56,12 +56,45 @@
         app:layout_constraintTop_toBottomOf="@+id/tencentcs_gl_surface_view" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/snap_btn"
         style="@style/DefaultButton"
-        android:id="@+id/btn_record"
-        android:text="开始录像"
+        android:text="截图"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toStartOf="@+id/mute_btn"
+        app:layout_constraintTop_toBottomOf="@+id/tv_start_record" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/mute_btn"
+        style="@style/DefaultButton"
+        android:text="静音"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/snap_btn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toStartOf="@+id/record_btn"
+        app:layout_constraintTop_toTopOf="@+id/snap_btn" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/record_btn"
+        style="@style/DefaultButton"
+        android:text="录像"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/stop_btn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/mute_btn"
+        app:layout_constraintTop_toTopOf="@+id/snap_btn" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/stop_btn"
+        style="@style/DefaultButton"
+        android:text="停止"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_get_playback_previous" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/record_btn"
+        app:layout_constraintTop_toTopOf="@+id/snap_btn" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_playback_list"
@@ -71,6 +104,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_record" />
+        app:layout_constraintTop_toBottomOf="@+id/stop_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

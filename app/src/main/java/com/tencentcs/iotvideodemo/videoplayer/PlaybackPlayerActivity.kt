@@ -6,6 +6,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.tencentcs.iotvideo.iotvideoplayer.IRecordListener
+import com.tencentcs.iotvideo.iotvideoplayer.ISnapShotListener
 import com.tencentcs.iotvideo.iotvideoplayer.PlayerStateEnum
 import com.tencentcs.iotvideo.iotvideoplayer.player.PlaybackPlayer
 import com.tencentcs.iotvideo.messagemgr.DataMessage
@@ -93,9 +95,13 @@ class PlaybackPlayerActivity : BaseActivity() {
             deviceRecord(false)
         }
 
-        btn_record.click {
-            recordVideoFromDevice()
-        }
+        record_btn.click { recordVideoFromDevice() }
+
+        snap_btn.click { snap() }
+
+        mute_btn.click { mPlaybackPlayer.mute(!mPlaybackPlayer.isMute) }
+
+        stop_btn.click { mPlaybackPlayer.stop() }
 
         initPlaybackPlayer()
 
@@ -166,6 +172,11 @@ class PlaybackPlayerActivity : BaseActivity() {
             }
 
             override fun onSuccess(msg: PlaybackMessage?) {
+                if (msg?.type == -1 && msg?.error == -1 && msg?.id.toInt() == -1) {
+                    playback_status.text = "回放列表为空"
+                    LogUtils.i(TAG, "回放列表为空")
+                    return
+                }
                 mPageCount = msg?.pageCount!!
                 val logStr = "获取成功 : 当前页 ${msg.currentPage}, 总页数 $mPageCount"
                 LogUtils.d(TAG, logStr)
@@ -242,20 +253,39 @@ class PlaybackPlayerActivity : BaseActivity() {
             return
         }
         if (mPlaybackPlayer.isRecording) {
-            btn_record.text = "开始录像"
+            record_btn.text = "录像"
             mPlaybackPlayer.stopRecord()
         } else {
-            btn_record.text = "停止录像"
-            val tdate = Date()
-            val tdateStringParse = mSimpleDateFormat.format(tdate)
-            mPlaybackPlayer.startRecord(File(StorageManager.getVideoPath(), "$tdateStringParse.mp4").absolutePath
-            ) { code, path ->
-                Toast.makeText(this, "code:$code path:$path", Toast.LENGTH_LONG).show()
-                if (code != 0) {
-                    btn_record.text = "开始录像"
-                }
+            record_btn.text = "停止录像"
+            val recordFile = File(StorageManager.getVideoPath() + File.separator + mDeviceId)
+            if (!recordFile.exists() && !recordFile.mkdirs()) {
+                LogUtils.e(TAG, "can not create file")
+                return
             }
+            mPlaybackPlayer.startRecord(recordFile.absolutePath, mSimpleDateFormat.format(Date()) + ".mp4",
+                    IRecordListener { code, path ->
+                        Toast.makeText(this, "code:$code path:$path", Toast.LENGTH_LONG).show()
+                        if (code != 0) {
+                            record_btn.text = "录像"
+                        }
+                    })
         }
+    }
+
+    private fun snap() {
+        if (!StorageManager.isPicPathAvailable()) {
+            Toast.makeText(this, "storage is not available", Toast.LENGTH_LONG).show()
+            return
+        }
+        val snapFile = File(StorageManager.getPicPath() + File.separator + mDeviceId)
+        if (!snapFile.exists() && !snapFile.mkdirs()) {
+            LogUtils.e(TAG, "can not create file")
+            return
+        }
+        mPlaybackPlayer.snapShot(snapFile.absolutePath + File.separator + mSimpleDateFormat.format(Date()) + ".jpeg",
+                ISnapShotListener { code, path ->
+                    Toast.makeText(this, "code:$code path:$path", Toast.LENGTH_LONG).show()
+                })
     }
 
 }

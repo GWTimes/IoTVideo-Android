@@ -22,6 +22,11 @@ android {
         }
     }
 
+    repositories {
+        flatDir {
+            dirs '../app/libs','libs'
+        }
+    }
 }
 
 dependencies {

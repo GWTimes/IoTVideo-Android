@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.tencentcs.iotvideo.IoTVideoSdk;
 import com.tencentcs.iotvideo.accountmgr.AccountMgr;
 import com.tencentcs.iotvideo.messagemgr.IModelListener;
@@ -28,16 +29,12 @@ import com.tencentcs.iotvideodemo.base.BaseFragment;
 import com.tencentcs.iotvideodemo.messagemgr.DeviceMessageActivity;
 import com.tencentcs.iotvideodemo.netconfig.NetConfigActivity;
 import com.tencentcs.iotvideodemo.netconfig.PrepareNetConfigActivity;
-import com.tencentcs.iotvideodemo.utils.AppConfig;
 import com.tencentcs.iotvideodemo.vas.CloudStorageActivity;
 import com.tencentcs.iotvideodemo.videoplayer.MonitorPlayerActivity;
 import com.tencentcs.iotvideodemo.videoplayer.MultiMonitorPlayerActivity;
 import com.tencentcs.iotvideodemo.videoplayer.PlaybackPlayerActivity;
 import com.tencentcs.iotvideodemo.videoplayer.LocalAlbumActivity;
 import com.tencentcs.iotvideodemo.widget.RecycleViewDivider;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -167,9 +164,6 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
                     case R.id.action_menu_monitor_player:
                         Intent monitorIntent = new Intent(getActivity(), MonitorPlayerActivity.class);
                         monitorIntent.putExtra("deviceID", device.getDevId());
-                        monitorIntent.putExtra("useMediaCodec", AppConfig.USE_MEIDACODEC);
-                        monitorIntent.putExtra("renderDirectly", AppConfig.RENDER_DIRECTLY);
-                        monitorIntent.putExtra("renderDirectlyType", AppConfig.RENDER_DIRECTLY_TYPE);
                         startActivity(monitorIntent);
                         break;
                     case R.id.action_menu_playback_player:
@@ -245,8 +239,8 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
                     updateMultiMonitorBtn();
                     updateDeviceModel();
                     registerNotify();
+                    mAdapter.notifyDataSetChanged();
                     if (mDeviceInfoList.size() != 0) {
-                        mAdapter.notifyDataSetChanged();
                         mTvAddDevice.setVisibility(View.GONE);
                     } else {
                         Snackbar.make(mRVDeviceList, "device count = 0", Snackbar.LENGTH_LONG).show();
@@ -354,13 +348,10 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
 
                     @Override
                     public void onSuccess(ModelMessage msg) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(msg.data);
-                            DeviceModelManager.DeviceModel model = new DeviceModelManager.DeviceModel(msg.device, jsonObject);
-                            DeviceModelManager.getInstance().setDeviceModel(model);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        JsonParser jsonParser = new JsonParser();
+                        JsonObject jsonObject = jsonParser.parse(msg.data).getAsJsonObject();
+                        DeviceModelManager.DeviceModel model = new DeviceModelManager.DeviceModel(msg.device, jsonObject);
+                        DeviceModelManager.getInstance().setDeviceModel(model);
 
                         mAdapter.notifyDataSetChanged();
                     }

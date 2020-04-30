@@ -96,6 +96,7 @@ public class LocalAlbumActivity extends BaseActivity implements SimpleRecyclerVi
         }
         if (mVideoList.isEmpty()) {
             Snackbar.make(mRVVideoList, "no files", Snackbar.LENGTH_SHORT).show();
+            mAdapter.notifyDataSetChanged();
         } else {
             Collections.sort(mVideoList);
             mAdapter.notifyDataSetChanged();

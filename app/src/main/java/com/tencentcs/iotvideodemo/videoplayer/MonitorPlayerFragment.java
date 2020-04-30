@@ -2,7 +2,7 @@ package com.tencentcs.iotvideodemo.videoplayer;
 
 import android.Manifest;
 import android.content.Context;
-import android.opengl.GLSurfaceView;
+import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,6 +22,9 @@ import com.tencentcs.iotvideo.iotvideoplayer.ITimeListener;
 import com.tencentcs.iotvideo.iotvideoplayer.IUserDataListener;
 import com.tencentcs.iotvideo.iotvideoplayer.IoTVideoView;
 import com.tencentcs.iotvideo.iotvideoplayer.PlayerStateEnum;
+import com.tencentcs.iotvideo.iotvideoplayer.mediacodec.MediaCodecAudioDecoder;
+import com.tencentcs.iotvideo.iotvideoplayer.mediacodec.MediaCodecAudioEncoder;
+import com.tencentcs.iotvideo.iotvideoplayer.mediacodec.MediaCodecVideoDecoder;
 import com.tencentcs.iotvideo.iotvideoplayer.player.LivePlayer;
 import com.tencentcs.iotvideo.utils.LogUtils;
 import com.tencentcs.iotvideo.utils.Utils;
@@ -60,9 +63,7 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
     private TextView mTvMonitorState;
 
     private String mDeviceId = "";
-    private boolean mUseMediaCodec;
-    private boolean mRenderDirectly;
-    private int mRenderDirectlyType;
+    private MonitorConfig mMonitorConfig;
 
     private OutputListener mOutputListener;
 
@@ -79,6 +80,7 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
         super.onViewCreated(view, savedInstanceState);
         mRootView = view.findViewById(R.id.root_view);
         mPreviewSurface = view.findViewById(R.id.preview_surface);
+        mVideoView = view.findViewById(R.id.tencentcs_gl_surface_view);
         mPlayBtn = view.findViewById(R.id.play_btn);
         mPlayBtn.setOnClickListener(this);
         mStopBtn = view.findViewById(R.id.stop_btn);
@@ -105,14 +107,18 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
         Bundle bundle = getArguments();
         if (bundle != null) {
             mDeviceId = bundle.getString("deviceID");
-            mUseMediaCodec = bundle.getBoolean("useMediaCodec", false);
-            mRenderDirectly = bundle.getBoolean("renderDirectly", false);
-            mRenderDirectlyType = bundle.getInt("renderDirectlyType", 0);
+            mMonitorConfig = (MonitorConfig) bundle.getSerializable(MonitorConfig.class.getSimpleName());
         }
-        LogUtils.i(TAG, "mDeviceId = " + mDeviceId + " useMediaCodec = " + mUseMediaCodec
-                + " renderDirectly = " + mRenderDirectly + " renderDirectlyType = " + mRenderDirectlyType);
+        if (mMonitorConfig == null) {
+            mMonitorConfig = MonitorConfig.simpleConfig();
+        }
+        mStartTalk.setVisibility(mMonitorConfig.supportTalk ? View.VISIBLE : View.GONE);
+        mStopTalk.setVisibility(mMonitorConfig.supportTalk ? View.VISIBLE : View.GONE);
+        mOpenCamera.setVisibility(mMonitorConfig.supportCamera ? View.VISIBLE : View.GONE);
+        mChooseCamera.setVisibility(mMonitorConfig.supportCamera ? View.VISIBLE : View.GONE);
+        mCloseCamera.setVisibility(mMonitorConfig.supportCamera ? View.VISIBLE : View.GONE);
+        appendToOutput("mMonitorConfig = " + mMonitorConfig.toString());
 
-        addVideoView(view.getContext());
         addStatusOutputView(view.getContext());
 
         mMonitorPlayer = new LivePlayer();
@@ -123,7 +129,16 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
         mMonitorPlayer.setErrorListener(mErrorListener);
         mMonitorPlayer.setUserDataListener(mUserDataListener);
         mMonitorPlayer.setVideoView(mVideoView);
-        appendToOutput("设备ID：" + mDeviceId + " useMediaCodec = " + mUseMediaCodec + " " + mVideoView.getClass().getSimpleName());
+        if (mMonitorConfig.useMediaCodecAudioDecode) {
+            mMonitorPlayer.setAudioDecoder(new MediaCodecAudioDecoder());
+        }
+        if (mMonitorConfig.useMediaCodecVideoDecode) {
+            mMonitorPlayer.setVideoDecoder(new MediaCodecVideoDecoder());
+        }
+        if (mMonitorConfig.useMediaCodecAudioEncode) {
+            mMonitorPlayer.setAudioEncoder(new MediaCodecAudioEncoder());
+        }
+        appendToOutput("设备ID：" + mDeviceId);
     }
 
     private void addVideoView(Context context) {
@@ -212,7 +227,7 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
                     return;
                 }
                 if (mMonitorPlayer.isRecording()) {
-                    mRecordBtn.setText("开始录像");
+                    mRecordBtn.setText("录像");
                     appendToOutput("停止录像");
                     mMonitorPlayer.stopRecord();
                 } else {
@@ -223,15 +238,23 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
                         LogUtils.e(TAG, "can not create file");
                         break;
                     }
-                    mMonitorPlayer.startRecord(recordFile.getAbsolutePath() + File.separator + mSimpleDateFormat.format(new Date()) + ".mp4",
+                    mMonitorPlayer.startRecord(recordFile.getAbsolutePath(), mSimpleDateFormat.format(new Date()) + ".mp4",
                             new IRecordListener() {
                                 @Override
                                 public void onResult(int code, String path) {
-                                    Toast.makeText(view.getContext(), "code:" + code + " path:" + path, Toast.LENGTH_LONG).show();
-                                    if (code != 0) {
-                                        mRecordBtn.setText("开始录像");
+                                    String resultTip = path;
+                                    if (code == -1) {
+                                        resultTip = "录像失败，未获取到关键帧";
+                                    } else if (code == -2) {
+                                        resultTip = "录像失败，连接未建立";
+                                    } else if (code < 0) {
+                                        resultTip = "录像失败，写入数据异常";
                                     }
-                                    appendToOutput("录像结果：  返回码 " + code + " 路径 " + path);
+                                    Toast.makeText(view.getContext(), "code:" + code + " " + resultTip, Toast.LENGTH_SHORT).show();
+                                    if (code != 0) {
+                                        mRecordBtn.setText("录像");
+                                    }
+                                    appendToOutput("录像结果：  返回码 " + code + " " + resultTip);
                                 }
                             });
                 }
@@ -258,9 +281,37 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
                     @Override
                     public void OnPermissions(boolean granted) {
                         if (granted) {
-                            mMonitorPlayer.openCameraAndPreview(view.getContext(),
-                                    mPreviewSurface, StorageManager.getVideoPath() + File.separator + "preview.mp4");
-                            appendToOutput("打开摄像头");
+                            String previewPath = StorageManager.getVideoPath() + File.separator + mDeviceId;
+                            LogUtils.i(TAG, "previewPath = " + previewPath);
+                            if (mPreviewSurface.isAvailable()) {
+                                mPreviewSurface.setVisibility(View.VISIBLE);
+                                mMonitorPlayer.openCameraAndPreview(view.getContext(), mPreviewSurface, previewPath);
+                                appendToOutput("打开摄像头");
+                                return;
+                            }
+                            mPreviewSurface.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+                                @Override
+                                public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+                                    mMonitorPlayer.openCameraAndPreview(view.getContext(), mPreviewSurface, previewPath);
+                                    appendToOutput("打开摄像头");
+                                }
+
+                                @Override
+                                public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+
+                                }
+
+                                @Override
+                                public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+                                    return false;
+                                }
+
+                                @Override
+                                public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+                                }
+                            });
+                            mPreviewSurface.setVisibility(View.VISIBLE);
                         }
                     }
                 }, Manifest.permission.CAMERA);
@@ -274,6 +325,7 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
                     mMonitorPlayer.closeCamera();
                     appendToOutput("关闭摄像头");
                 }
+                mPreviewSurface.setVisibility(View.GONE);
                 break;
             case R.id.mute_btn:
                 mMonitorPlayer.mute(!mMonitorPlayer.isMute());
@@ -324,6 +376,7 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
     }
 
     private void appendToOutput(String text) {
+        LogUtils.i(TAG, "appendToOutput " + text);
         if (mOutputListener != null) {
             mOutputListener.onOutput(text);
         } else {

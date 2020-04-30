@@ -44,7 +44,6 @@ public class DeviceOTAActivity extends BaseActivity implements View.OnClickListe
                 LogUtils.i(TAG, "mDeviceId = " + mDeviceId);
             }
         }
-//        displayOTAInfo();
         IoTVideoSdk.getMessageMgr().addModelListener(this);
     }
 
@@ -62,21 +61,21 @@ public class DeviceOTAActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void getLatestVersion() {
-        DeviceModelHelper.getLatestVersion(mDeviceId, new IResultListener<ModelMessage>() {
+        DeviceModelHelper.updateLatestVersion(mDeviceId, new IResultListener<ModelMessage>() {
             @Override
             public void onStart() {
-                LogUtils.i(TAG, "getLatestVersion starr");
+                LogUtils.i(TAG, "updateLatestVersion starr");
             }
 
             @Override
             public void onSuccess(ModelMessage msg) {
-                LogUtils.i(TAG, "getLatestVersion msg " + msg.toString());
+                LogUtils.i(TAG, "updateLatestVersion msg " + msg.toString());
                 Snackbar.make(mTvLatestVersion, "发送成功", Snackbar.LENGTH_LONG).show();
             }
 
             @Override
             public void onError(int errorCode, String errorMsg) {
-                LogUtils.i(TAG, "getLatestVersion error " + errorCode + " " + errorMsg);
+                LogUtils.i(TAG, "updateLatestVersion error " + errorCode + " " + errorMsg);
                 Snackbar.make(mTvLatestVersion, "发送失败 " + errorCode + " " + errorMsg, Snackbar.LENGTH_LONG).show();
             }
         });
@@ -101,15 +100,6 @@ public class DeviceOTAActivity extends BaseActivity implements View.OnClickListe
                 Snackbar.make(mTvLatestVersion, "发送失败 " + errorCode + " " + errorMsg, Snackbar.LENGTH_LONG).show();
             }
         });
-    }
-
-    private void getOTAProgress() {
-        int progress = DeviceModelHelper.getOTAProgress(mDeviceId);
-        mProgress.setText(progress + "%");
-    }
-
-    private void displayOTAInfo() {
-        DeviceModelHelper.getOTAProgress(mDeviceId);
     }
 
     @Override

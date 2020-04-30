@@ -177,6 +177,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 IoTVideoSdk.APP_LINK_ACCESS_TOKEN_ERROR -> Toast.makeText(applicationContext, "Access Token Error", Toast.LENGTH_SHORT).show()
                 IoTVideoSdk.APP_LINK_TID_INIT_ERROR -> Toast.makeText(applicationContext, "TID初始化失败", Toast.LENGTH_SHORT).show()
                 IoTVideoSdk.APP_LINK_INVALID_TID -> Toast.makeText(applicationContext, "TID无效", Toast.LENGTH_SHORT).show()
+                IoTVideoSdk.APP_LINK_KICK_OFF -> Toast.makeText(applicationContext, "在别处登录了", Toast.LENGTH_SHORT).show()
+                IoTVideoSdk.APP_LINK_DEV_DISABLE -> Toast.makeText(applicationContext, "设备被禁用", Toast.LENGTH_SHORT).show()
             }
         }
     }

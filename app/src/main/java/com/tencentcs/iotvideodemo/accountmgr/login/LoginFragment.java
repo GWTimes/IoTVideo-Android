@@ -141,13 +141,13 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.login_menu, menu);
+        inflater.inflate(R.menu.setting_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_menu_login_setting) {
+        if (item.getItemId() == R.id.action_menu_setting) {
             showOEMDialog();
         }
         return super.onOptionsItemSelected(item);
@@ -194,6 +194,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
         private OEMDialog(@NonNull Context context) {
             super(context);
             setContentView(R.layout.dialog_oem_service);
+            setTitle("自定义参数");
             confirmBtn = findViewById(R.id.btn_confirm);
             cancelBtn = findViewById(R.id.btn_cancel);
             etProductId = findViewById(R.id.et_product_id);

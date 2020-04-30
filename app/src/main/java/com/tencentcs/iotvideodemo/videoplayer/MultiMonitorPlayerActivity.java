@@ -41,6 +41,7 @@ public class MultiMonitorPlayerActivity extends BaseActivity {
                 LogUtils.i(TAG, "mDeviceId " + i + " : " + deviceIDArray[i]);
                 Bundle bundle = new Bundle();
                 bundle.putString("deviceID", deviceIDArray[i]);
+                bundle.putSerializable(MonitorConfig.class.getSimpleName(), MonitorConfig.defaultConfig());
                 fragment.setArguments(bundle);
                 showFragment(rootView.getChildAt(i).getId(), fragment);
             } else {

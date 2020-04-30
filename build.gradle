@@ -51,5 +51,5 @@ def getSvnRevisionNumber() {
 
 ext {
     versionCode = getSvnRevisionNumber()
-    versionName = "1.0(${Integer.toHexString(versionCode)})"
+    versionName = "1.1(${Integer.toHexString(versionCode)})"
 }

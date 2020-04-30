@@ -2,7 +2,7 @@ package com.tencentcs.iotvideodemo.messagemgr
 
 import android.graphics.Color
 import android.os.Bundle
-import android.widget.Toast
+import android.os.Handler
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +22,7 @@ import com.tencentcs.iotvideodemo.kt.ui.adapter.setText
 import com.tencentcs.iotvideodemo.kt.utils.ViewUtils.dip2px
 import com.tencentcs.iotvideodemo.kt.widget.dialog.CommonDialogFragment
 import com.tencentcs.iotvideodemo.kt.widget.dialog.CommonEditDialogFragment
+import com.tencentcs.iotvideodemo.utils.Utils
 import kotlinx.android.synthetic.main.item_device_model_type.view.*
 import kotlinx.android.synthetic.main.item_device_model_function.view.*
 
@@ -111,8 +112,8 @@ class ModelDataFragment : BaseFragment() {
 
             override fun onError(p0: Int, p1: String?) {
                 LogUtils.d(TAG, "readProperty error code $p0, content $p1")
-                if (this@ModelDataFragment.context != null) {
-                    Toast.makeText(this@ModelDataFragment.context, "获取${path}失败", Toast.LENGTH_LONG).show()
+                Handler().post {
+                    Utils.showToast("获取${path}失败")
                 }
             }
         })
@@ -140,7 +141,9 @@ class ModelDataFragment : BaseFragment() {
                         override fun onSuccess(p0: ModelMessage?) {
                             LogUtils.d(TAG, "writeProperty" + p0!!.data)
                             if (this@ModelDataFragment.context != null) {
-                                Toast.makeText(this@ModelDataFragment.context, "设置${path}成功", Toast.LENGTH_LONG).show()
+                                Handler().post {
+                                    Utils.showToast("设置${path}成功")
+                                }
 //                                mDeviceMessageMgrViewModel?.initModelData(this@ModelDataFragment.context!!, mDeviceMessageMgrViewModel?.deviceId!!)
                                 DeviceModelManager.getInstance().onNotify(
                                         ModelMessage(mDeviceMessageMgrViewModel?.deviceId, 0, 0, 0, path, it))
@@ -150,8 +153,8 @@ class ModelDataFragment : BaseFragment() {
 
                         override fun onError(p0: Int, p1: String?) {
                             LogUtils.d(TAG, "writeProperty error code $p0, content $p1")
-                            if (this@ModelDataFragment.context != null) {
-                                Toast.makeText(this@ModelDataFragment.context, "设置${path}失败, error:${p0}", Toast.LENGTH_LONG).show()
+                            Handler().post {
+                                Utils.showToast("设置${path}失败, error:${p0}")
                             }
                         }
 

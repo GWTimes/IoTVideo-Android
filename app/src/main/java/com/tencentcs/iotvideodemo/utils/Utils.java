@@ -4,10 +4,13 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.text.TextUtils;
+import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.tencentcs.iotvideodemo.DemoApp;
 
 import java.util.UUID;
 
@@ -42,31 +45,13 @@ public class Utils {
     }
 
     public static String printJson(String msg) {
-        StringBuilder stringBuilder = new StringBuilder();
+        JsonParser jsonParser = new JsonParser();
+        JsonObject jsonObject = jsonParser.parse(msg).getAsJsonObject();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(jsonObject);
+    }
 
-        String message;
-
-        try {
-            if (msg.startsWith("{")) {
-                JSONObject jsonObject = new JSONObject(msg);
-                message = jsonObject.toString(4);//最重要的方法，就一行，返回格式化的json字符串，其中的数字4是缩进字符数
-            } else if (msg.startsWith("[")) {
-                JSONArray jsonArray = new JSONArray(msg);
-                message = jsonArray.toString(4);
-            } else {
-                message = msg;
-            }
-        } catch (JSONException e) {
-            message = msg;
-        }
-
-        String lineSeparator = System.getProperty("line.separator");
-        String[] lines = message.split(lineSeparator);
-        stringBuilder.append("\n");
-        for (String line : lines) {
-            stringBuilder.append(line).append("\n");
-        }
-
-        return stringBuilder.toString();
+    public static void showToast(String msg) {
+        Toast.makeText(DemoApp.Companion.getDemoAppContext(), msg, Toast.LENGTH_SHORT).show();
     }
 }

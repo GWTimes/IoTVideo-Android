@@ -1,8 +1,10 @@
 package com.tencentcs.iotvideodemo
 
 import android.app.Application
+import android.content.Context
 import com.tencentcs.iotvideo.IoTVideoSdk
 import com.tencentcs.iotvideo.accountmgr.AccountMgr
+import com.tencentcs.iotvideo.utils.LogUtils
 import com.tencentcs.iotvideo.utils.UrlHelper
 import com.tencentcs.iotvideo.vas.VasMgr
 import com.tencentcs.iotvideodemo.accountmgr.AccountSPUtils
@@ -17,8 +19,10 @@ class DemoApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        demoAppContext = applicationContext
         StorageManager.init(this)
         if (StorageManager.isDocPathAvailable()) {
+            LogUtils.i("DemoApp", "init XCrash")
             val xCrashParams = XCrash.InitParameters()
             xCrashParams.setLogDir(StorageManager.getDocPath() + File.separator + "errorLog")
             XCrash.init(this, xCrashParams)
@@ -61,5 +65,6 @@ class DemoApp : Application() {
 
     companion object {
         const val PRODUCT_ID = "440234147841"
+        var demoAppContext: Context? = null
     }
 }
