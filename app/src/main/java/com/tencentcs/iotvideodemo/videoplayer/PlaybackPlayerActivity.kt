@@ -69,7 +69,10 @@ class PlaybackPlayerActivity : BaseActivity() {
                             mPlaybackPlayer.seek(it.startTime, it)
                         } else {
                             //设置播放器数据源
-                            mPlaybackPlayer.setDataResource(mDeviceId, it.startTime, it)
+                            if (mPlaybackPlayer.playState == PlayerStateEnum.STATE_IDLE ||
+                                    mPlaybackPlayer.playState == PlayerStateEnum.STATE_STOP) {
+                                mPlaybackPlayer.setDataResource(mDeviceId, it.startTime, it)
+                            }
                             mPlaybackPlayer.play()
                         }
                     }

@@ -616,8 +616,8 @@ public class TencentcsHttpServiceAdapter implements HttpService {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("AccessId", mAccessId);
         jsonObject.addProperty("Tid", devId);
-        jsonObject.addProperty("Role", "owner");
-        jsonObject.addProperty("ForceBind", true);
+        jsonObject.addProperty("Role", forceBind ? "owner" : "guest");
+        jsonObject.addProperty("ForceBind", forceBind);
         final Observable<JsonObject> observable = mHttpInterface.tencentcsApi(
                 "CreateBinding", "2019-11-26", jsonObject);
         final Observer<JsonObject> subscriber = new Observer<>(new SubscriberListener() {
