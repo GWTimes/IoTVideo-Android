@@ -2,18 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_menu_wired"
+        android:id="@+id/action_menu_refresh"
         android:orderInCategory="1"
+        android:icon="@drawable/ic_action_refresh"
+        android:title="更新配网ID"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_menu_wired"
+        android:orderInCategory="2"
         android:title="@string/wired_net_config"
+        android:visible="false"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_menu_qrcode"
-        android:orderInCategory="2"
+        android:orderInCategory="3"
         android:title="@string/qrcode_net_config"
+        android:visible="false"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_menu_ap"
-        android:orderInCategory="3"
+        android:orderInCategory="4"
         android:title="@string/ap_net_config"
+        android:visible="false"
         app:showAsAction="never" />
 </menu>

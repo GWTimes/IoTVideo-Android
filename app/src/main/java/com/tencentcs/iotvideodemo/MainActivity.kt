@@ -13,7 +13,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.JsonObject
 import com.tencentcs.iotvideo.IoTVideoSdk
 import com.tencentcs.iotvideo.accountmgr.AccountMgr
-import com.tencentcs.iotvideo.netconfig.NetConfigInfo
 import com.tencentcs.iotvideo.utils.LogUtils
 import com.tencentcs.iotvideo.utils.rxjava.SubscriberListener
 import com.tencentcs.iotvideodemo.accountmgr.AccountSPUtils
@@ -23,7 +22,6 @@ import com.tencentcs.iotvideodemo.accountmgr.login.LoginActivity
 import com.tencentcs.iotvideodemo.base.BaseActivity
 import com.tencentcs.iotvideodemo.messagemgr.MessageBox
 import com.tencentcs.iotvideodemo.messagemgr.MessageBoxActivity
-import com.tencentcs.iotvideodemo.netconfig.NetConfigActivity
 import com.tencentcs.iotvideodemo.netconfig.PrepareNetConfigActivity
 import com.tencentcs.iotvideodemo.utils.Utils
 import kotlinx.android.synthetic.main.activity_main.*
@@ -68,13 +66,11 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun startNetMatchActivity() {
-        val netConfigInfo = NetConfigInfo("", "", 2.toByte())
-        val intent = Intent(this, NetConfigActivity::class.java)
-        intent.putExtra("NetConfigInfo", netConfigInfo)
+        val intent = Intent(this, PrepareNetConfigActivity::class.java)
         startActivity(intent)
     }
 
-    private fun startMessgeBoxActivity() {
+    private fun startMessageBoxActivity() {
         val intent = Intent(this, MessageBoxActivity::class.java)
         startActivity(intent)
     }
@@ -145,7 +141,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 return true
             }
             item.itemId == R.id.action_menu_message -> {
-                startMessgeBoxActivity()
+                startMessageBoxActivity()
                 return true
             }
             else -> return super.onOptionsItemSelected(item)

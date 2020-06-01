@@ -1,19 +1,27 @@
 package com.tencentcs.iotvideodemo.videoplayer;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tencentcs.iotvideo.iotvideoplayer.CallTypeEnum;
 import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.base.BaseActivity;
 import com.tencentcs.iotvideodemo.utils.AppConfig;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDialog;
@@ -65,8 +73,10 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void onOutput(String text) {
-        mLogTextView.append("\n" + text);
-        int offset = mLogTextView.getLineCount() * mLogTextView.getLineHeight();
+        mLogTextView.append(text + "\n");
+        Rect rect = new Rect();
+        mLogTextView.getLineBounds(mLogTextView.getLineCount() - 1, rect);
+        int offset = rect.bottom;
         if (offset > mLogTextView.getHeight()) {
             mLogTextView.scrollTo(0, offset - mLogTextView.getHeight());
         }
@@ -94,6 +104,7 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
         private Switch useMediaCodecAudioDecodeSwitch;
         private Switch useMediaCodecVideoDecodeSwitch;
         private Switch useMediaCodecAudioEncodeSwitch;
+        private Spinner mDefinitionSpinner;
 
         private OEMDialog(@NonNull Context context, MonitorConfig config) {
             super(context);
@@ -106,12 +117,27 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
             useMediaCodecAudioDecodeSwitch = findViewById(R.id.use_mediacodec_audio_decode);
             useMediaCodecVideoDecodeSwitch = findViewById(R.id.use_mediacodec_video_decode);
             useMediaCodecAudioEncodeSwitch = findViewById(R.id.use_mediacodec_audio_encode);
+            mDefinitionSpinner = findViewById(R.id.spinner_definition);
+
+            List<String> definitionList = new ArrayList<>();
+            definitionList.add("LD");
+            definitionList.add("SD");
+            definitionList.add("HD");
+            ArrayAdapter arrayAdapter = new ArrayAdapter<>(context, R.layout.simple_spinner_item, definitionList);
+            mDefinitionSpinner.setAdapter(arrayAdapter);
 
             supportTalkSwitch.setChecked(config.supportTalk);
             supportCameraSwitch.setChecked(config.supportCamera);
             useMediaCodecAudioDecodeSwitch.setChecked(config.useMediaCodecAudioDecode);
             useMediaCodecVideoDecodeSwitch.setChecked(config.useMediaCodecVideoDecode);
             useMediaCodecAudioEncodeSwitch.setChecked(config.useMediaCodecAudioEncode);
+            if (AppConfig.MONITOR_DEFINITION == CallTypeEnum.VIDEO_DEFINITION_FL) {
+                mDefinitionSpinner.setSelection(0);
+            } else if (AppConfig.MONITOR_DEFINITION == CallTypeEnum.VIDEO_DEFINITION_SD) {
+                mDefinitionSpinner.setSelection(1);
+            } else if (AppConfig.MONITOR_DEFINITION == CallTypeEnum.VIDEO_DEFINITION_HD) {
+                mDefinitionSpinner.setSelection(2);
+            }
 
             confirmBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -131,6 +157,23 @@ public class MonitorPlayerActivity extends BaseActivity implements View.OnClickL
                 @Override
                 public void onClick(View v) {
                     dismiss();
+                }
+            });
+            mDefinitionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    if (i == 0) {
+                        AppConfig.MONITOR_DEFINITION = CallTypeEnum.VIDEO_DEFINITION_FL;
+                    } else if (i == 1) {
+                        AppConfig.MONITOR_DEFINITION = CallTypeEnum.VIDEO_DEFINITION_SD;
+                    } else if (i == 2) {
+                        AppConfig.MONITOR_DEFINITION = CallTypeEnum.VIDEO_DEFINITION_HD;
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
                 }
             });
         }

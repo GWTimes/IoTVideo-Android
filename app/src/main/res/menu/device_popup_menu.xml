@@ -12,6 +12,11 @@
         android:title="@string/local_playback"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_menu_transmission_connection"
+        android:orderInCategory="1"
+        android:title="@string/transmission_connection"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_menu_model"
         android:orderInCategory="1"
         android:title="@string/device_model"

@@ -3,18 +3,21 @@ package com.tencentcs.iotvideodemo.netconfig;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
-import com.tencentcs.iotvideo.netconfig.NetConfig;
+import com.tencentcs.iotvideo.IoTVideoError;
+import com.tencentcs.iotvideo.messagemgr.DataMessage;
 import com.tencentcs.iotvideo.netconfig.NetConfigInfo;
-import com.tencentcs.iotvideo.utils.JSONUtils;
+import com.tencentcs.iotvideo.netconfig.NetConfigResult;
 import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.base.BaseActivity;
 import com.tencentcs.iotvideodemo.base.HttpRequestState;
 import com.tencentcs.iotvideodemo.netconfig.ap.APNetConfigFragment;
 import com.tencentcs.iotvideodemo.netconfig.qrcode.QRCodeNetConfigFragment;
 import com.tencentcs.iotvideodemo.netconfig.wired.WiredNetConfigFragment;
+import com.tencentcs.iotvideodemo.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,7 @@ public class NetConfigActivity extends BaseActivity {
 
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
+    private MenuItem mRefreshMenu;
 
     private NetConfigInfo mNetConfigInfo;
     private NetConfigViewModel mNetConfigInfoViewModel;
@@ -53,30 +57,51 @@ public class NetConfigActivity extends BaseActivity {
         mNetConfigInfoViewModel = ViewModelProviders.of(this, new NetConfigViewModelFactory())
                 .get(NetConfigViewModel.class);
         mNetConfigInfoViewModel.updateNetConfigInfo(mNetConfigInfo);
+        mNetConfigInfoViewModel.getGetNetConfigTokenData().observe(this, new Observer<DataMessage>() {
+            @Override
+            public void onChanged(DataMessage msg) {
+                if (msg.error == -1) {
+                    //开始
+                    mRefreshMenu.setVisible(false);
+                } else if (msg.error == 0) {
+                    //成功
+                    mRefreshMenu.setVisible(false);
+                } else {
+                    //失败
+                    mRefreshMenu.setVisible(true);
+                    Toast.makeText(NetConfigActivity.this, "获取配网ID失败，请点击右上角刷新按钮重新获取", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        mNetConfigInfoViewModel.getDeviceOnlineData().observe(this, new Observer<NetConfigResult>() {
+            @Override
+            public void onChanged(NetConfigResult result) {
+                if (result == null || result.getData() == null) {
+                    Utils.showToast("设备联网失败 : 无效数据");
+                    return;
+                }
+                int errorCode = result.getData().getErrorcode();
+                if (errorCode == 0 || errorCode == IoTVideoError.ASrv_binderror_dev_has_bind_other) {
+                    Utils.showToast(String.format("设备(%s)已联网", result.getData().getDevid()));
+                    mNetConfigInfoViewModel.bindDevice(result.getData().getDevid());
+                } else {
+                    Utils.showToast(String.format("设备联网失败 : %s",
+                            com.tencentcs.iotvideo.utils.Utils.getErrorDescription(errorCode)));
+                }
+            }
+        });
         mNetConfigInfoViewModel.getBindStateData().observe(this, new Observer<HttpRequestState>() {
             @Override
             public void onChanged(HttpRequestState httpRequestState) {
                 switch (httpRequestState.getStatus()) {
-                    case START:
-                        showProgressDialog();
-                        break;
                     case SUCCESS:
-                        dismissProgressDialog();
-                        Snackbar.make(mViewPager, httpRequestState.getStatusTip(), Snackbar.LENGTH_LONG).show();
-                        break;
                     case ERROR:
-                        dismissProgressDialog();
                         Snackbar.make(mViewPager, httpRequestState.getStatusTip(), Snackbar.LENGTH_LONG).show();
                         break;
                 }
             }
         });
-        mNetConfigInfoViewModel.getNetConfigStateData().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                Snackbar.make(mViewPager, s, Snackbar.LENGTH_LONG).show();
-            }
-        });
+        mNetConfigInfoViewModel.registerDeviceOnlineCallback();
     }
 
     private void initViewPager() {
@@ -85,16 +110,16 @@ public class NetConfigActivity extends BaseActivity {
 
         List<String> titles = new ArrayList<>();
         titles.add(getString(R.string.wired_net_config));
-//        titles.add(getString(R.string.qrcode_net_config));
-//        titles.add(getString(R.string.ap_net_config));
+        titles.add(getString(R.string.qrcode_net_config));
+        titles.add(getString(R.string.ap_net_config));
         mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(0)));
-//        mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(1)));
-//        mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(2)));
+        mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(1)));
+        mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(2)));
 
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new WiredNetConfigFragment());
-//        fragments.add(new QRCodeNetConfigFragment());
-//        fragments.add(new APNetConfigFragment());
+        fragments.add(new QRCodeNetConfigFragment());
+        fragments.add(new APNetConfigFragment());
 
         mViewPager.setOffscreenPageLimit(0);
 
@@ -105,14 +130,18 @@ public class NetConfigActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.net_config_menu, menu);
-//        return true;
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.net_config_menu, menu);
+        mRefreshMenu = menu.findItem(R.id.action_menu_refresh);
+        mNetConfigInfoViewModel.getNetConfigToken();
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_menu_refresh:
+                mNetConfigInfoViewModel.getNetConfigToken();
+                break;
             case R.id.action_menu_wired:
                 mViewPager.setCurrentItem(0);
                 break;
@@ -124,5 +153,11 @@ public class NetConfigActivity extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mNetConfigInfoViewModel.unregisterDeviceOnlineCallback();
     }
 }

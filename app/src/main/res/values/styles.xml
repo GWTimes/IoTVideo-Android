@@ -38,6 +38,7 @@
 
     <style name="DialogProgress" parent="@style/DialogFullscreen">
         <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowFullscreen">false</item>
     </style>
 
     <style name="LauncherActivity" parent="@style/AppNoActionBarTheme">

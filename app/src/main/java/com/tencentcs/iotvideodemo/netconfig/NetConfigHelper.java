@@ -42,11 +42,13 @@ class NetConfigHelper {
         IoTVideoSdk.getNetConfig().newWiredNetConfig().getDeviceList(new WiredNetConfig.FindDeviceCallBack() {
             @Override
             public void onResult(DeviceInfo[] deviceInfos) {
-                mNetConfigViewModel.getLanDeviceData().setValue(deviceInfos);
                 if(deviceInfos != null){
+                    mNetConfigViewModel.getLanDeviceData().setValue(deviceInfos);
                     for (DeviceInfo deviceInfo : deviceInfos) {
                         LogUtils.d(TAG, "findDevices " + deviceInfo);
                     }
+                } else {
+                    mNetConfigViewModel.getLanDeviceData().setValue(new DeviceInfo[0]);
                 }
             }
         });

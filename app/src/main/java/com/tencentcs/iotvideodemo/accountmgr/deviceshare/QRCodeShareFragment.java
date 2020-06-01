@@ -55,11 +55,11 @@ public class QRCodeShareFragment extends BaseFragment implements View.OnClickLis
                         break;
                     case SUCCESS:
                         GenShareQRCodeResult result = JSONUtils.JsonToEntity(httpRequestState.getJsonObject().toString(), GenShareQRCodeResult.class);
-                        QRCode qrCode = new QRCode(QRCode.FUNCTION_SHARE_DEVICE);
+                        QRCode qrCode = new QRCode();
                         qrCode.shareToken = String.valueOf(result.getData().getQrcodeToken());
-                        createQRCodeAndDisplay(qrCode.toQRContent());
+                        createQRCodeAndDisplay(qrCode.toQRContentString());
                         LogUtils.i(TAG, "share device QRCode = " + qrCode.toString());
-                        mQRCodeTextView.setText(qrCode.toString());
+                        mQRCodeTextView.setText(String.format("%s\n%s", qrCode.toQRContentString(), qrCode.toString()));
                         break;
                 }
             }

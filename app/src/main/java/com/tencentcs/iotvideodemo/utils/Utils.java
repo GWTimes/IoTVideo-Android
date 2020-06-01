@@ -1,8 +1,13 @@
 package com.tencentcs.iotvideodemo.utils;
 
+import android.app.Application;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -53,5 +58,49 @@ public class Utils {
 
     public static void showToast(String msg) {
         Toast.makeText(DemoApp.Companion.getDemoAppContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 判断是否连接上wifi
+     *
+     * @param context 上下文
+     * @return true 是 false 否
+     */
+    public static boolean isWifiConnected(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiNetworkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return wifiNetworkInfo.isConnected();
+    }
+
+    /**
+     * 获取正在连接的wifi的所有信息
+     *
+     * @param context 上下文
+     * @return wifi信息
+     */
+    public static WifiInfo getConnectWifiInfo(Application context) {
+        if (!isWifiConnected(context)) {
+            return null;
+        }
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        if (wifiManager == null) {
+            return null;
+        }
+        WifiInfo wifiInfo;
+        wifiInfo = wifiManager.getConnectionInfo();
+        return wifiInfo;
+    }
+
+    /**
+     * 将得到的int类型的IP转换为String类型
+     *
+     * @param ip 整型ip
+     * @return   字符串ip
+     */
+    public static String intIPToStringIP(int ip) {
+        return (ip & 0xFF) + "." +
+                ((ip >> 8) & 0xFF) + "." +
+                ((ip >> 16) & 0xFF) + "." +
+                (ip >> 24 & 0xFF);
     }
 }

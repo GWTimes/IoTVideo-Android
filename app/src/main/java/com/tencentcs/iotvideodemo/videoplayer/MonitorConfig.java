@@ -1,5 +1,8 @@
 package com.tencentcs.iotvideodemo.videoplayer;
 
+import android.app.Application;
+
+import com.tencentcs.iotvideo.iotvideoplayer.CallTypeEnum;
 import com.tencentcs.iotvideodemo.utils.AppConfig;
 
 import java.io.Serializable;
@@ -10,6 +13,7 @@ public class MonitorConfig implements Serializable {
     public boolean useMediaCodecAudioDecode;
     public boolean useMediaCodecVideoDecode;
     public boolean useMediaCodecAudioEncode;
+    public int definition;
 
     public static MonitorConfig defaultConfig() {
         MonitorConfig config = new MonitorConfig();
@@ -18,6 +22,7 @@ public class MonitorConfig implements Serializable {
         config.useMediaCodecAudioDecode = AppConfig.USE_MEDIACODEC_AUDIO_DECODE;
         config.useMediaCodecVideoDecode = AppConfig.USE_MEDIACODEC_VIDEO_DECODE;
         config.useMediaCodecAudioEncode = AppConfig.USE_MEDIACODEC_AUDIO_ENCODE;
+        config.definition = AppConfig.MONITOR_DEFINITION;
 
         return config;
     }
@@ -41,6 +46,7 @@ public class MonitorConfig implements Serializable {
                 ", useMediaCodecAudioDecode=" + useMediaCodecAudioDecode +
                 ", useMediaCodecVideoDecode=" + useMediaCodecVideoDecode +
                 ", useMediaCodecAudioEncode=" + useMediaCodecAudioEncode +
+                ", definition=" + definition +
                 '}';
     }
 }

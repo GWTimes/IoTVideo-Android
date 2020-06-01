@@ -35,13 +35,25 @@
 
     <TextView
         android:id="@+id/tv_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_sys_cate"
+        app:layout_constraintStart_toEndOf="@+id/tv_online"
+        app:layout_constraintTop_toBottomOf="@+id/device_name" />
+
+    <TextView
+        android:id="@+id/tv_sys_cate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="@color/normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/operate_device"
-        app:layout_constraintStart_toEndOf="@+id/tv_online"
+        app:layout_constraintStart_toEndOf="@+id/tv_type"
         app:layout_constraintTop_toBottomOf="@+id/device_name" />
 
     <TextView

@@ -14,6 +14,7 @@ import com.tencentcs.iotvideo.netconfig.NetConfigInfo;
 import com.tencentcs.iotvideo.utils.LogUtils;
 import com.tencentcs.iotvideo.utils.WifiUtils;
 import com.tencentcs.iotvideodemo.R;
+import com.tencentcs.iotvideodemo.accountmgr.AccountSPUtils;
 import com.tencentcs.iotvideodemo.base.BaseActivity;
 
 import java.util.ArrayList;
@@ -30,6 +31,8 @@ public class PrepareNetConfigActivity extends BaseActivity {
     private List<String> mWifiList;
     private String mSelectedWifiSSID;
     private String mSelectedWifiPWD;
+
+    private NetConfigInfo mNetConfigInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +71,9 @@ public class PrepareNetConfigActivity extends BaseActivity {
                 startNetConfig();
             }
         });
+        String accessId = AccountSPUtils.getInstance().getString(this, AccountSPUtils.ACCESS_ID, "");
+        long accessIdLong = Long.valueOf(accessId);
+        mNetConfigInfo = new NetConfigInfo("", "", NetConfigInfo.EncType.WPA, (int) accessIdLong);
     }
 
     private void getAllWifiInfo() {
@@ -85,9 +91,11 @@ public class PrepareNetConfigActivity extends BaseActivity {
     }
 
     private void startNetConfig() {
-        NetConfigInfo netConfigInfo = new NetConfigInfo(mSelectedWifiSSID, mSelectedWifiPWD, (byte) 2);
+        mNetConfigInfo.setWifiName(mSelectedWifiSSID);
+        mNetConfigInfo.setWifiPassword(mSelectedWifiPWD);
+        mNetConfigInfo.setEncType(NetConfigInfo.EncType.WPA);
         Intent intent = new Intent(this, NetConfigActivity.class);
-        intent.putExtra("NetConfigInfo", netConfigInfo);
+        intent.putExtra("NetConfigInfo", mNetConfigInfo);
         startActivity(intent);
     }
 }

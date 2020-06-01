@@ -81,19 +81,29 @@
         style="@style/DefaultButton"
         android:text="录像"
         android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@+id/stop_btn"
+        app:layout_constraintEnd_toStartOf="@+id/pause_btn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/mute_btn"
+        app:layout_constraintTop_toTopOf="@+id/snap_btn" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/pause_btn"
+        style="@style/DefaultButton"
+        android:text="暂停"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/stop_btn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/record_btn"
         app:layout_constraintTop_toTopOf="@+id/snap_btn" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/stop_btn"
         style="@style/DefaultButton"
         android:text="停止"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/record_btn"
+        app:layout_constraintStart_toEndOf="@+id/pause_btn"
         app:layout_constraintTop_toTopOf="@+id/snap_btn" />
 
     <androidx.recyclerview.widget.RecyclerView

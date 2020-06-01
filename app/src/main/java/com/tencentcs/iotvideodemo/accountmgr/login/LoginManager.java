@@ -56,7 +56,8 @@ class LoginManager {
         if (isEmailValid(account)) {
             AccountMgr.getHttpService().emailCheckCode(account, flag, new MVVMSubscriberListener(request));
         } else {
-            AccountMgr.getHttpService().mobileCheckCode("86", account, flag, new MVVMSubscriberListener(request));
+            AccountMgr.getHttpService().mobileCheckCode("86", account, flag, "", "",
+                    new MVVMSubscriberListener(request));
         }
     }
 

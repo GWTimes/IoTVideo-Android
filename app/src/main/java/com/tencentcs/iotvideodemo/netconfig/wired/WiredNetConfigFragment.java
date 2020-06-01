@@ -8,11 +8,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.tencentcs.iotvideo.netconfig.DeviceInfo;
-import com.tencentcs.iotvideo.netconfig.NetConfigInfo;
 import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.base.BaseFragment;
+import com.tencentcs.iotvideodemo.base.HttpRequestState;
 import com.tencentcs.iotvideodemo.netconfig.NetConfigViewModel;
 import com.tencentcs.iotvideodemo.netconfig.NetConfigViewModelFactory;
 import com.tencentcs.iotvideodemo.videoplayer.MonitorPlayerActivity;
@@ -31,12 +30,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class WiredNetConfigFragment extends BaseFragment {
 
+    private enum WiredNetConfigState {
+        SearchingDevice, FindDevice, NotFindDevice, Binding, BindError, End
+    }
+
     private LinearLayout mRootView;
     private TextView mTvNetConfigInfo;
     private RecyclerView mRVDeviceList;
     private NetConfigViewModel mNetConfigInfoViewModel;
     private RecyclerView.Adapter<DeviceItemHolder> mAdapter;
     private List<DeviceInfo> mDeviceInfoList;
+    private WiredNetConfigState mNetConfigState;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,8 +100,6 @@ public class WiredNetConfigFragment extends BaseFragment {
         });
         mNetConfigInfoViewModel = ViewModelProviders.of(getActivity(), new NetConfigViewModelFactory())
                 .get(NetConfigViewModel.class);
-        NetConfigInfo netConfigInfo = mNetConfigInfoViewModel.getNetConfigInfo();
-        mTvNetConfigInfo.setText(netConfigInfo.toString());
         mNetConfigInfoViewModel.getLanDeviceData().observe(getActivity(), new Observer<DeviceInfo[]>() {
             @Override
             public void onChanged(DeviceInfo[] deviceInfos) {
@@ -105,12 +107,52 @@ public class WiredNetConfigFragment extends BaseFragment {
                     mDeviceInfoList.clear();
                     mDeviceInfoList.addAll(Arrays.asList(deviceInfos));
                     mAdapter.notifyDataSetChanged();
-                    Snackbar.make(mRootView, "device count = " + mDeviceInfoList.size(), Snackbar.LENGTH_LONG).show();
-                } else {
-                    Snackbar.make(mRootView, "no device", Snackbar.LENGTH_LONG).show();
+                }
+                if (isVisible()) {
+                    if (deviceInfos != null) {
+                        updateNetConfigState(WiredNetConfigState.FindDevice);
+                    } else {
+                        updateNetConfigState(WiredNetConfigState.NotFindDevice);
+                    }
                 }
             }
         });
+        mNetConfigInfoViewModel.getBindStateData().observe(getActivity(), new Observer<HttpRequestState>() {
+            @Override
+            public void onChanged(HttpRequestState httpRequestState) {
+                switch (httpRequestState.getStatus()) {
+                    case START:
+                        updateNetConfigState(WiredNetConfigState.Binding);
+                        break;
+                    case SUCCESS:
+                        updateNetConfigState(WiredNetConfigState.End);
+                        break;
+                    case ERROR:
+                        updateNetConfigState(WiredNetConfigState.BindError);
+                        break;
+                }
+            }
+        });
+        mTvNetConfigInfo.setText(String.format("%s device(s)", mDeviceInfoList.size()));
+    }
+
+    private void updateNetConfigState(WiredNetConfigState state) {
+        if (mNetConfigState != state) {
+            mNetConfigState = state;
+            if (mNetConfigState == WiredNetConfigState.SearchingDevice) {
+                mTvNetConfigInfo.setText("正在搜索设备...");
+            } else if (mNetConfigState == WiredNetConfigState.NotFindDevice) {
+                mTvNetConfigInfo.setText("未能搜索到设备");
+            } else if (mNetConfigState == WiredNetConfigState.FindDevice) {
+                mTvNetConfigInfo.setText(String.format("%s device(s)", mDeviceInfoList.size()));
+            } else if (mNetConfigState == WiredNetConfigState.Binding) {
+                mTvNetConfigInfo.setText("正在绑定...");
+            } else if (mNetConfigState == WiredNetConfigState.BindError) {
+                mTvNetConfigInfo.setText("绑定失败");
+            } else if (mNetConfigState == WiredNetConfigState.End) {
+                mTvNetConfigInfo.setText("设备已绑定，流程结束");
+            }
+        }
     }
 
     class DeviceItemHolder extends RecyclerView.ViewHolder {
@@ -127,6 +169,7 @@ public class WiredNetConfigFragment extends BaseFragment {
     }
 
     private void findDevices() {
+        updateNetConfigState(WiredNetConfigState.SearchingDevice);
         mNetConfigInfoViewModel.findDevice();
     }
 

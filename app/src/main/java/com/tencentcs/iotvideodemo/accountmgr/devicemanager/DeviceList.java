@@ -57,6 +57,7 @@ public class DeviceList {
         private String deviceMode;
         private String url;
         private String shareType;
+        private String sysCate;
         private boolean isSelected;
 
         public Device() {}
@@ -122,6 +123,14 @@ public class DeviceList {
 
         public void setShareType(String shareType) {
             this.shareType = shareType;
+        }
+
+        public String getSysCate() {
+            return sysCate;
+        }
+
+        public void setSysCate(String sysCate) {
+            this.sysCate = sysCate;
         }
 
         public boolean isSelected() {

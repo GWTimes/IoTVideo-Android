@@ -1,10 +1,8 @@
 package com.tencentcs.iotvideodemo.videoplayer;
 
 import android.Manifest;
-import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.TextureView;
 import android.view.View;
@@ -103,6 +101,7 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
         mChooseCamera.setOnClickListener(this);
         mCloseCamera = view.findViewById(R.id.close_camera_btn);
         mCloseCamera.setOnClickListener(this);
+        mTvMonitorState = view.findViewById(R.id.tv_play_status);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -119,10 +118,8 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
         mCloseCamera.setVisibility(mMonitorConfig.supportCamera ? View.VISIBLE : View.GONE);
         appendToOutput("mMonitorConfig = " + mMonitorConfig.toString());
 
-        addStatusOutputView(view.getContext());
-
         mMonitorPlayer = new LivePlayer();
-        mMonitorPlayer.setDataResource(mDeviceId);
+        mMonitorPlayer.setDataResource(mDeviceId, mMonitorConfig.definition);
         mMonitorPlayer.setPreparedListener(mPreparedListener);
         mMonitorPlayer.setStatusListener(mStatusListener);
         mMonitorPlayer.setTimeListener(mTimeListener);
@@ -141,19 +138,6 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
         appendToOutput("设备ID：" + mDeviceId);
     }
 
-    private void addVideoView(Context context) {
-        mVideoView = new IoTVideoView(context);
-        mVideoView.setId(View.generateViewId());
-        mRootView.addView(mVideoView);
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mVideoView.getLayoutParams();
-        layoutParams.width = 0;
-        layoutParams.height = 0;
-        layoutParams.dimensionRatio = "H,16:9";
-        layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
-        layoutParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
-        layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
-    }
-
     private IPreparedListener mPreparedListener = new IPreparedListener() {
         @Override
         public void onPrepared() {
@@ -167,6 +151,11 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
         public void onStatus(int status) {
             LogUtils.d(TAG, "onStatus status " + status);
             appendToOutput("播放状态：" + getPlayStatus(status));
+            if (status == PlayerStateEnum.STATE_PLAY) {
+                int width = mMonitorPlayer.getVideoWidth();
+                int height = mMonitorPlayer.getVideoHeight();
+                appendToOutput("width : " + width + ", height : " + height);
+            }
         }
     };
 
@@ -360,19 +349,6 @@ public class MonitorPlayerFragment extends BaseFragment implements View.OnClickL
             mMonitorPlayer.release();
             mMonitorPlayer = null;
         }
-    }
-
-    private void addStatusOutputView(Context context) {
-        mTvMonitorState = new TextView(context);
-        mRootView.addView(mTvMonitorState);
-        ConstraintLayout.LayoutParams tvLayoutParams = (ConstraintLayout.LayoutParams) mTvMonitorState.getLayoutParams();
-        tvLayoutParams.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
-        tvLayoutParams.height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-        tvLayoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
-        tvLayoutParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
-        tvLayoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
-        mTvMonitorState.setTextColor(context.getResources().getColor(android.R.color.white));
-        mTvMonitorState.setGravity(Gravity.END);
     }
 
     private void appendToOutput(String text) {

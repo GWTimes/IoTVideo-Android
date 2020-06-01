@@ -1,7 +1,6 @@
 package com.tencentcs.iotvideodemo
 
 import android.app.Application
-import android.content.Context
 import com.tencentcs.iotvideo.IoTVideoSdk
 import com.tencentcs.iotvideo.accountmgr.AccountMgr
 import com.tencentcs.iotvideo.utils.LogUtils
@@ -19,7 +18,7 @@ class DemoApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        demoAppContext = applicationContext
+        demoAppContext = this
         StorageManager.init(this)
         if (StorageManager.isDocPathAvailable()) {
             LogUtils.i("DemoApp", "init XCrash")
@@ -31,13 +30,13 @@ class DemoApp : Application() {
         val defaultServiceType = if (BuildConfig.DEBUG && "oem" == BuildConfig.FLAVOR) UrlHelper.SERVER_DEV else UrlHelper.SERVER_RELEASE
         UrlHelper.getInstance().serverType = AppSPUtils.getInstance().getInteger(this, AppSPUtils.SERVER_TYPE, defaultServiceType)
 
-        IoTVideoSdk.init(applicationContext, null)
+        IoTVideoSdk.init(this, null)
         if (StorageManager.isDocPathAvailable()) {
             IoTVideoSdk.setLogPath(StorageManager.getDocPath() + File.separator + "xLog")
             IoTVideoSdk.setDebugMode(IoTVideoSdk.LOG_LEVEL_DEBUG)
         }
         val productId = AppSPUtils.getInstance().getString(this, AppSPUtils.PRODUCT_ID, PRODUCT_ID)
-        AccountMgr.init(productId)
+        AccountMgr.init(productId, packageName, BuildConfig.VERSION_NAME)
         VasMgr.init()
         checkAndAutoLogin()
     }
@@ -65,6 +64,6 @@ class DemoApp : Application() {
 
     companion object {
         const val PRODUCT_ID = "440234147841"
-        var demoAppContext: Context? = null
+        var demoAppContext: Application? = null
     }
 }

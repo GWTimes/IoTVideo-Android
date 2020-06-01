@@ -106,6 +106,18 @@ class PlaybackPlayerActivity : BaseActivity() {
 
         stop_btn.click { mPlaybackPlayer.stop() }
 
+        pause_btn.click {
+            if (pause_btn.isSelected) {
+                mPlaybackPlayer.resume()
+                pause_btn.isSelected = false
+                pause_btn.text = "暂停"
+            } else {
+                mPlaybackPlayer.pause()
+                pause_btn.isSelected = true
+                pause_btn.text = "恢复"
+            }
+        }
+
         initPlaybackPlayer()
 
         getPlaybackList(tv_get_playback_previous, 0)
@@ -124,6 +136,11 @@ class PlaybackPlayerActivity : BaseActivity() {
     override fun onStop() {
         super.onStop()
         mPlaybackPlayer.stop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mPlaybackPlayer.release()
     }
 
     private fun initPlaybackPlayer() {

@@ -12,12 +12,16 @@ public interface HttpService {
      *
      * @param mobileArea         国家码，例如中国是86
      * @param mobile             手机号码
-     * @param flag               1：表示用户注册，2：表示找回密码，3：表示只是发送一条短信
+     * @param flag               0：注册和绑定验证码，1：修改密码验证码，2：其它
+     * @param ticket             app进行图形验证结果的票据
+     * @param randstr            app进行图形验证结果的随机字符串
      * @param subscriberListener Http回调结果的观察者
      */
     void mobileCheckCode(String mobileArea,
                          String mobile,
                          Integer flag,
+                         String ticket,
+                         String randstr,
                          SubscriberListener subscriberListener);
 
     /**

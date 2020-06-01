@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:text="配置网络信息"
         android:textColor="@android:color/black"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <TableLayout
         android:layout_width="match_parent"

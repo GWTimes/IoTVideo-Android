@@ -57,4 +57,7 @@
     <string name="check">查看</string>
     <string name="edit">编辑</string>
     <string name="message_box">Message box</string>
+    <string name="send_netconfig_info">发送配网信息</string>
+    <string name="getting_netcofing_token">正在获取配网Token...</string>
+    <string name="transmission_connection">透传连接</string>
 </resources>

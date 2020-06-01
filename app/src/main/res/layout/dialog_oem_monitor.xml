@@ -76,6 +76,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </TableRow>
+
+        <TableRow
+            android:layout_marginTop="32dp">
+            <TextView
+                android:text="分辨率 : "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"/>
+            <Spinner
+                android:id="@+id/spinner_definition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </TableRow>
     </TableLayout>
 
     <LinearLayout

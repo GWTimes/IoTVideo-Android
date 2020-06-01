@@ -11,7 +11,32 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_gravity="center"
         android:text="@string/qrcode_net_config"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:text="App获取配网Token-->设备扫码-->设备联网-->\nApp绑定设备-->结束"/>
+
+    <TextView
+        android:id="@+id/device_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_margin="16dp"
+        android:background="#500ABF5B"
+        android:visibility="gone"/>
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
@@ -39,6 +64,7 @@
         android:padding="16dp"
         android:text="@string/create_qrcode"
         android:textColor="@android:color/white"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone"/>
 
 </LinearLayout>

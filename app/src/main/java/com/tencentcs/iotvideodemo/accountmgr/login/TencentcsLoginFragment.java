@@ -88,7 +88,7 @@ public class TencentcsLoginFragment extends BaseFragment {
         userName = mEtUserName.getText().toString();
 
         if (!TextUtils.isEmpty(secretId) && !TextUtils.isEmpty(secretKey) && !TextUtils.isEmpty(userName)) {
-            AccountMgr.init("");
+            AccountMgr.init("", "", "");
             AccountMgr.setSecretInfo(secretId, secretKey, token);
             AccountSPUtils.getInstance().putString(getActivity(), AccountSPUtils.SECRET_ID, secretId);
             AccountSPUtils.getInstance().putString(getActivity(), AccountSPUtils.SECRET_KEY, secretKey);

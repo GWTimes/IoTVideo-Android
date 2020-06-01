@@ -18,22 +18,22 @@ import com.tencentcs.iotvideo.IoTVideoSdk;
 import com.tencentcs.iotvideo.accountmgr.AccountMgr;
 import com.tencentcs.iotvideo.messagemgr.IModelListener;
 import com.tencentcs.iotvideo.messagemgr.ModelMessage;
-import com.tencentcs.iotvideo.netconfig.NetConfigInfo;
 import com.tencentcs.iotvideo.utils.JSONUtils;
 import com.tencentcs.iotvideo.utils.LogUtils;
 import com.tencentcs.iotvideo.utils.rxjava.IResultListener;
 import com.tencentcs.iotvideo.utils.rxjava.SubscriberListener;
+import com.tencentcs.iotvideodemo.BuildConfig;
 import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.accountmgr.deviceshare.DeviceShareActivity;
 import com.tencentcs.iotvideodemo.base.BaseFragment;
 import com.tencentcs.iotvideodemo.messagemgr.DeviceMessageActivity;
-import com.tencentcs.iotvideodemo.netconfig.NetConfigActivity;
 import com.tencentcs.iotvideodemo.netconfig.PrepareNetConfigActivity;
 import com.tencentcs.iotvideodemo.vas.CloudStorageActivity;
+import com.tencentcs.iotvideodemo.videoplayer.LocalAlbumActivity;
 import com.tencentcs.iotvideodemo.videoplayer.MonitorPlayerActivity;
 import com.tencentcs.iotvideodemo.videoplayer.MultiMonitorPlayerActivity;
 import com.tencentcs.iotvideodemo.videoplayer.PlaybackPlayerActivity;
-import com.tencentcs.iotvideodemo.videoplayer.LocalAlbumActivity;
+import com.tencentcs.iotvideodemo.videoplayer.TransmissionConnectionActivity;
 import com.tencentcs.iotvideodemo.widget.RecycleViewDivider;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 public class DeviceListFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = "DeviceManagerActivity";
 
-    private static final boolean ENABLE_MULTI_MONITOR = false;
+    private static final boolean ENABLE_MULTI_MONITOR = true;
 
     private RecyclerView mRVDeviceList;
     private Button mBtnMultiMonitor;
@@ -102,6 +102,7 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
                     }
                 }
                 holder.tvType.setText("owner".equals(deviceInfo.getShareType()) ? "主人" : "访客");
+                holder.tvSysCate.setText(deviceInfo.getSysCate());
                 holder.llDeviceInfo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -157,6 +158,9 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
     private void showPopupMenu(final View anchor, final DeviceList.Device device) {
         PopupMenu popupMenu = new PopupMenu(getActivity(), anchor);
         popupMenu.getMenuInflater().inflate(R.menu.device_popup_menu, popupMenu.getMenu());
+        if ("oem".equals(BuildConfig.FLAVOR)) {
+            popupMenu.getMenu().findItem(R.id.action_menu_share).setVisible(true);
+        }
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -170,6 +174,11 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
                         Intent playbackIntent = new Intent(getActivity(), PlaybackPlayerActivity.class);
                         playbackIntent.putExtra("deviceID", device.getDevId());
                         startActivity(playbackIntent);
+                        break;
+                    case R.id.action_menu_transmission_connection:
+                        Intent transmissionIntent = new Intent(getActivity(), TransmissionConnectionActivity.class);
+                        transmissionIntent.putExtra("deviceID", device.getDevId());
+                        startActivity(transmissionIntent);
                         break;
                     case R.id.action_menu_model:
                         Intent messageIntent = new Intent(getActivity(), DeviceMessageActivity.class);
@@ -304,9 +313,7 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
             playIntent.putExtra("deviceIDArray", deviceIdArray);
             startActivity(playIntent);
         } else if (v.getId() == R.id.tv_add_device) {
-            NetConfigInfo netConfigInfo = new NetConfigInfo("", "", (byte) 2);
-            Intent intent = new Intent(getActivity(), NetConfigActivity.class);
-            intent.putExtra("NetConfigInfo", netConfigInfo);
+            Intent intent = new Intent(getActivity(), PrepareNetConfigActivity.class);
             startActivity(intent);
         }
     }
@@ -317,6 +324,7 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
         TextView tvOperator;
         TextView tvOnline;
         TextView tvType;
+        TextView tvSysCate;
 
         DeviceItemHolder(View view) {
             super(view);
@@ -325,6 +333,7 @@ public class DeviceListFragment extends BaseFragment implements View.OnClickList
             tvOperator = view.findViewById(R.id.operate_device);
             tvOnline = view.findViewById(R.id.tv_online);
             tvType = view.findViewById(R.id.tv_type);
+            tvSysCate = view.findViewById(R.id.tv_sys_cate);
         }
     }
 

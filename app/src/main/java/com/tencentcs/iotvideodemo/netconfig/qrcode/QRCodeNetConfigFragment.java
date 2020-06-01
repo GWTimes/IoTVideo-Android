@@ -2,38 +2,46 @@ package com.tencentcs.iotvideodemo.netconfig.qrcode;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.tencentcs.iotvideo.IoTVideoError;
 import com.tencentcs.iotvideo.IoTVideoSdk;
-import com.tencentcs.iotvideo.messagemgr.DataMessage;
-import com.tencentcs.iotvideo.utils.rxjava.IResultListener;
 import com.tencentcs.iotvideo.netconfig.NetConfigInfo;
-import com.tencentcs.iotvideo.netconfig.data.NetMatchTokenResult;
-import com.tencentcs.iotvideo.utils.JSONUtils;
+import com.tencentcs.iotvideo.netconfig.NetConfigResult;
 import com.tencentcs.iotvideo.utils.LogUtils;
+import com.tencentcs.iotvideo.utils.Utils;
 import com.tencentcs.iotvideo.utils.qrcode.QRCode;
+import com.tencentcs.iotvideo.utils.qrcode.QRCodeHelper;
 import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.base.BaseFragment;
+import com.tencentcs.iotvideodemo.base.HttpRequestState;
 import com.tencentcs.iotvideodemo.netconfig.NetConfigViewModel;
 import com.tencentcs.iotvideodemo.netconfig.NetConfigViewModelFactory;
 import com.tencentcs.iotvideodemo.widget.BigImageDialog;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-public class QRCodeNetConfigFragment extends BaseFragment {
+public class QRCodeNetConfigFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = "QRCodeNetConfigFragment";
 
+    private enum QRCodeNetConfigState {
+        WaitingDeviceOnline, Binding, BindError, End
+    }
+
     private TextView mTvNetConfigInfo;
+    private TextView mTvDeviceInfo;
     private ImageView mQRCodeImage;
     private NetConfigViewModel mNetConfigInfoViewModel;
     private BigImageDialog mBigImageDialog;
+    private QRCodeNetConfigState mNetConfigState;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,23 +54,60 @@ public class QRCodeNetConfigFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         mTvNetConfigInfo = view.findViewById(R.id.net_config_info);
         mQRCodeImage = view.findViewById(R.id.qrcode_image);
-        view.findViewById(R.id.create_qrcode).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getNetMatchIdAndCreateQRCode();
-            }
-        });
+        mTvDeviceInfo = view.findViewById(R.id.device_info);
+        mTvDeviceInfo.setOnClickListener(this);
         mNetConfigInfoViewModel = ViewModelProviders.of(getActivity(), new NetConfigViewModelFactory())
                 .get(NetConfigViewModel.class);
-        NetConfigInfo netConfigInfo = mNetConfigInfoViewModel.getNetConfigInfo();
-        mTvNetConfigInfo.setText(netConfigInfo.toString());
-        getNetMatchIdAndCreateQRCode();
+        mTvNetConfigInfo.setText(R.string.getting_netcofing_token);
+        mNetConfigInfoViewModel.getNetConfigInfoLiveData().observe(getActivity(), new Observer<NetConfigInfo>() {
+            @Override
+            public void onChanged(NetConfigInfo netConfigInfo) {
+                if (!TextUtils.isEmpty(netConfigInfo.getNetMatchId())) {
+                    createQRCodeAndDisplay(netConfigInfo);
+                }
+            }
+        });
+        mNetConfigInfoViewModel.getDeviceOnlineData().observe(getActivity(), new Observer<NetConfigResult>() {
+            @Override
+            public void onChanged(NetConfigResult result) {
+                if (result != null && result.getData() != null) {int errorCode = result.getData().getErrorcode();
+                    if (errorCode != 0 && errorCode != IoTVideoError.ASrv_binderror_dev_has_bind_other) {
+                        updateNetConfigState(QRCodeNetConfigState.End);
+                        mTvDeviceInfo.setText(String.format("设备已联网，但无法绑定 : %s", Utils.getErrorDescription(errorCode)));
+                    }
+                }
+            }
+        });
+        mNetConfigInfoViewModel.getBindStateData().observe(getActivity(), new Observer<HttpRequestState>() {
+            @Override
+            public void onChanged(HttpRequestState httpRequestState) {
+                switch (httpRequestState.getStatus()) {
+                    case START:
+                        updateNetConfigState(QRCodeNetConfigState.Binding);
+                        break;
+                    case SUCCESS:
+                        updateNetConfigState(QRCodeNetConfigState.End);
+                        break;
+                    case ERROR:
+                        updateNetConfigState(QRCodeNetConfigState.BindError);
+                        break;
+                }
+            }
+        });
+        updateNetConfigState(QRCodeNetConfigState.WaitingDeviceOnline);
     }
 
-    private void createQRCodeAndDisplay(String netConfigToken) {
-        NetConfigInfo netConfigInfo = mNetConfigInfoViewModel.getNetConfigInfo();
-        QRCode qrCode = IoTVideoSdk.getNetConfig().newQRCodeNetConfig().createQRCode(netConfigToken,
-                netConfigInfo.getWifiName(), netConfigInfo.getWifiPassword(), netConfigInfo.getEncType());
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.device_info) {
+            if (mNetConfigState == QRCodeNetConfigState.BindError) {
+                mNetConfigInfoViewModel.rebindDevice();
+            }
+        }
+    }
+
+    private void createQRCodeAndDisplay(NetConfigInfo netConfigInfo) {
+        QRCode qrCode = IoTVideoSdk.getNetConfig().newQRCodeNetConfig().createQRCode(netConfigInfo);
         final Bitmap bitmap = qrCode.toBitmap(800);
         if (bitmap != null) {
             mQRCodeImage.setImageBitmap(bitmap);
@@ -72,8 +117,14 @@ public class QRCodeNetConfigFragment extends BaseFragment {
                     showBigQrCodeDialog(bitmap);
                 }
             });
-            mTvNetConfigInfo.setText(qrCode.toString());
+            String netConfigString = qrCode.toQRContentString();
+
+            QRCode analyseQrCode = QRCodeHelper.analyse(netConfigString);
+
+            mTvNetConfigInfo.setText(netConfigString);
+            LogUtils.i(TAG, "createQRCodeAndDisplay " + String.format("%s\n%s", netConfigString, analyseQrCode.toString()));
         }
+        mTvDeviceInfo.setVisibility(View.VISIBLE);
     }
 
     private void showBigQrCodeDialog(Bitmap bitmap) {
@@ -87,29 +138,32 @@ public class QRCodeNetConfigFragment extends BaseFragment {
         }
     }
 
-    private void getNetMatchIdAndCreateQRCode() {
-        mNetConfigInfoViewModel.getNetConfigToken(new IResultListener<DataMessage>() {
-            @Override
-            public void onStart() {
-                LogUtils.i(TAG, "getNetConfigToken start");
-            }
+    private void updateNetConfigState(QRCodeNetConfigState state) {
+        if (mNetConfigState == QRCodeNetConfigState.End) {
+            LogUtils.e(TAG, "net config is ending");
+            return;
+        }
+        if (state != mNetConfigState) {
+            mNetConfigState = state;
+            LogUtils.i(TAG, "updateNetConfigState " + mNetConfigState);
+            updateDeviceInfoText();
+        }
+    }
 
-            @Override
-            public void onSuccess(DataMessage msg) {
-                LogUtils.i(TAG, "getNetConfigToken onSuccess : " + msg);
-                byte[] token = msg.data;
-                if (token != null) {
-                    String tokenStr = new String(token);
-                    NetMatchTokenResult result = JSONUtils.JsonToEntity(tokenStr, NetMatchTokenResult.class);
-                    createQRCodeAndDisplay(result.getToken());
-                }
-            }
-
-            @Override
-            public void onError(int errorCode, String errorMsg) {
-                LogUtils.i(TAG, "getNetConfigToken errorCode : " + errorCode + " " + errorMsg);
-                Snackbar.make(mQRCodeImage, errorCode + " " + errorMsg, Snackbar.LENGTH_LONG).show();
-            }
-        });
+    private void updateDeviceInfoText() {
+        switch (mNetConfigState) {
+            case WaitingDeviceOnline:
+                mTvDeviceInfo.setText("等待设备联网...");
+                break;
+            case Binding:
+                mTvDeviceInfo.setText("正在绑定设备...");
+                break;
+            case BindError:
+                mTvDeviceInfo.setText("绑定失败，点击重新绑定");
+                break;
+            case End:
+                mTvDeviceInfo.setText("设备已绑定，流程结束");
+                break;
+        }
     }
 }

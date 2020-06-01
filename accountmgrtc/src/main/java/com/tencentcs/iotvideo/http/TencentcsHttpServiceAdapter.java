@@ -97,7 +97,8 @@ public class TencentcsHttpServiceAdapter implements HttpService {
     }
 
     @Override
-    public void mobileCheckCode(String mobileArea, String mobile, Integer flag, SubscriberListener subscriberListener) {
+    public void mobileCheckCode(String mobileArea, String mobile, Integer flag, String ticket, String randstr,
+                                SubscriberListener subscriberListener) {
 
     }
 
