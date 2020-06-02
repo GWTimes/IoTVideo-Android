@@ -82,12 +82,24 @@ class PlaybackPlayerActivity : BaseActivity() {
 
         recyclerView.adapter = mAdapter
 
+        tv_get_playback_first.click {
+            getPlaybackList(tv_get_playback_first, 0)
+        }
+
         tv_get_playback_previous.click {
             getPlaybackListPrevious()
         }
 
         tv_get_playback_next.click {
             getPlaybackListNext()
+        }
+
+        tv_get_playback_last.click {
+            if (mPageCount > 0) {
+                getPlaybackList(tv_get_playback_last, mPageCount - 1)
+            } else {
+                getPlaybackList(tv_get_playback_last, 0)
+            }
         }
 
         tv_start_record.click {
@@ -184,11 +196,12 @@ class PlaybackPlayerActivity : BaseActivity() {
     }
 
     private fun getPlaybackList(view: View, pageIndex: Int) {
-        PlaybackPlayer.getPlaybackList(mDeviceId, 0, System.currentTimeMillis(),
-                pageIndex, 50, object : IResultListener<PlaybackMessage> {
+        val currentTimeMs = System.currentTimeMillis()
+        PlaybackPlayer.getPlaybackList(mDeviceId, 0, currentTimeMs,
+                pageIndex, 10, object : IResultListener<PlaybackMessage> {
             override fun onStart() {
                 LogUtils.d(TAG, "请求中...")
-                playback_status.text = "正在获取回放列表..."
+                playback_status.text = "正在获取回放列表${pageIndex + 1}..."
             }
 
             override fun onSuccess(msg: PlaybackMessage?) {
@@ -197,8 +210,9 @@ class PlaybackPlayerActivity : BaseActivity() {
                     LogUtils.i(TAG, "回放列表为空")
                     return
                 }
+                mCurrentPageIndex = msg?.currentPage!!
                 mPageCount = msg?.pageCount!!
-                val logStr = "获取成功 : 当前页 ${msg.currentPage}, 总页数 $mPageCount"
+                val logStr = "获取成功 : 当前页 ${mCurrentPageIndex + 1}, 总页数 $mPageCount"
                 LogUtils.d(TAG, logStr)
                 LogUtils.d(TAG, "获取成功 ${msg.toString()}")
                 runOnUiThread {
@@ -232,7 +246,7 @@ class PlaybackPlayerActivity : BaseActivity() {
             Snackbar.make(tv_get_playback_previous, "已是第一页", Snackbar.LENGTH_SHORT).show()
             return
         }
-        getPlaybackList(tv_get_playback_previous, mCurrentPageIndex--)
+        getPlaybackList(tv_get_playback_previous, mCurrentPageIndex - 1)
     }
 
     private fun getPlaybackListNext() {
@@ -244,7 +258,7 @@ class PlaybackPlayerActivity : BaseActivity() {
             Snackbar.make(tv_get_playback_next, "已是最后页", Snackbar.LENGTH_SHORT).show()
             return
         }
-        getPlaybackList(tv_get_playback_next, mCurrentPageIndex++)
+        getPlaybackList(tv_get_playback_next, mCurrentPageIndex + 1)
     }
 
     private fun deviceRecord(on: Boolean) {

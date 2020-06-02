@@ -36,24 +36,40 @@
         android:id="@+id/tv_stop_record"
         android:text="关闭设备录像"
         app:layout_constraintStart_toEndOf="@+id/tv_start_record"
-        app:layout_constraintEnd_toStartOf="@+id/tv_get_playback_previous"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tencentcs_gl_surface_view" />
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/DefaultButton"
+        android:id="@+id/tv_get_playback_first"
+        android:text="第一页"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_get_playback_previous"
+        app:layout_constraintTop_toBottomOf="@+id/tv_stop_record" />
 
     <com.google.android.material.button.MaterialButton
         style="@style/DefaultButton"
         android:id="@+id/tv_get_playback_previous"
         android:text="上一页"
-        app:layout_constraintStart_toEndOf="@+id/tv_stop_record"
+        app:layout_constraintStart_toEndOf="@+id/tv_get_playback_first"
         app:layout_constraintEnd_toStartOf="@+id/tv_get_playback_next"
-        app:layout_constraintTop_toBottomOf="@+id/tencentcs_gl_surface_view" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_stop_record" />
 
     <com.google.android.material.button.MaterialButton
         style="@style/DefaultButton"
         android:id="@+id/tv_get_playback_next"
         android:text="下一页"
         app:layout_constraintStart_toEndOf="@+id/tv_get_playback_previous"
+        app:layout_constraintEnd_toStartOf="@+id/tv_get_playback_last"
+        app:layout_constraintTop_toBottomOf="@+id/tv_stop_record" />
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/DefaultButton"
+        android:id="@+id/tv_get_playback_last"
+        android:text="最后一页"
+        app:layout_constraintStart_toEndOf="@+id/tv_get_playback_next"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tencentcs_gl_surface_view" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_stop_record" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/snap_btn"
@@ -63,7 +79,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintEnd_toStartOf="@+id/mute_btn"
-        app:layout_constraintTop_toBottomOf="@+id/tv_start_record" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_get_playback_previous" />
 
 
     <com.google.android.material.button.MaterialButton
@@ -90,7 +106,7 @@
         android:id="@+id/pause_btn"
         style="@style/DefaultButton"
         android:text="暂停"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/stop_btn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/record_btn"
@@ -100,7 +116,7 @@
         android:id="@+id/stop_btn"
         style="@style/DefaultButton"
         android:text="停止"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/pause_btn"
