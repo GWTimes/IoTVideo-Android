@@ -16,7 +16,6 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
@@ -48,11 +47,15 @@
 
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/MainActivity" />
         <activity
             android:name=".videoplayer.MonitorPlayerActivity"
-            android:label="@string/player" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/player"
+            android:theme="@style/AppNoActionBarTheme" />
         <activity android:name=".accountmgr.login.LoginActivity" />
+        <activity android:name=".accountmgr.login.AnonymousLoginActivity" />
         <activity
             android:name=".netconfig.NetConfigActivity"
             android:label="@string/net_config"
@@ -72,7 +75,9 @@
             android:label="@string/cloud_storage" />
         <activity
             android:name=".videoplayer.MultiMonitorPlayerActivity"
-            android:label="@string/player" />
+            android:label="@string/player"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppFullscreenTheme" />
         <activity
             android:name=".accountmgr.devicemanager.DeviceOTAActivity"
             android:label="@string/device_ota" />
@@ -93,8 +98,18 @@
             android:label="@string/message_box" />
         <activity
             android:name=".videoplayer.TransmissionConnectionActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:label="@string/transmission_connection"/>
+            android:label="@string/transmission_connection"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name="com.tencentcs.iotvideo.accountmgr.SafeCheckActivity" />
+        <activity
+            android:name=".settings.DeviceSettingsActivity"
+            android:label="@string/device_settings"
+            android:theme="@style/SettingsActivityTheme"/>
+
+        <activity
+            android:name=".accountmgr.login.SettingAppEnvActivity"
+            android:label="@string/app_env_setting"
+            android:theme="@style/SettingsActivityTheme"/>
     </application>
 
 </manifest>

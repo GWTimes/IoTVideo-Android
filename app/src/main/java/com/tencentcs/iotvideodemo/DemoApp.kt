@@ -10,6 +10,7 @@ import com.tencentcs.iotvideodemo.accountmgr.AccountSPUtils
 import com.tencentcs.iotvideodemo.accountmgr.devicemanager.DeviceModelManager
 import com.tencentcs.iotvideodemo.utils.AppSPUtils
 import com.tencentcs.iotvideodemo.utils.StorageManager
+import com.tencentcs.iotvideodemo.utils.Utils
 import xcrash.XCrash
 import java.io.File
 import java.util.HashMap
@@ -27,7 +28,7 @@ class DemoApp : Application() {
             XCrash.init(this, xCrashParams)
         }
 
-        val defaultServiceType = if (BuildConfig.DEBUG && "oem" == BuildConfig.FLAVOR) UrlHelper.SERVER_DEV else UrlHelper.SERVER_RELEASE
+        val defaultServiceType = if (BuildConfig.DEBUG && Utils.isOemVersion()) UrlHelper.SERVER_DEV else UrlHelper.SERVER_RELEASE
         UrlHelper.getInstance().serverType = AppSPUtils.getInstance().getInteger(this, AppSPUtils.SERVER_TYPE, defaultServiceType)
 
         IoTVideoSdk.init(this, null)

@@ -24,6 +24,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.RandomTrackSelection;
 import com.google.android.exoplayer2.ui.DebugTextViewHelper;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.EventLogger;
 import com.google.android.exoplayer2.util.Log;
@@ -34,6 +35,10 @@ import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.base.BaseActivity;
 
 import androidx.annotation.Nullable;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
 
 public class ExoPlayerActivity extends BaseActivity {
     private static final String TAG = "ExoPlayerActivity";
@@ -54,10 +59,19 @@ public class ExoPlayerActivity extends BaseActivity {
         playerView = findViewById(R.id.exo_play_context_id);
         debugTextView = findViewById(R.id.debug_text_view);
         mFileUrl = getIntent().getStringExtra("URI");
-        if (!TextUtils.isEmpty(mFileUrl)) {
-            mFileUrl = mFileUrl.replace("https://", "http://");
-        }
+//        if (!TextUtils.isEmpty(mFileUrl)) {
+//            mFileUrl = mFileUrl.replace("https://", "http://");
+//        }
         LogUtils.i(TAG, "mFileUrl = " + mFileUrl);
+        if (!TextUtils.isEmpty(mFileUrl) && mFileUrl.contains("https://")) {
+            LogUtils.i(TAG,"Trust all domains by default");
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String s, SSLSession sslSession) {
+                    return true;
+                }
+            });
+        }
     }
 
     @Override

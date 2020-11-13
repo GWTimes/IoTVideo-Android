@@ -70,7 +70,8 @@ public class QRCodeNetConfigFragment extends BaseFragment implements View.OnClic
         mNetConfigInfoViewModel.getDeviceOnlineData().observe(getActivity(), new Observer<NetConfigResult>() {
             @Override
             public void onChanged(NetConfigResult result) {
-                if (result != null && result.getData() != null) {int errorCode = result.getData().getErrorcode();
+                if (result != null && result.getData() != null) {
+                    int errorCode = result.getData().getErrorcode();
                     if (errorCode != 0 && errorCode != IoTVideoError.ASrv_binderror_dev_has_bind_other) {
                         updateNetConfigState(QRCodeNetConfigState.End);
                         mTvDeviceInfo.setText(String.format("设备已联网，但无法绑定 : %s", Utils.getErrorDescription(errorCode)));

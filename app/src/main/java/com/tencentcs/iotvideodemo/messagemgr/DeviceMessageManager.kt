@@ -18,6 +18,7 @@ class DeviceMessageManager {
     private val jsonParser: JsonParser = JsonParser()
 
     fun initModelData(context: Context, deviceId: String, modelLiveData: MutableLiveData<java.util.ArrayList<DeviceModelItemData>>) {
+        LogUtils.i(TAG,"initModelData")
         //获取所有的物模型
         IoTVideoSdk.getMessageMgr().readProperty(deviceId, "", object : IResultListener<ModelMessage> {
             override fun onStart() {
@@ -25,8 +26,9 @@ class DeviceMessageManager {
             }
 
             override fun onSuccess(p0: ModelMessage?) {
-                LogUtils.d(TAG, "readProperty" + p0!!.data)
+                LogUtils.d(TAG, "initModelData readProperty,deviceId:${p0!!.device}; data:" + p0!!.data)
                 modeData = jsonParser.parse(p0.data).asJsonObject
+                ModelDataCache.getInstance().updateData(p0.data)
                 updateModelData(modelLiveData)
                 val model = DeviceModelManager.DeviceModel(p0.device, modeData)
                 DeviceModelManager.getInstance().setDeviceModel(model)

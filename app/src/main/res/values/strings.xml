@@ -60,4 +60,13 @@
     <string name="send_netconfig_info">发送配网信息</string>
     <string name="getting_netcofing_token">正在获取配网Token...</string>
     <string name="transmission_connection">透传连接</string>
+    <string name="device_settings">设备设置</string>
+    <string name="senior">senior</string>
+    <string name="multi_monitor">同屏</string>
+    <string name="nvr">nvr</string>
+    <string name="login_anonymous">Anonymous Login</string>
+    <string name="cloud_video_area">ts列表</string>
+    <string name="cloud_play_url_list">m3u8列表</string>
+    <string name="cloud_event_list">事件列表</string>
+    <string name="app_env_setting">环境设置</string>
 </resources>

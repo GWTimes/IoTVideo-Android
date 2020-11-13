@@ -1,98 +1,92 @@
 package com.tencentcs.iotvideodemo.vas;
 
-import java.util.List;
-
 public class PlaybackList {
 
     /**
-     * code : 0
      * msg : Success
-     * requestId : bdcb3c8f-3aac-469b-a7ed-09998cf85114
-     * data : {"palyList":[{"starttime":1578827659000,"endtime":1578828447000,"m3u8Url":"http://lcb.iotvideo.tencentcs.com/timeshift/live/031400005df99fe03b8d15050eb45385/timeshift.m3u8?starttime=20200112191419&endtime=20200112192727"},{"starttime":1578828453000,"endtime":1578829554000,"m3u8Url":"http://lcb.iotvideo.tencentcs.com/timeshift/live/031400005df99fe03b8d15050eb45385/timeshift.m3u8?starttime=20200112192733&endtime=20200112194554"}]}
+     * code : 0
+     * data : {"startTime":1600653494,"endTime":1600653494,"endflag":"true，","url":"xxxx"}
+     * requestId : xxxxxx
      */
-
-    private int code;
     private String msg;
+    private int code;
+    private DataEntity data;
     private String requestId;
-    private DataBean data;
 
-    public int getCode() {
-        return code;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
     public void setCode(int code) {
         this.code = code;
     }
 
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public String getRequestId() {
-        return requestId;
+    public void setData(DataEntity data) {
+        this.data = data;
     }
 
     public void setRequestId(String requestId) {
         this.requestId = requestId;
     }
 
-    public DataBean getData() {
+    public String getMsg() {
+        return msg;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public DataEntity getData() {
         return data;
     }
 
-    public void setData(DataBean data) {
-        this.data = data;
+    public String getRequestId() {
+        return requestId;
     }
 
-    public static class DataBean {
-        private List<PalyListBean> palyList;
+    public class DataEntity {
+        /**
+         * startTime : 1600653494
+         * endTime : 1600653494
+         * endflag : true，
+         * url : xxxx
+         */
+        private int startTime;
+        private int endTime;
+        private boolean endflag;
+        private String url;
 
-        public List<PalyListBean> getPalyList() {
-            return palyList;
+        public void setStartTime(int startTime) {
+            this.startTime = startTime;
         }
 
-        public void setPalyList(List<PalyListBean> palyList) {
-            this.palyList = palyList;
+        public void setEndTime(int endTime) {
+            this.endTime = endTime;
         }
 
-        public static class PalyListBean {
-            /**
-             * starttime : 1578827659000
-             * endtime : 1578828447000
-             * m3u8Url : http://lcb.iotvideo.tencentcs.com/timeshift/live/031400005df99fe03b8d15050eb45385/timeshift.m3u8?starttime=20200112191419&endtime=20200112192727
-             */
+        public void setEndflag(boolean endflag) {
+            this.endflag = endflag;
+        }
 
-            private long starttime;
-            private long endtime;
-            private String m3u8Url;
+        public void setUrl(String url) {
+            this.url = url;
+        }
 
-            public long getStarttime() {
-                return starttime;
-            }
+        public int getStartTime() {
+            return startTime;
+        }
 
-            public void setStarttime(long starttime) {
-                this.starttime = starttime;
-            }
+        public int getEndTime() {
+            return endTime;
+        }
 
-            public long getEndtime() {
-                return endtime;
-            }
+        public boolean getEndflag() {
+            return endflag;
+        }
 
-            public void setEndtime(long endtime) {
-                this.endtime = endtime;
-            }
-
-            public String getM3u8Url() {
-                return m3u8Url;
-            }
-
-            public void setM3u8Url(String m3u8Url) {
-                this.m3u8Url = m3u8Url;
-            }
+        public String getUrl() {
+            return url;
         }
     }
 }

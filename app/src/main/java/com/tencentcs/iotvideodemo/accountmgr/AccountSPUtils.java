@@ -12,6 +12,8 @@ public class AccountSPUtils {
     public static final String ACCESS_ID = "ACCESS_ID";
     public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     public static final String VALIDITY_TIMESTAMP = "VALIDITY_TIMESTAMP";
+    public static final String ANONYMOUS_TID = "TID";
+    public static final String ANONYMOUS_USER = "ANONYMOUS_USER";
 
     private static class SPHolder {
         private static final AccountSPUtils INSTANCE = new AccountSPUtils();
@@ -75,5 +77,13 @@ public class AccountSPUtils {
         String userId;
         userId = getString(context, ACCESS_ID, "");
         return userId;
+    }
+
+    public boolean isAnonymousUser(Context context){
+        return getBoolean(context, ANONYMOUS_USER, false);
+    }
+
+    public String getTid(Context context) {
+        return getString(context, ANONYMOUS_TID, "");
     }
 }

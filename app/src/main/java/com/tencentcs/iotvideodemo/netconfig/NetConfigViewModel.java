@@ -153,6 +153,19 @@ public class NetConfigViewModel extends ViewModel {
     }
 
     public void bindDevice(String devId) {
+        if (mLanDeviceData.getValue() != null) {
+            for (DeviceInfo deviceInfo : mLanDeviceData.getValue()) {
+                if (devId.equals(deviceInfo.tencentID)) {
+                    String devId2 = String.valueOf(deviceInfo.deviceID);
+                    bindDevice(devId, devId2);
+                    return;
+                }
+            }
+        }
+        bindDevice(devId, null);
+    }
+
+    public void bindDevice(String devId, String devId2) {
         if (TextUtils.isEmpty(devId)) {
             LogUtils.e(TAG, "invalid deviceId");
             return;
@@ -161,7 +174,7 @@ public class NetConfigViewModel extends ViewModel {
             LogUtils.e(TAG, "is binding");
             return;
         }
-        mNetConfigHelper.bindDevice(devId, mBindStateData);
+        mNetConfigHelper.bindDevice(devId, devId2, mBindStateData);
         mBindingDeviceId = devId;
     }
 

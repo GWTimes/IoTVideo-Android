@@ -4,16 +4,17 @@ import java.io.Serializable;
 import java.util.List;
 
 public class DeviceList {
-
     /**
      * code : 0
      * msg : Success
-     * data : [{"devId":"55484851000000000000000000000000","did":null,"deviceName":"42949672973","deviceType":null,"deviceMode":"app.pack.test","url":null,"shareType":"owner"}]
+     * requestId : 896e098f-2383-454e-a95f-852ccdd498f8
+     * data : {"count":1,"pattern":0,"deviceList":[{"devId":"7226904","remarkName":"卧室","modifyTime":1548679047,"relation":0,"version":0,"groupId":0,"permission":271,"secretKey":"cIaHvtVEkvmZNFW5ZwasQscCe4Mo6o001/KsaYK8cbzFzSpmibUGOAhxAEQG+lOP","noDisturb":null,"deviceCate":1}]}
      */
 
     private int code;
     private String msg;
-    private List<Device> data;
+    private String requestId;
+    private DataBean data;
 
     public int getCode() {
         return code;
@@ -31,43 +32,82 @@ public class DeviceList {
         this.msg = msg;
     }
 
-    public List<Device> getData() {
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
+    public DataBean getData() {
         return data;
     }
 
-    public void setData(List<Device> data) {
+    public void setData(DataBean data) {
         this.data = data;
+    }
+
+    public static class DataBean {
+        /**
+         * count : 1
+         * pattern : 0
+         * deviceList : [{"devId":"7226904","remarkName":"卧室","modifyTime":1548679047,"relation":0,"version":0,"groupId":0,"permission":271,"secretKey":"cIaHvtVEkvmZNFW5ZwasQscCe4Mo6o001/KsaYK8cbzFzSpmibUGOAhxAEQG+lOP","noDisturb":null,"deviceCate":1}]
+         */
+
+        private int count;
+        private int pattern;
+        private List<Device> deviceList;
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
+
+        public int getPattern() {
+            return pattern;
+        }
+
+        public void setPattern(int pattern) {
+            this.pattern = pattern;
+        }
+
+        public List<Device> getDeviceList() {
+            return deviceList;
+        }
+
+        public void setDeviceList(List<Device> deviceList) {
+            this.deviceList = deviceList;
+        }
     }
 
     public static class Device implements Serializable {
         /**
-         * devId : 55484851000000000000000000000000
-         * did : null
-         * deviceName : 42949672973
-         * deviceType : null
-         * deviceMode : app.pack.test
-         * url : null
-         * shareType : owner
+         * devId : 7226904
+         * remarkName : 卧室
+         * modifyTime : 1548679047
+         * relation : 0
+         * version : 0
+         * groupId : 0
+         * permission : 271
+         * secretKey : cIaHvtVEkvmZNFW5ZwasQscCe4Mo6o001/KsaYK8cbzFzSpmibUGOAhxAEQG+lOP
+         * noDisturb : null
+         * deviceCate : 1
          */
 
         private String devId;
-        private String did;
-        private String deviceName;
-        private String deviceType;
-        private String deviceMode;
-        private String url;
-        private String shareType;
-        private String sysCate;
-        private boolean isSelected;
-
-        public Device() {}
-
-        public Device(String devId, String deviceName, String shareType, String deviceMode) {
-            this.devId = devId;
-            this.deviceName = deviceName;
-            this.shareType = shareType;
-            this.deviceMode = deviceMode;
-        }
+        private String remarkName;
+        private int modifyTime;
+        private int relation;
+        private int version;
+        private int groupId;
+        private int permission;
+        private String secretKey;
+        private Object noDisturb;
+        private int deviceCate;
 
         public String getDevId() {
             return devId;
@@ -77,81 +117,76 @@ public class DeviceList {
             this.devId = devId;
         }
 
-        public String getDid() {
-            return did;
+        public String getRemarkName() {
+            return remarkName;
         }
 
-        public void setDid(String did) {
-            this.did = did;
+        public void setRemarkName(String remarkName) {
+            this.remarkName = remarkName;
         }
 
-        public String getDeviceName() {
-            return deviceName;
+        public int getModifyTime() {
+            return modifyTime;
         }
 
-        public void setDeviceName(String deviceName) {
-            this.deviceName = deviceName;
+        public void setModifyTime(int modifyTime) {
+            this.modifyTime = modifyTime;
         }
 
-        public String getDeviceType() {
-            return deviceType;
+        public int getRelation() {
+            return relation;
         }
 
-        public void setDeviceType(String deviceType) {
-            this.deviceType = deviceType;
+        public void setRelation(int relation) {
+            this.relation = relation;
         }
 
-        public String getDeviceMode() {
-            return deviceMode;
+        public int getVersion() {
+            return version;
         }
 
-        public void setDeviceMode(String deviceMode) {
-            this.deviceMode = deviceMode;
+        public void setVersion(int version) {
+            this.version = version;
         }
 
-        public String getUrl() {
-            return url;
+        public int getGroupId() {
+            return groupId;
         }
 
-        public void setUrl(String url) {
-            this.url = url;
+        public void setGroupId(int groupId) {
+            this.groupId = groupId;
         }
 
-        public String getShareType() {
-            return shareType;
+        public int getPermission() {
+            return permission;
         }
 
-        public void setShareType(String shareType) {
-            this.shareType = shareType;
+        public void setPermission(int permission) {
+            this.permission = permission;
         }
 
-        public String getSysCate() {
-            return sysCate;
+        public String getSecretKey() {
+            return secretKey;
         }
 
-        public void setSysCate(String sysCate) {
-            this.sysCate = sysCate;
+        public void setSecretKey(String secretKey) {
+            this.secretKey = secretKey;
         }
 
-        public boolean isSelected() {
-            return isSelected;
+        public Object getNoDisturb() {
+            return noDisturb;
         }
 
-        public void setSelected(boolean selected) {
-            isSelected = selected;
+        public void setNoDisturb(Object noDisturb) {
+            this.noDisturb = noDisturb;
         }
 
-        @Override
-        public String toString() {
-            return "Device{" +
-                    "devId='" + devId + '\'' +
-                    ", did='" + did + '\'' +
-                    ", deviceName='" + deviceName + '\'' +
-                    ", deviceType='" + deviceType + '\'' +
-                    ", deviceMode='" + deviceMode + '\'' +
-                    ", url='" + url + '\'' +
-                    ", shareType='" + shareType + '\'' +
-                    '}';
+        public int getDeviceCate() {
+            return deviceCate;
+        }
+
+        public void setDeviceCate(int deviceCate) {
+            this.deviceCate = deviceCate;
         }
     }
 }

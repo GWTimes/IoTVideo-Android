@@ -15,8 +15,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tencentcs.iotvideo.utils.JSONUtils;
+import com.tencentcs.iotvideodemo.BuildConfig;
 import com.tencentcs.iotvideodemo.DemoApp;
+import com.tencentcs.iotvideodemo.messagemgr.ModelBuildInEntity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Utils {
@@ -36,6 +41,10 @@ public class Utils {
      */
     public static String getPhoneDeviceUuid() {
         return UUID.randomUUID().toString();
+    }
+
+    public static boolean isOemVersion() {
+        return "oem".equals(BuildConfig.FLAVOR);
     }
 
     public static void setClipboard(Context context, String content) {
@@ -103,4 +112,14 @@ public class Utils {
                 ((ip >> 16) & 0xFF) + "." +
                 (ip >> 24 & 0xFF);
     }
+
+    public static List<String> getProUserBuildInInfo(String jsonData) {
+        ModelBuildInEntity entity = JSONUtils.JsonToEntity(jsonData, ModelBuildInEntity.class);
+        if (null == entity || null == entity.getVal()) {
+            return new ArrayList<>();
+        }
+        return entity.getVal().getEditData();
+    }
+
+
 }

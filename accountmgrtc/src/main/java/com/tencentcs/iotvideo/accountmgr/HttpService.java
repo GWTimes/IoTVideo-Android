@@ -28,11 +28,17 @@ public interface HttpService {
      * 1.1.2邮箱获取验证码
      *
      * @param email              邮箱
-     * @param flag               1：表示用户注册，2：表示找回密码，3：表示只是发送一条短信
+     * @param pwd                密码
+     * @param flag               0：注册和绑定，1：找回密码，2：只发送一条短信
+     * @param ticket             app进行图形验证结果的票据
+     * @param randstr            app进行图形验证结果的随机字符串
      * @param subscriberListener Http回调结果的观察者
      */
     void emailCheckCode(String email,
+                        String pwd,
                         Integer flag,
+                        String ticket,
+                        String randstr,
                         SubscriberListener subscriberListener);
 
     /**
@@ -64,42 +70,82 @@ public interface HttpService {
                        SubscriberListener subscriberListener);
 
     /**
-     * 1.3终端账号登录
+     * 1.3.1手机登录
      *
-     * @param account            终端用户账号
+     * @param mobile             终端用户账号
+     * @param mobileArea         地区
      * @param pwd                账号密码
      * @param uniqueId           设备唯一码
      * @param subscriberListener Http回调结果的观察者
      */
-    void accountLogin(String account,
-                      String pwd,
-                      String uniqueId,
-                      SubscriberListener subscriberListener);
+    void mobileLogin(String mobile,
+                     String mobileArea,
+                     String pwd,
+                     String uniqueId,
+                     SubscriberListener subscriberListener);
+
+    /**
+     * 1.3.2邮箱登录
+     *
+     * @param email              终端用户账号
+     * @param pwd                账号密码
+     * @param uniqueId           设备唯一码
+     * @param subscriberListener Http回调结果的观察者
+     */
+    void emailLogin(String email,
+                    String pwd,
+                    String uniqueId,
+                    SubscriberListener subscriberListener);
 
     /**
      * 1.4第三方登录
      *
-     * @param thirdType          第三方登录类型，1：微信，2：Facebook，3：QQ，4：微博等
+     * @param thirdType          第三方登录类型，1：微信，2：QQ，3：微博，4：facebook，5：line等
+     * @param uniqueId           终端唯一id,用于区分同一个用户的多个终端
      * @param code               第三方code
+     * @param timeZone           当前时区，单位为秒。例如东八区28800
      * @param subscriberListener Http回调结果的观察者
      */
     void thirdLogin(Integer thirdType,
+                    String uniqueId,
                     String code,
+                    Integer timeZone,
                     SubscriberListener subscriberListener);
+
+    /**
+     * 1.4第三方注册
+     *
+     * @param thirdType          第三方登录类型，1：微信，2：QQ，3：微博，4：facebook，5：line等
+     * @param uniqueId           终端唯一id,用于区分同一个用户的多个终端
+     * @param unionIdToken       标识unionId的token
+     * @param subscriberListener Http回调结果的观察者
+     */
+    void thirdRegister(Integer thirdType,
+                       String uniqueId,
+                       String unionIdToken,
+                       SubscriberListener subscriberListener);
 
     /**
      * 1.5第三方绑定
      *
      * @param thirdType          第三方登录类型，1：微信，2：Facebook，3：QQ，4：微博等
-     * @param code               第三方code
-     * @param account            要绑定用户账号
-     * @param pwd                要绑定的账号密码
+     * @param uniqueId           终端唯一id,用于区分同一个用户的多个终端
+     * @param bindMode           绑定方式，mobile：绑定手机，email：绑定邮箱
+     * @param mobileArea         国家区号，当是绑定手机时，必填
+     * @param mobile             手机号码，当是绑定手机时，必填
+     * @param email              邮箱，当是绑定邮箱时，必填
+     * @param pwd                用户密码
+     * @param unionIdToken       标识unionId的token
      * @param subscriberListener Http回调结果的观察者
      */
     void thirdBindAccount(Integer thirdType,
-                          String code,
-                          String account,
+                          String uniqueId,
+                          String bindMode,
+                          String mobileArea,
+                          String mobile,
+                          String email,
                           String pwd,
+                          String unionIdToken,
                           SubscriberListener subscriberListener);
 
     /**
@@ -509,21 +555,16 @@ public interface HttpService {
     /**
      * 4.15购买云存套餐
      *
-     * @param tid                腾讯devid
-     * @param pkgId              pkgId
-     * @param type               type
-     * @param startTime          开始时间
-     * @param endTime            结束时间
-     * @param storageLen         时长
+     * @param tid                腾讯设备ID
+     * @param pkgId              套餐ID
+     * @param orderCount         需要购买的套餐数量
+     * @param storageRegion      云存服务所在的区域
      * @param subscriberListener 回调
      */
-    void cloudStorageCreate(Integer cid,
-                            String tid,
+    void cloudStorageCreate(String tid,
                             String pkgId,
-                            Integer type,
-                            int startTime,
-                            int endTime,
-                            int storageLen,
+                            Integer orderCount,
+                            String storageRegion,
                             SubscriberListener subscriberListener);
 
     /**
@@ -669,9 +710,19 @@ public interface HttpService {
      * 7.1用户设备绑定
      *
      * @param devId              设备Id
+     * @param tid                设备tid
+     * @param remarkName         设备名称，如果为空，默认为在控制台创建设备时的名字（一期设备时，最多24个字符，二期最多64个字符）
+     * @param permission         权限（初始为0，表示不支持权限配置）
      * @param forceBind          true:强制绑定（踢掉原用户），false:不能踢掉原用户
      * @param subscriberListener Http回调结果的观察者
      */
+    void deviceBind(String devId,
+                    String tid,
+                    String remarkName,
+                    long permission,
+                    boolean forceBind,
+                    SubscriberListener subscriberListener);
+
     void deviceBind(String devId,
                     boolean forceBind,
                     SubscriberListener subscriberListener);
@@ -691,4 +742,17 @@ public interface HttpService {
      * @param subscriberListener Http回调结果的观察者
      */
     void deviceList(SubscriberListener subscriberListener);
+
+    /**
+     * 创建匿名访问Token
+     *
+     * @param ttlMinutes         Token的TTL(time to alive)分钟数,最大值1440(即24小时)
+     * @param tid                设备ID。创建Token时, 此参数为必须项
+     * @param oldAccessToken     旧的AccessToken。续期Token时，此参数为必须
+     * @param subscriberListener Http回调结果的观察者
+     */
+    void createAnonymousAccessToken(int ttlMinutes,
+                                    String tid,
+                                    String oldAccessToken,
+                                    SubscriberListener subscriberListener);
 }

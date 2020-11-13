@@ -8,13 +8,12 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.tencentcs.iotvideo.utils.LogUtils;
 import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.base.BaseFragment;
-import com.tencentcs.iotvideodemo.base.HttpRequestState;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 public class InputPasswordFragment extends BaseFragment implements View.OnClickListener {
@@ -36,27 +35,15 @@ public class InputPasswordFragment extends BaseFragment implements View.OnClickL
         mInputPasswordRepeat = view.findViewById(R.id.tv_password_repeat);
         mInputVCode = view.findViewById(R.id.tv_vcode);
         view.findViewById(R.id.btn_confirm).setOnClickListener(this);
+        if (LoginManager.isEmailValid(mLoginViewModel.getCurrentAccount())) {
+            mInputVCode.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLoginViewModel = ViewModelProviders.of(getActivity()).get(LoginViewModel.class);
-        Observer<HttpRequestState> observer = new Observer<HttpRequestState>() {
-            @Override
-            public void onChanged(HttpRequestState httpRequestState) {
-                switch (httpRequestState.getStatus()) {
-                    case SUCCESS:
-                        mLoginViewModel.getFragmentData().setValue(LoginViewModel.Fragment.Login);
-                        break;
-                    case ERROR:
-                        Snackbar.make(mInputPassword, httpRequestState.getStatusTip(), Snackbar.LENGTH_LONG).show();
-                        break;
-                }
-            }
-        };
-        mLoginViewModel.getRegisterState().observe(getActivity(), observer);
-        mLoginViewModel.getResetPwdState().observe(getActivity(), observer);
     }
 
     @Override
@@ -71,7 +58,7 @@ public class InputPasswordFragment extends BaseFragment implements View.OnClickL
             if (!TextUtils.equals(pwd, pwdRepeat)) {
                 Snackbar.make(mInputPassword, R.string.compare_password, Snackbar.LENGTH_LONG).show();
                 return;
-            } else if (TextUtils.isEmpty(vcode)) {
+            } else if (mInputVCode.getVisibility() == View.VISIBLE && TextUtils.isEmpty(vcode)) {
                 Snackbar.make(mInputPassword, R.string.input_vcode, Snackbar.LENGTH_LONG).show();
                 return;
             }

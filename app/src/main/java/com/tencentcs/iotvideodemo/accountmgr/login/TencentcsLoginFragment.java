@@ -1,5 +1,6 @@
 package com.tencentcs.iotvideodemo.accountmgr.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -8,8 +9,14 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.tencentcs.iotvideo.accountmgr.AccountMgr;
+import com.tencentcs.iotvideo.utils.LogUtils;
 import com.tencentcs.iotvideodemo.BuildConfig;
 import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.accountmgr.AccountSPUtils;
@@ -17,13 +24,8 @@ import com.tencentcs.iotvideodemo.base.BaseFragment;
 import com.tencentcs.iotvideodemo.base.HttpRequestState;
 import com.tencentcs.iotvideodemo.utils.Utils;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
 public class TencentcsLoginFragment extends BaseFragment {
-
+    private final static String TAG = "TencentcsLoginFragment";
     private EditText mEtSecretId, mEtSecretKey, mEtToken, mEtUserName;
     private TextView mTvVersion;
     private LoginViewModel mLoginViewModel;
@@ -49,6 +51,15 @@ public class TencentcsLoginFragment extends BaseFragment {
                 loginClicked();
             }
         });
+        view.findViewById(R.id.btn_anonymous_login).setOnClickListener(v -> {
+            anonymousLoginClicked();
+        });
+        if (!TextUtils.isEmpty(((LoginActivity) getActivity()).getDefaultSecretId())) {
+            mEtSecretId.setText(((LoginActivity) getActivity()).getDefaultSecretId());
+        }
+        if (!TextUtils.isEmpty(((LoginActivity) getActivity()).getDefaultSecretKey())) {
+            mEtSecretKey.setText(((LoginActivity) getActivity()).getDefaultSecretKey());
+        }
     }
 
     @Override
@@ -58,11 +69,16 @@ public class TencentcsLoginFragment extends BaseFragment {
         Observer<HttpRequestState> observer = new Observer<HttpRequestState>() {
             @Override
             public void onChanged(HttpRequestState httpRequestState) {
+                if (null == getActivity()) {
+                    LogUtils.i(TAG,"activity is destroyed");
+                    return;
+                }
                 switch (httpRequestState.getStatus()) {
                     case SUCCESS:
                         mLoginViewModel.login(Utils.getPhoneUuid(getActivity()));
                         break;
                     case ERROR:
+                        LogUtils.i(TAG,"login error:" + httpRequestState.getStatusTip());
                         Snackbar.make(mEtSecretId, httpRequestState.getStatusTip(), Snackbar.LENGTH_LONG).show();
                         break;
                 }
@@ -86,7 +102,6 @@ public class TencentcsLoginFragment extends BaseFragment {
         secretKey = mEtSecretKey.getText().toString();
         token = mEtToken.getText().toString();
         userName = mEtUserName.getText().toString();
-
         if (!TextUtils.isEmpty(secretId) && !TextUtils.isEmpty(secretKey) && !TextUtils.isEmpty(userName)) {
             AccountMgr.init("", "", "");
             AccountMgr.setSecretInfo(secretId, secretKey, token);
@@ -97,5 +112,18 @@ public class TencentcsLoginFragment extends BaseFragment {
         } else {
             Snackbar.make(mEtSecretId, "SecretId、SecretKey和用户名都不能为空", Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    private void anonymousLoginClicked() {
+        Intent intent = new Intent(getActivity(), AnonymousLoginActivity.class);
+        startActivity(intent);
+        if (null != getActivity()) {
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

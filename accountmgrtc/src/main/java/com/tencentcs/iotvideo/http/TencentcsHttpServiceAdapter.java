@@ -1,5 +1,9 @@
 package com.tencentcs.iotvideo.http;
 
+import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -22,6 +26,7 @@ import com.tencentcs.iotvideo.data.DescribeBindDevResult;
 import com.tencentcs.iotvideo.data.DescribeBindUsrResponse;
 import com.tencentcs.iotvideo.data.DescribeBindUsrResult;
 import com.tencentcs.iotvideo.utils.LogUtils;
+import com.tencentcs.iotvideo.utils.UrlHelper;
 import com.tencentcs.iotvideo.utils.rxjava.Observer;
 import com.tencentcs.iotvideo.utils.rxjava.SubscriberListener;
 
@@ -30,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -40,7 +44,7 @@ import io.reactivex.schedulers.Schedulers;
 public class TencentcsHttpServiceAdapter implements HttpService {
     private static final String TAG = "TencentcsHttpServiceAdapter";
 
-    //    private static final String TENCENTCS_API_URL = "http://14.22.4.147:80";
+    private static final String TENCENTCS_API_DEV_URL = "https://test-iotvideotencentcloudapi.cloudlinks.cn:20443";
     private static final String TENCENTCS_API_URL = "https://iotvideo.tencentcloudapi.com";
 
     private static Gson mGson;
@@ -54,7 +58,15 @@ public class TencentcsHttpServiceAdapter implements HttpService {
     public void init(String accessId, String secretKey, String token) {
         mGson = new Gson();
         mTencentcsHttpServiceFactory = new TencentcsHttpServiceFactory(accessId, secretKey, token);
-        mHttpInterface = mTencentcsHttpServiceFactory.createService(TencentcsHttpInterface.class, TENCENTCS_API_URL);
+        mHttpInterface = mTencentcsHttpServiceFactory.createService(TencentcsHttpInterface.class, getUrl());
+    }
+
+    private String getUrl() {
+        if (UrlHelper.getInstance().getServerType() == UrlHelper.SERVER_RELEASE) {
+            return TENCENTCS_API_URL;
+        } else {
+            return TENCENTCS_API_DEV_URL;
+        }
     }
 
     public static void setAccessId(String accessId) {
@@ -103,7 +115,12 @@ public class TencentcsHttpServiceAdapter implements HttpService {
     }
 
     @Override
-    public void emailCheckCode(String email, Integer flag, SubscriberListener subscriberListener) {
+    public void emailCheckCode(String email,
+                               String pwd,
+                               Integer flag,
+                               String ticket,
+                               String randstr,
+                               SubscriberListener subscriberListener) {
 
     }
 
@@ -182,14 +199,14 @@ public class TencentcsHttpServiceAdapter implements HttpService {
     }
 
     @Override
-    public void accountLogin(String account, String pwd, String uniqueId, final SubscriberListener subscriberListener) {
+    public void mobileLogin(String mobile, String mobileArea, String pwd, String uniqueId, final SubscriberListener subscriberListener) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("AccessId", mAccessId);
         jsonObject.addProperty("UniqueId", uniqueId);
         jsonObject.addProperty("TtlMinutes", 30 * 24 * 60);
         final Observable<JsonObject> observable = mHttpInterface.tencentcsApi(
                 "CreateUsrToken", "2019-11-26", jsonObject);
-        LogUtils.i(TAG, "accountLogin jsonObject = " + jsonObject.toString());
+        LogUtils.i(TAG, "mobileLogin jsonObject = " + jsonObject.toString());
         final Observer<JsonObject> subscriber = new Observer<>(new SubscriberListener() {
             @Override
             public void onStart() {
@@ -224,12 +241,34 @@ public class TencentcsHttpServiceAdapter implements HttpService {
     }
 
     @Override
-    public void thirdLogin(Integer thirdType, String code, SubscriberListener subscriberListener) {
+    public void emailLogin(String email, String pwd, String uniqueId, SubscriberListener subscriberListener) {
+        mobileLogin(email, "", pwd, uniqueId, subscriberListener);
+    }
+
+    @Override
+    public void thirdLogin(Integer thirdType,
+                           String uniqueId,
+                           String code,
+                           Integer timeZone,
+                           SubscriberListener subscriberListener) {
 
     }
 
     @Override
-    public void thirdBindAccount(Integer thirdType, String code, String account, String pwd, SubscriberListener subscriberListener) {
+    public void thirdRegister(Integer thirdType, String uniqueId, String unionIdToken, SubscriberListener subscriberListener) {
+
+    }
+
+    @Override
+    public void thirdBindAccount(Integer thirdType,
+                                 String uniqueId,
+                                 String bindMode,
+                                 String mobileArea,
+                                 String mobile,
+                                 String email,
+                                 String pwd,
+                                 String unionIdToken,
+                                 SubscriberListener subscriberListener) {
 
     }
 
@@ -512,13 +551,17 @@ public class TencentcsHttpServiceAdapter implements HttpService {
     }
 
     @Override
-    public void cloudStorageCreate(Integer cid, String tid, String pkgId, Integer type, int startTime, int endTime, int storageLen, final SubscriberListener subscriberListener) {
+    public void cloudStorageCreate(String tid, String pkgId, Integer orderCount, String storageRegion, final SubscriberListener subscriberListener) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("PkgId", pkgId);
         jsonObject.addProperty("Tid", tid);
-        jsonObject.addProperty("UserTag", mAccessId);
+        jsonObject.addProperty("AccessId", mAccessId);
+
+        jsonObject.addProperty("OrderCount", orderCount);
+        jsonObject.addProperty("StorageRegion", storageRegion);
+
         final Observable<JsonObject> observable = mHttpInterface.tencentcsApi(
-                "CreateStorage", "2019-11-26", jsonObject);
+                "CreateStorageService", "2019-11-26", jsonObject);
         final Observer<JsonObject> subscriber = new Observer<>(new SubscriberListener() {
             @Override
             public void onStart() {
@@ -610,6 +653,17 @@ public class TencentcsHttpServiceAdapter implements HttpService {
     @Override
     public void prePositionDelete(String positionId, SubscriberListener subscriberListener) {
 
+    }
+
+    @Deprecated
+    @Override
+    public void deviceBind(String devId,
+                           String tid,
+                           String remarkName,
+                           long permission,
+                           boolean forceBind,
+                           final SubscriberListener subscriberListener) {
+        deviceBind(tid, forceBind, subscriberListener);
     }
 
     @Override
@@ -711,19 +765,66 @@ public class TencentcsHttpServiceAdapter implements HttpService {
                 DescribeBindDevResult describeBindDevResult = new DescribeBindDevResult();
                 describeBindDevResult.setCode(0);
                 describeBindDevResult.setMsg("Success");
-                List<DescribeBindDevResult.DataBean> dataBeanList = new ArrayList<>();
+                List<DescribeBindDevResult.Device> deviceList = new ArrayList<>();
                 if (describeBindDevResponse.getData() != null) {
                     for (DescribeBindDevResponse.Device device : describeBindDevResponse.getData()) {
-                        DescribeBindDevResult.DataBean dataBean = new DescribeBindDevResult.DataBean();
-                        dataBean.setDeviceMode(device.getDeviceModel());
-                        dataBean.setDeviceName(device.getDeviceName());
-                        dataBean.setDevId(device.getTid());
-                        dataBean.setShareType(device.getRole());
-                        dataBeanList.add(dataBean);
+                        DescribeBindDevResult.Device oemDevice = new DescribeBindDevResult.Device();
+                        oemDevice.setDevId(device.getTid());
+                        oemDevice.setRelation("owner".equals(device.getRole()) ? 1 : 3);
+                        oemDevice.setRemarkName(device.getDeviceName());
+                        deviceList.add(oemDevice);
                     }
                 }
-                describeBindDevResult.setData(dataBeanList);
+                DescribeBindDevResult.DataBean dataBean = new DescribeBindDevResult.DataBean();
+                dataBean.setCount(deviceList.size());
+                dataBean.setDeviceList(deviceList);
+                describeBindDevResult.setData(dataBean);
                 subscriberListener.onSuccess(toJson(describeBindDevResult));
+            }
+
+            @Override
+            public void onFail(@NonNull Throwable e) {
+                subscriberListener.onFail(e);
+            }
+        });
+        toSubscribe(observable, subscriber);
+    }
+
+    @Override
+    public void createAnonymousAccessToken(int ttlMinutes, String tid, String oldAccessToken, final SubscriberListener subscriberListener) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("TtlMinutes", ttlMinutes);
+        if (!TextUtils.isEmpty(tid)) {
+            jsonObject.addProperty("Tid", tid);
+        }
+        if (!TextUtils.isEmpty(oldAccessToken)) {
+            jsonObject.addProperty("OldAccessToken", oldAccessToken);
+        }
+        final Observable<JsonObject> observable = mHttpInterface.tencentcsApi(
+                "CreateAnonymousAccessToken", "2019-11-26", jsonObject);
+        final Observer<JsonObject> subscriber = new Observer<>(new SubscriberListener() {
+            @Override
+            public void onStart() {
+                subscriberListener.onStart();
+            }
+
+            @Override
+            public void onSuccess(@NonNull JsonObject response) {
+                String responseJson = response.getAsJsonObject("Response").toString();
+                CreateUsrTokenResponse createUsrTokenResponse = toEntity(responseJson, CreateUsrTokenResponse.class);
+                if (createUsrTokenResponse.getError() != null) {
+                    subscriberListener.onFail(new Throwable(createUsrTokenResponse.getError().toString()));
+                    return;
+                }
+                CreateUsrTokenResult createUsrTokenResult = new CreateUsrTokenResult();
+                createUsrTokenResult.setCode(0);
+                createUsrTokenResult.setMsg("Success");
+                CreateUsrTokenResult.DataBean dataBean = new CreateUsrTokenResult.DataBean();
+                dataBean.setAccessToken(createUsrTokenResponse.getAccessToken());
+                dataBean.setAccessId(createUsrTokenResponse.getAccessId());
+                dataBean.setExpireTime(createUsrTokenResponse.getExpireTime());
+                createUsrTokenResult.setData(dataBean);
+                subscriberListener.onSuccess(toJson(createUsrTokenResult));
             }
 
             @Override

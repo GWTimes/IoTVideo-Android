@@ -3,24 +3,25 @@ package com.tencentcs.iotvideodemo.accountmgr.login;
 import android.content.Context;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
+
 import com.google.gson.JsonObject;
-import com.tencentcs.iotvideo.utils.JSONUtils;
 import com.tencentcs.iotvideo.IoTVideoSdk;
 import com.tencentcs.iotvideo.accountmgr.AccountMgr;
+import com.tencentcs.iotvideo.utils.JSONUtils;
 import com.tencentcs.iotvideo.utils.LogUtils;
 import com.tencentcs.iotvideo.vas.VasMgr;
 import com.tencentcs.iotvideodemo.accountmgr.AccountSPUtils;
 import com.tencentcs.iotvideodemo.accountmgr.devicemanager.DeviceModelManager;
 import com.tencentcs.iotvideodemo.base.HttpRequestState;
 import com.tencentcs.iotvideodemo.base.MVVMSubscriberListener;
+import com.tencentcs.iotvideodemo.utils.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
 
 class LoginManager {
     private static final String TAG = "LoginManager";
@@ -54,10 +55,19 @@ class LoginManager {
     void checkCode(String account, int flag, MutableLiveData<HttpRequestState> request) {
         mCurrentAccount = account;
         if (isEmailValid(account)) {
-            AccountMgr.getHttpService().emailCheckCode(account, flag, new MVVMSubscriberListener(request));
+            //邮箱不用单独获取验证码
+            HttpRequestState httpRequestState = new HttpRequestState();
+            httpRequestState.setStatus(HttpRequestState.Status.SUCCESS);
+            request.setValue(httpRequestState);
         } else {
-            AccountMgr.getHttpService().mobileCheckCode("86", account, flag, "", "",
+            SafeCheckCode safeCheckCode = mLoginViewModel.getSafeCheckCode().getValue();
+            if (safeCheckCode == null || safeCheckCode.isExpired()) {
+                LogUtils.e(TAG, "safe check code is expired");
+                return;
+            }
+            AccountMgr.getHttpService().mobileCheckCode("86", account, flag, safeCheckCode.ticket, safeCheckCode.randstr,
                     new MVVMSubscriberListener(request));
+            safeCheckCode.setExpired(true);
         }
     }
 
@@ -85,16 +95,61 @@ class LoginManager {
                 }
             }
         };
-        AccountMgr.getHttpService().accountLogin(account, password, uuid, subscriberListener);
+        if (isEmailValid(account)) {
+            AccountMgr.getHttpService().emailLogin(account, password, uuid, subscriberListener);
+        } else {
+            AccountMgr.getHttpService().mobileLogin(account, "86", password, uuid, subscriberListener);
+        }
     }
 
     void login(String uuid, MutableLiveData<HttpRequestState> request) {
         login("", "", uuid, request);
     }
 
+    void loginAnonymous(int ttlMinutes, String tid, String oldAccessToken, MutableLiveData<HttpRequestState> request) {
+        if (Utils.isOemVersion()) {
+            HttpRequestState httpRequestState = new HttpRequestState();
+            httpRequestState.setStatus(HttpRequestState.Status.ERROR);
+            request.setValue(httpRequestState);
+            return;
+        }
+        MVVMSubscriberListener subscriberListener = new MVVMSubscriberListener(request) {
+            @Override
+            public void onSuccess(@NonNull JsonObject response) {
+                LoginInfo loginInfo = JSONUtils.JsonToEntity(response.toString(), LoginInfo.class);
+                if (loginInfo != null) {
+                    LogUtils.i(TAG, "Anonymous login success : " + loginInfo.toString());
+                    LoginInfo.DataBean loginData = loginInfo.getData();
+                    if (loginData != null && loginData.isLoginDataValid()) {
+                        final String accessToken = loginInfo.getData().getAccessToken();
+                        final int validityTime = loginInfo.getData().getExpireTime();
+                        initIoTVideo(loginInfo.getData().getAccessId(), accessToken);
+                        saveLoginInfo(loginInfo.getData().getAccessId(), accessToken, validityTime);
+                        super.onSuccess(response);
+                    } else {
+                        super.onFail(new Throwable("service feedback data null"));
+                    }
+                }
+            }
+        };
+
+        AccountMgr.getHttpService().createAnonymousAccessToken(ttlMinutes, tid, oldAccessToken, subscriberListener);
+    }
+
     void register(String pwd, String vcode, MutableLiveData<HttpRequestState> request) {
         if (isEmailValid(mCurrentAccount)) {
-            AccountMgr.getHttpService().emailRegister(mCurrentAccount, pwd, vcode, new MVVMSubscriberListener(request));
+            if (Utils.isOemVersion()) {
+                //邮箱获取验证码和注册一个接口完成
+                SafeCheckCode safeCheckCode = mLoginViewModel.getSafeCheckCode().getValue();
+                if (safeCheckCode != null && !safeCheckCode.isExpired()) {
+                    AccountMgr.getHttpService().emailCheckCode(mCurrentAccount, pwd, 0, safeCheckCode.ticket,
+                            safeCheckCode.randstr, new MVVMSubscriberListener(request));
+                } else {
+                    LogUtils.e(TAG, "register fail, invalid safe check code");
+                }
+            } else {
+                AccountMgr.getHttpService().emailRegister(mCurrentAccount, pwd, vcode, new MVVMSubscriberListener(request));
+            }
         } else {
             AccountMgr.getHttpService().mobileRegister("86", mCurrentAccount, pwd, vcode, new MVVMSubscriberListener(request));
         }
@@ -106,10 +161,25 @@ class LoginManager {
 
     void retrieve(String pwd, String vcode, MutableLiveData<HttpRequestState> request) {
         if (isEmailValid(mCurrentAccount)) {
-            AccountMgr.getHttpService().emailResetPwd(mCurrentAccount, pwd, vcode, new MVVMSubscriberListener(request));
+            if (Utils.isOemVersion()) {
+                //邮箱获取验证码和找回密码一个接口完成
+                SafeCheckCode safeCheckCode = mLoginViewModel.getSafeCheckCode().getValue();
+                if (safeCheckCode != null && !safeCheckCode.isExpired()) {
+                    AccountMgr.getHttpService().emailCheckCode(mCurrentAccount, pwd, 1, safeCheckCode.ticket,
+                            safeCheckCode.randstr, new MVVMSubscriberListener(request));
+                } else {
+                    LogUtils.e(TAG, "retrieve fail, invalid safe check code");
+                }
+            } else {
+                AccountMgr.getHttpService().emailResetPwd(mCurrentAccount, pwd, vcode, new MVVMSubscriberListener(request));
+            }
         } else {
             AccountMgr.getHttpService().mobileResetPwd("86", mCurrentAccount, pwd, vcode, new MVVMSubscriberListener(request));
         }
+    }
+
+    String getCurrentAccount() {
+        return mCurrentAccount;
     }
 
     private void initIoTVideo(String accessId, String accessToken) {

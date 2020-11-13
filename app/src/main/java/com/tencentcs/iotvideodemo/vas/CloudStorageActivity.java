@@ -1,9 +1,13 @@
 package com.tencentcs.iotvideodemo.vas;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,16 +17,25 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.tencentcs.iotvideo.IoTVideoSdk;
 import com.tencentcs.iotvideo.accountmgr.AccountMgr;
+import com.tencentcs.iotvideo.messagemgr.ModelMessage;
 import com.tencentcs.iotvideo.utils.JSONUtils;
 import com.tencentcs.iotvideo.utils.LogUtils;
+import com.tencentcs.iotvideo.utils.rxjava.IResultListener;
 import com.tencentcs.iotvideo.utils.rxjava.SubscriberListener;
 import com.tencentcs.iotvideo.vas.VasMgr;
 import com.tencentcs.iotvideo.vas.VasService;
 import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.accountmgr.devicemanager.DeviceList;
 import com.tencentcs.iotvideodemo.base.BaseActivity;
+import com.tencentcs.iotvideodemo.netconfig.FragmentAdapter;
+import com.tencentcs.iotvideodemo.netconfig.ap.APNetConfigFragment;
+import com.tencentcs.iotvideodemo.netconfig.qrcode.QRCodeNetConfigFragment;
+import com.tencentcs.iotvideodemo.netconfig.wired.WiredNetConfigFragment;
 import com.tencentcs.iotvideodemo.videoplayer.ExoPlayerActivity;
 import com.tencentcs.iotvideodemo.videoplayer.ijkplayer.IjkPlayerActivity;
 import com.tencentcs.iotvideodemo.widget.RecycleViewDivider;
@@ -36,25 +49,51 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
-public class CloudStorageActivity extends BaseActivity implements View.OnClickListener, SimpleRecyclerViewAdapter.OnItemClickListener {
+public class CloudStorageActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "CloudStorageActivity";
 
     private static final String[] PACKAGE_ARRAY = {
-            "yc1m3d"
+            "yc1m3d",
+            "yc1m7d",
+            "yc1m30d",
+            "yc1y3d",
+            "yc1y7d",
+            "yc1y30d",
+            "ye1m3d",
+            "ye1m7d",
+            "ye1m30d",
+            "ye1y3d",
+            "ye1y7d",
+            "ye1y30d",
     };
     private static final String[] PACKAGE_PRICE = {
-            "0$"
+            "1$",
+            "2$",
+            "3$",
+            "4$",
+            "5$",
+            "6$",
+            "7$",
+            "8$",
+            "9$",
+            "10$",
+            "11$",
+            "12$",
+    };
+
+    private static final String[] STORAGE_REGION = {
+        "ap-guangzhou","ap-singapore"
     };
 
     private TextView mTvBuyStartTime, mTvBuyEndTime, mTvPlaybackStartTime, mTvPlaybackEndTime;
-    private RecyclerView mRVPlaybackList;
+
     private Spinner mPackageSpinner;
     private TextView mTvPackagePrice;
-    private SimpleRecyclerViewAdapter<String> mAdapter;
-    private List<String> mM3U8List;
 
     private VasService mVasService;
 
@@ -63,6 +102,10 @@ public class CloudStorageActivity extends BaseActivity implements View.OnClickLi
     private String mCurrentPackageName;
 
     private DeviceList.Device mDevice;
+
+    private TabLayout mTabLayout;
+    private ViewPager mViewPager;
+    private MenuItem mRefreshMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,16 +122,10 @@ public class CloudStorageActivity extends BaseActivity implements View.OnClickLi
         mTvPlaybackStartTime.setOnClickListener(this);
         mTvPlaybackEndTime = findViewById(R.id.playback_end_time);
         mTvPlaybackEndTime.setOnClickListener(this);
-        mRVPlaybackList = findViewById(R.id.playback_list);
-        mM3U8List = new ArrayList<>();
-        mAdapter = new SimpleRecyclerViewAdapter<>(this, mM3U8List);
-        mRVPlaybackList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        mRVPlaybackList.addItemDecoration(new RecycleViewDivider(this, RecycleViewDivider.VERTICAL));
-        mRVPlaybackList.setAdapter(mAdapter);
-        mAdapter.setOnItemClickListener(this);
+
         mVasService = VasMgr.getVasService();
         findViewById(R.id.buy).setOnClickListener(this);
-        findViewById(R.id.playback).setOnClickListener(this);
+        findViewById(R.id.cloud_service_query).setOnClickListener(this);
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, Arrays.asList(PACKAGE_ARRAY));
         mPackageSpinner.setAdapter(arrayAdapter);
@@ -109,6 +146,32 @@ public class CloudStorageActivity extends BaseActivity implements View.OnClickLi
             mDevice = (DeviceList.Device) getIntent().getSerializableExtra("Device");
             LogUtils.i(TAG, "mDevice = " + mDevice.toString());
         }
+
+        initViewPager();
+    }
+
+    private void initViewPager() {
+        mTabLayout = findViewById(R.id.tab_layout_main);
+        mViewPager = findViewById(R.id.view_pager_main);
+
+        List<String> titles = new ArrayList<>();
+        titles.add(getString(R.string.cloud_video_area));
+        titles.add(getString(R.string.cloud_play_url_list));
+        titles.add(getString(R.string.cloud_event_list));
+        mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(0)));
+        mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(1)));
+        mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(2)));
+
+        List<Fragment> fragments = new ArrayList<>();
+        fragments.add(new TsListFragment());
+        fragments.add(new PlaybackListFragment());
+        fragments.add(new EventListFragment());
+
+        mViewPager.setOffscreenPageLimit(0);
+
+        FragmentAdapter mFragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), fragments, titles);
+        mViewPager.setAdapter(mFragmentAdapter);
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 
     @Override
@@ -144,8 +207,8 @@ public class CloudStorageActivity extends BaseActivity implements View.OnClickLi
                 }
             });
         } else if (view.getId() == R.id.buy) {
-            AccountMgr.getHttpService().cloudStorageCreate(103, mDevice.getDevId(), mCurrentPackageName, 1,
-                    mBuyStartTime, mBuyEndTime, 3 * 24 * 3600, new SubscriberListener() {
+            AccountMgr.getHttpService().cloudStorageCreate( mDevice.getDevId(), mCurrentPackageName, 1,
+                    STORAGE_REGION[0], new SubscriberListener() {
                 @Override
                 public void onStart() {
 
@@ -161,37 +224,8 @@ public class CloudStorageActivity extends BaseActivity implements View.OnClickLi
                     Snackbar.make(mTvBuyStartTime, e.getMessage(), Snackbar.LENGTH_LONG).show();
                 }
             });
-        } else if (view.getId() == R.id.playback) {
-            mVasService.cloudStoragePlayback(mDevice.getDevId(), 28800, mPlaybackStartTime, mPlaybackEndTime, new SubscriberListener() {
-                @Override
-                public void onStart() {
-
-                }
-
-                @Override
-                public void onSuccess(@NonNull JsonObject response) {
-                    PlaybackList playbackList = JSONUtils.JsonToEntity(response.toString(), PlaybackList.class);
-                    if (playbackList == null) {
-                        Snackbar.make(mRVPlaybackList, "invalid data", Snackbar.LENGTH_LONG).show();
-                        return;
-                    }
-                    if (playbackList.getData() != null && playbackList.getData().getPalyList() != null) {
-                        mM3U8List.clear();
-                        for (PlaybackList.DataBean.PalyListBean item : playbackList.getData().getPalyList()) {
-                            mM3U8List.add(item.getM3u8Url());
-                        }
-                        mAdapter.notifyDataSetChanged();
-                        Snackbar.make(mRVPlaybackList, "count = " + mM3U8List.size(), Snackbar.LENGTH_LONG).show();
-                    } else {
-                        Snackbar.make(mRVPlaybackList, "invalid data", Snackbar.LENGTH_LONG).show();
-                    }
-                }
-
-                @Override
-                public void onFail(@NonNull Throwable e) {
-                    Snackbar.make(mRVPlaybackList, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                }
-            });
+        }else if (view.getId() == R.id.cloud_service_query) {
+            queryBuyedService();
         }
     }
 
@@ -238,14 +272,78 @@ public class CloudStorageActivity extends BaseActivity implements View.OnClickLi
         return calendar.getTimeInMillis();
     }
 
-    private void startPlayActivity(String url) {
-        Intent intent = new Intent(this, ExoPlayerActivity.class);
-        intent.putExtra("URI", url);
-        startActivity(intent);
+    public long getmPlaybackStartTime() {
+        return mPlaybackStartTime;
     }
 
-    @Override
-    public void onRecyclerViewItemClick(int position) {
-        startPlayActivity(mM3U8List.get(position));
+    public long getmPlaybackEndTime() {
+        return mPlaybackEndTime;
+    }
+
+    public DeviceList.Device getmDevice() {
+        return mDevice;
+    }
+
+    public VasService getmVasService() {
+        return mVasService;
+    }
+
+    private void queryBuyedService() {
+        IoTVideoSdk.getMessageMgr().readProperty(mDevice.getDevId(), "ProWritable._cloudStoage", new IResultListener<ModelMessage>() {
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onSuccess(ModelMessage msg) {
+                LogUtils.i(TAG,"queryBuyedService successful:" + msg);
+                if (isFinishing()) {
+                    return;
+                }
+                if (TextUtils.isEmpty(msg.data)) {
+                    Snackbar.make(mTvPackagePrice,"Invalid data",Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+                JsonParser jsonParser = new JsonParser();
+                JsonObject jsonObject = jsonParser.parse(msg.data).getAsJsonObject();
+                if (null == jsonObject) {
+                    Snackbar.make(mTvPackagePrice,"Invalid data",Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+
+                JsonObject storageJson = jsonObject.get("setVal").getAsJsonObject();
+                LogUtils.i(TAG,"json string:" + storageJson.toString());
+                CloudStorageInfo storageInfo = JSONUtils.JsonToEntity(storageJson.toString(), CloudStorageInfo.class);
+                if (null == storageInfo) {
+                    Snackbar.make(mTvPackagePrice,"Invalid data",Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(CloudStorageActivity.this);
+                builder.setTitle("云服务套餐信息");
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("套餐类型："+ storageInfo.getServiceTypeInfo());
+                stringBuilder.append("\n");
+                stringBuilder.append("到期时间："+ storageInfo.getUtcExpireInfo());
+                stringBuilder.append("\n");
+                stringBuilder.append("套餐状态："+ storageInfo.getServiceStateInfo());
+                builder.setMessage(stringBuilder.toString());
+                builder.setIcon(R.mipmap.ic_launcher);
+                builder.setCancelable(true);
+                //设置正面按钮
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+
+            @Override
+            public void onError(int errorCode, String errorMsg) {
+                LogUtils.i(TAG,"queryBuyedService onError:" + errorCode + "; errorMsg:" + errorMsg);
+            }
+        });
     }
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="jumpPreferenceStyle" format="reference" />
+
+    <declare-styleable name="JumpPreference">
+        <attr name="rightMessage" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="IoTPreferenceCategory">
+        <attr name="leftColor" format="color"/>
+    </declare-styleable>
+</resources>

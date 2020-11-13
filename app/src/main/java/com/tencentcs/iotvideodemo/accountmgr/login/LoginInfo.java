@@ -103,7 +103,7 @@ public class LoginInfo {
         }
 
         public boolean isLoginDataValid() {
-            if (TextUtils.isEmpty(accessToken) || accessToken.length() != 128) {
+            if (TextUtils.isEmpty(accessToken)) {
                 return false;
             } else if (System.currentTimeMillis() >= expireTime * 1000L) {
                 return false;

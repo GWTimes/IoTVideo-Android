@@ -19,6 +19,61 @@
         <item name="homeAsUpIndicator">@drawable/ic_action_back</item>
     </style>
 
+    <style name="AppFullscreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/black</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="SettingsActivityTheme" parent="AppTheme">
+        <item name="preferenceTheme">@style/MyPreferenceThemeOverlay</item>
+    </style>
+
+    <style name="MyPreferenceThemeOverlay" parent="PreferenceThemeOverlay">
+        <item name="editTextPreferenceStyle">@style/MyEditTextPreference</item>
+        <item name="preferenceStyle">@style/MyPreference</item>
+        <item name="switchPreferenceCompatStyle">@style/MySwitchPreferenceCompat</item>
+        <item name="preferenceCategoryStyle">@style/MyPreferenceCategory</item>
+        <item name="dialogPreferenceStyle">@style/MyDialogPreference</item>
+        <item name="jumpPreferenceStyle">@style/JumpPreference</item>
+    </style>
+
+    <style name="MyPreference" parent="Preference.Material">
+        <item name="layout">@layout/layout_preference</item>
+        <item name="allowDividerAbove">true</item>
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="MyPreferenceCategory" parent="Preference.Category.Material">
+        <item name="layout">@layout/layout_preference_category</item>
+        <item name="allowDividerAbove">true</item>
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="MyEditTextPreference" parent="Preference.DialogPreference.EditTextPreference.Material">
+        <item name="allowDividerAbove">true</item>
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="MySwitchPreferenceCompat" parent="Preference.SwitchPreferenceCompat.Material">
+        <item name="allowDividerAbove">true</item>
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="MyDialogPreference" parent="Preference.DialogPreference.Material">
+        <item name="allowDividerAbove">true</item>
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="JumpPreference" parent="MyPreference">
+        <item name="android:widgetLayout">@layout/layout_jump_preference_widget</item>
+        <item name="allowDividerAbove">true</item>
+    </style>
+
     <style name="MyActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
         <item name="titleTextStyle">@style/MyTitleTextStyle</item>
     </style>

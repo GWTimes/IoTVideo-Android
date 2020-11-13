@@ -1,5 +1,7 @@
 package com.tencentcs.iotvideodemo.netconfig;
 
+import android.text.TextUtils;
+
 import com.google.gson.JsonObject;
 import com.tencentcs.iotvideo.IoTVideoSdk;
 import com.tencentcs.iotvideo.accountmgr.AccountMgr;
@@ -10,8 +12,10 @@ import com.tencentcs.iotvideo.netconfig.wired.WiredNetConfig;
 import com.tencentcs.iotvideo.utils.JSONUtils;
 import com.tencentcs.iotvideo.utils.LogUtils;
 import com.tencentcs.iotvideo.utils.rxjava.IResultListener;
+import com.tencentcs.iotvideodemo.BuildConfig;
 import com.tencentcs.iotvideodemo.base.HttpRequestState;
 import com.tencentcs.iotvideodemo.base.MVVMSubscriberListener;
+import com.tencentcs.iotvideodemo.utils.Utils;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -26,6 +30,10 @@ class NetConfigHelper {
     }
 
     void bindDevice(String devId, MutableLiveData<HttpRequestState> httpRequestStateMutableLiveData) {
+        bindDevice(devId, null, httpRequestStateMutableLiveData);
+    }
+
+    void bindDevice(String devId, String devId2, MutableLiveData<HttpRequestState> httpRequestStateMutableLiveData) {
         MVVMSubscriberListener mvvmSubscriberListener = new MVVMSubscriberListener(httpRequestStateMutableLiveData) {
             @Override
             public void onSuccess(@NonNull JsonObject response) {
@@ -35,7 +43,11 @@ class NetConfigHelper {
                 NetConfig.getInstance().subscribeDevice(bindDeviceResult.getData().getDevToken(), devId);
             }
         };
-        AccountMgr.getHttpService().deviceBind(devId, true, mvvmSubscriberListener);
+        if (Utils.isOemVersion()) {
+            AccountMgr.getHttpService().deviceBind(devId2, devId, devId2, 0, true, mvvmSubscriberListener);
+        } else {
+            AccountMgr.getHttpService().deviceBind(devId, true, mvvmSubscriberListener);
+        }
     }
 
     void findDevices() {

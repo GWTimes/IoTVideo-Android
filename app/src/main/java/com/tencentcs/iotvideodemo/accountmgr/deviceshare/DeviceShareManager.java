@@ -24,7 +24,7 @@ class DeviceShareManager {
     }
 
     void genShareQrcode(DeviceList.Device device, MutableLiveData<HttpRequestState> httpRequestState) {
-        AccountMgr.getHttpService().genShareQrcode(device.getDevId(), device.getDeviceName(), device.getDeviceName(), new MVVMSubscriberListener(httpRequestState));
+        AccountMgr.getHttpService().genShareQrcode(device.getDevId(), device.getRemarkName(), device.getRemarkName(), new MVVMSubscriberListener(httpRequestState));
     }
 
     void shareDevice(String shareId, DeviceList.Device device, MutableLiveData<HttpRequestState> httpRequestState) {

@@ -1,0 +1,58 @@
+<PreferenceScreen xmlns:IoTPreferenceCategory="http://schemas.android.com/apk/res-auto"
+    xmlns:JumpPreference="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tencentcs.iotvideodemo.settings.IoTPreferenceCategory
+        IoTPreferenceCategory:leftColor="@color/colorPrimaryDark"
+        app:title="功能">
+
+        <SwitchPreferenceCompat
+            app:key="supportAudioTalk"
+            app:title="支持音频对讲" />
+
+        <SwitchPreferenceCompat
+            app:key="supportVideoTalk"
+            app:title="支持视频对讲" />
+
+    </com.tencentcs.iotvideodemo.settings.IoTPreferenceCategory>
+
+    <com.tencentcs.iotvideodemo.settings.IoTPreferenceCategory
+        IoTPreferenceCategory:leftColor="@color/textColorPrimary"
+        app:title="编解码器">
+
+        <SwitchPreferenceCompat
+            app:key="media_decode_audio"
+            app:title="使用硬件解码音频" />
+
+        <SwitchPreferenceCompat
+            app:key="media_decode_video"
+            app:title="使用硬件解码视频" />
+
+        <SwitchPreferenceCompat
+            app:key="media_encode_audio"
+            app:title="使用硬件编码对讲音频" />
+
+    </com.tencentcs.iotvideodemo.settings.IoTPreferenceCategory>
+
+    <com.tencentcs.iotvideodemo.settings.IoTPreferenceCategory
+        app:title="源">
+
+        <ListPreference
+            app:key="default_definition"
+            app:defaultValue="2"
+            app:dialogTitle="默认分辨率"
+            app:entries="@array/definition_list_preference_titles"
+            app:entryValues="@array/definition_list_preference_values"
+            app:negativeButtonText="@null"
+            app:positiveButtonText="@null"
+            app:title="默认分辨率"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:key="default_sourceId"
+            app:title="默认源id"
+            app:useSimpleSummaryProvider="true" />
+
+    </com.tencentcs.iotvideodemo.settings.IoTPreferenceCategory>
+
+</PreferenceScreen>

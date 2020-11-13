@@ -29,18 +29,4 @@
         android:text="@string/add_device"
         android:visibility="gone"/>
 
-    <Button
-        android:id="@+id/btn_multi_monitor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="16dp"
-        android:backgroundTint="@color/default_button"
-        android:padding="16dp"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:text="多路监控" />
-
 </FrameLayout>

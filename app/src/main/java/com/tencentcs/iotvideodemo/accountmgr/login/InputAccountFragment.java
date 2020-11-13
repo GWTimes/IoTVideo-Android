@@ -1,5 +1,6 @@
 package com.tencentcs.iotvideodemo.accountmgr.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -8,14 +9,21 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.tencentcs.iotvideo.accountmgr.SafeCheckActivity;
+import com.tencentcs.iotvideo.utils.LogUtils;
+import com.tencentcs.iotvideodemo.BuildConfig;
 import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.base.BaseFragment;
+import com.tencentcs.iotvideodemo.utils.Utils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 
 public class InputAccountFragment extends BaseFragment implements View.OnClickListener {
+
+    private static final int SAFE_CHECK_REQUEST_CODE = 1;
+
     private AutoCompleteTextView mUserNameView;
     private LoginViewModel mLoginViewModel;
 
@@ -44,7 +52,11 @@ public class InputAccountFragment extends BaseFragment implements View.OnClickLi
             if (getActivity() instanceof LoginActivity) {
                 ((LoginActivity) getActivity()).hideSoftKeyboard();
             }
-            getVCodeClicked();
+            if (Utils.isOemVersion()) {
+                startSafeCheckActivity();
+            } else {
+                getVCodeClicked();
+            }
         }
     }
 
@@ -56,9 +68,27 @@ public class InputAccountFragment extends BaseFragment implements View.OnClickLi
         }
         LoginViewModel.OperateType operateType = mLoginViewModel.getOperateData().getValue();
         if (operateType == LoginViewModel.OperateType.Register) {
-            mLoginViewModel.checkCode(account, 1);
+            mLoginViewModel.checkCode(account, 0);
         } else if (operateType == LoginViewModel.OperateType.ResetPwd) {
-            mLoginViewModel.checkCode(account, 2);
+            mLoginViewModel.checkCode(account, 1);
+        }
+    }
+
+    private void startSafeCheckActivity() {
+        Intent intent = new Intent(getActivity(), SafeCheckActivity.class);
+        startActivityForResult(intent, SAFE_CHECK_REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (SAFE_CHECK_REQUEST_CODE == requestCode && data != null) {
+            final String ticket = data.getStringExtra("ticket");
+            final String randstr = data.getStringExtra("randstr");
+            LogUtils.i("InputAccountFragment", "onActivityResult ticket = " + ticket + ", randstr = " + randstr);
+            SafeCheckCode safeCheckCode = new SafeCheckCode(ticket, randstr);
+            mLoginViewModel.getSafeCheckCode().setValue(safeCheckCode);
+            getVCodeClicked();
         }
     }
 }

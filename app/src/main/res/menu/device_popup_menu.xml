@@ -12,19 +12,9 @@
         android:title="@string/local_playback"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_menu_transmission_connection"
-        android:orderInCategory="1"
-        android:title="@string/transmission_connection"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/action_menu_model"
         android:orderInCategory="1"
         android:title="@string/device_model"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_menu_ota"
-        android:orderInCategory="1"
-        android:title="@string/device_ota"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_menu_share"
@@ -47,4 +37,33 @@
         android:orderInCategory="2"
         android:title="@string/delete_device"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_menu_other"
+        android:orderInCategory="2"
+        android:title="@string/senior"
+        app:showAsAction="never">
+
+        <menu>
+            <item
+                android:id="@+id/action_menu_multi_monitor"
+                android:orderInCategory="2"
+                android:title="@string/multi_monitor"
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/action_menu_ota"
+                android:orderInCategory="1"
+                android:title="@string/device_ota"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_menu_transmission_connection"
+                android:orderInCategory="1"
+                android:title="@string/transmission_connection"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_menu_nvr"
+                android:orderInCategory="2"
+                android:title="@string/nvr"
+                app:showAsAction="never"/>
+        </menu>
+    </item>
 </menu>

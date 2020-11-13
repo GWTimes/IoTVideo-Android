@@ -3,21 +3,41 @@ package com.tencentcs.iotvideo.data;
 import java.util.List;
 
 public class DescribeBindDevResult extends BaseResult {
-    private List<DataBean> data;
+    private DataBean data;
 
-    public List<DataBean> getData() {
+    public DataBean getData() {
         return data;
     }
 
-    public void setData(List<DataBean> data) {
+    public void setData(DataBean data) {
         this.data = data;
     }
 
     public static class DataBean {
+        private int count;
+        private List<Device> deviceList;
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
+
+        public List<Device> getDeviceList() {
+            return deviceList;
+        }
+
+        public void setDeviceList(List<Device> deviceList) {
+            this.deviceList = deviceList;
+        }
+    }
+
+    public static class Device {
         private String devId;
-        private String deviceName;
-        private String deviceMode;
-        private String shareType;
+        private String remarkName;
+        private int relation;
 
         public String getDevId() {
             return devId;
@@ -27,28 +47,20 @@ public class DescribeBindDevResult extends BaseResult {
             this.devId = devId;
         }
 
-        public String getDeviceName() {
-            return deviceName;
+        public String getRemarkName() {
+            return remarkName;
         }
 
-        public void setDeviceName(String deviceName) {
-            this.deviceName = deviceName;
+        public void setRemarkName(String remarkName) {
+            this.remarkName = remarkName;
         }
 
-        public String getDeviceMode() {
-            return deviceMode;
+        public int getRelation() {
+            return relation;
         }
 
-        public void setDeviceMode(String deviceMode) {
-            this.deviceMode = deviceMode;
-        }
-
-        public String getShareType() {
-            return shareType;
-        }
-
-        public void setShareType(String shareType) {
-            this.shareType = shareType;
+        public void setRelation(int relation) {
+            this.relation = relation;
         }
     }
 }

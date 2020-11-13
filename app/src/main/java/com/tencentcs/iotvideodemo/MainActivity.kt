@@ -40,7 +40,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         supportFragmentManager.beginTransaction().replace(R.id.fl_main, DeviceListFragment()).commit()
 
         mNavigationHead = nav_view.getHeaderView(0)
-        mNavigationHead!!.tv_app_version.text = BuildConfig.VERSION_NAME
+        mNavigationHead!!.tv_app_version.text = IoTVideoSdk.getSdkVersion()
         mNavigationHead!!.logout.setOnClickListener(this)
         mNavigationHead!!.iv_token.setOnClickListener(this)
 
@@ -84,12 +84,17 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
             override fun onSuccess(response: JsonObject) {
                 showProgress(false)
+                var secretId = AccountSPUtils . getInstance ().getString(this@MainActivity, AccountSPUtils.SECRET_ID,null)
+                var secretKey = AccountSPUtils . getInstance ().getString(this@MainActivity, AccountSPUtils.SECRET_KEY,null)
                 AccountSPUtils.getInstance().clear(this@MainActivity)
                 IoTVideoSdk.getMessageMgr().removeModelListener(DeviceModelManager.getInstance())
                 IoTVideoSdk.unregister()
                 MessageBox.eventMessageList.clear()
                 MessageBox.modelMessageList.clear()
-                startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                var intent = Intent(this@MainActivity, LoginActivity::class.java)
+                intent.putExtra(AccountSPUtils.SECRET_ID,secretId)
+                intent.putExtra(AccountSPUtils.SECRET_KEY,secretKey)
+                startActivity(intent)
             }
 
             override fun onFail(e: Throwable) {
@@ -97,6 +102,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 AccountSPUtils.getInstance().clear(this@MainActivity)
                 IoTVideoSdk.getMessageMgr().removeModelListener(DeviceModelManager.getInstance())
                 IoTVideoSdk.unregister()
+                MessageBox.eventMessageList.clear()
+                MessageBox.modelMessageList.clear()
                 startActivity(Intent(this@MainActivity, LoginActivity::class.java))
             }
         })
@@ -137,7 +144,9 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 return true
             }
             item.itemId == R.id.action_menu_add -> {
-                startNetMatchActivity()
+                if (!AccountSPUtils.getInstance().isAnonymousUser(this)) {
+                    startNetMatchActivity()
+                }
                 return true
             }
             item.itemId == R.id.action_menu_message -> {

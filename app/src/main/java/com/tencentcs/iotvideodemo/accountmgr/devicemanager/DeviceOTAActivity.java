@@ -8,6 +8,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tencentcs.iotvideo.IoTVideoSdk;
 import com.tencentcs.iotvideo.messagemgr.IModelListener;
@@ -16,6 +18,7 @@ import com.tencentcs.iotvideo.utils.LogUtils;
 import com.tencentcs.iotvideo.utils.rxjava.IResultListener;
 import com.tencentcs.iotvideodemo.R;
 import com.tencentcs.iotvideodemo.base.BaseActivity;
+import com.tencentcs.iotvideodemo.messagemgr.ModelDataCache;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -45,6 +48,7 @@ public class DeviceOTAActivity extends BaseActivity implements View.OnClickListe
             }
         }
         IoTVideoSdk.getMessageMgr().addModelListener(this);
+        getAllModeProperty();
     }
 
     @Override
@@ -110,16 +114,31 @@ public class DeviceOTAActivity extends BaseActivity implements View.OnClickListe
             return;
         }
         if ("ProReadonly._otaVersion".equals(data.path) || "Action._otaVersion".equals(data.path)) {
-            mLLVersionInfo.setVisibility(View.VISIBLE);
             JsonParser jsonParser = new JsonParser();
             String version = jsonParser.parse(data.data).getAsJsonObject().get("stVal").getAsString();
             if (TextUtils.isEmpty(version)) {
-                mTvLatestVersion.setText("已是最新版本");
-                mProgress.setText(100 + "%");
+                Snackbar.make(mTvLatestVersion, "固件端检测升级失败", Snackbar.LENGTH_LONG).show();
+
             } else {
-                mTvLatestVersion.setText(version);
-                mProgress.setText(0 + "%");
-                showOTADialog(version);
+                JsonElement element = DeviceModelManager.getInstance().getJsonElement(mDeviceId,"ProConst._versionInfo");
+                if (null == element) {
+                    LogUtils.i(TAG,"need get model data");
+                    getAllModeProperty();
+                    return;
+                }
+                JsonObject jsonObject = element.getAsJsonObject();
+
+                mLLVersionInfo.setVisibility(View.VISIBLE);
+                String currentVersion = jsonObject.get("swVer").getAsString();
+                LogUtils.i(TAG,"swVer:" + currentVersion + "; serverVersion:" + version);
+                if (version.compareTo(currentVersion) == 0) {
+                    mTvLatestVersion.setText("已是最新版本");
+                    mProgress.setText(100 + "%");
+                }else if (version.compareTo(currentVersion) > 0){
+                    mTvLatestVersion.setText(version);
+                    mProgress.setText(0 + "%");
+                    showOTADialog(version);
+                }
             }
         } else if ("ProReadonly._otaUpgrade".equals(data.path) || "Action._otaUpgrade".equals(data.path)) {
             JsonParser jsonParser = new JsonParser();
@@ -144,5 +163,26 @@ public class DeviceOTAActivity extends BaseActivity implements View.OnClickListe
                 })
                 .setNegativeButton(getString(R.string.cancel), null)
                 .show();
+    }
+
+    private void getAllModeProperty() {
+        //获取所有的物模型
+        IoTVideoSdk.getMessageMgr().readProperty(mDeviceId, "", new IResultListener<ModelMessage>() {
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onSuccess(ModelMessage msg) {
+                DeviceModelManager.getInstance().onNotify(msg);
+                //ModelDataCache.getInstance().updateData(msg.data);
+            }
+
+            @Override
+            public void onError(int errorCode, String errorMsg) {
+                LogUtils.i(TAG,"getAllModeProperty onError,errorCode:" + errorCode + "; errorMsg:" + errorMsg);
+            }
+        });
     }
 }
